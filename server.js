@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Main Server Entry Point
    File: backend/server.js
-   Version: 2.0 — Fixed
+   Version: 2.0 — Production Ready
    Run: npm run dev
 ═══════════════════════════════════════════════════════════ */
 
@@ -22,33 +22,34 @@ const app = express();
 
 /* ══════════════════════════════════════════════════════════
    MIDDLEWARE STACK
-   Every request passes through these in order
 ══════════════════════════════════════════════════════════ */
 
 /* 1. Security headers */
 app.use(helmet());
 
-/* 2. CORS — allow frontend to talk to this backend */
+/* 2. CORS */
 app.use(cors({
-  origin : [
+  origin: [
     'http://localhost:5500',
     'http://127.0.0.1:5500',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'https://YOUR-FRONTEND-NAME.vercel.app',  // ← replace after deploying to Vercel
+    'https://scholar-analytics-frontend.vercel.app',
+    'https://scholar-analytics-frontend-git-main-kijanawaamerix.vercel.app',
+    'https://scholar-analytics-frontend-kijanawaamerix.vercel.app',
   ],
-  credentials    : true,
+  credentials   : true,
   methods        : ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
   allowedHeaders : ['Content-Type','Authorization'],
 }));
 
-/* 3. Rate limiting — prevent abuse (100 requests per 15 min) */
+/* 3. Rate limiting — 100 requests per 15 min */
 const limiter = rateLimit({
-  windowMs        : 15 * 60 * 1000,
-  max             : 100,
-  standardHeaders : true,
-  legacyHeaders   : false,
-  message         : {
+  windowMs       : 15 * 60 * 1000,
+  max            : 100,
+  standardHeaders: true,
+  legacyHeaders  : false,
+  message        : {
     success : false,
     message : 'Too many requests. Please try again in 15 minutes.',
   },
@@ -58,11 +59,11 @@ app.use('/api/', limiter);
 
 /* Stricter limit for login — 5 attempts per 15 min */
 const loginLimiter = rateLimit({
-  windowMs        : 15 * 60 * 1000,
-  max             : 5,
-  standardHeaders : true,
-  legacyHeaders   : false,
-  message         : {
+  windowMs       : 15 * 60 * 1000,
+  max            : 5,
+  standardHeaders: true,
+  legacyHeaders  : false,
+  message        : {
     success   : false,
     message   : 'Too many login attempts. Try again in 15 minutes.',
     errorCode : 'TOO_MANY_ATTEMPTS',
@@ -90,7 +91,7 @@ if (process.env.NODE_ENV === 'development') {
    ROUTES
 ══════════════════════════════════════════════════════════ */
 
-/* ── Health check ─────────────────────────────────────────── */
+/* Health check */
 app.get('/', (req, res) => {
   res.json({
     success : true,
@@ -111,39 +112,23 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-/* ── Auth routes ──────────────────────────────────────────── */
-app.use('/api/auth', loginLimiter, require('./routes/authRoutes'));
+/* Auth */
+app.use('/api/auth',       loginLimiter, require('./routes/authRoutes'));
 
-/* ── Student routes ───────────────────────────────────────── */
-app.use('/api/students', require('./routes/studentRoutes'));
-
-/* ── Class routes ─────────────────────────────────────────── */
-app.use('/api/classes', require('./routes/classRoutes'));
-
-/* ── Subject routes ───────────────────────────────────────── */
-app.use('/api/subjects', require('./routes/subjectRoutes'));
-
-/* ── Exam routes ──────────────────────────────────────────── */
-app.use('/api/exams', require('./routes/examRoutes'));
-
-/* ── Marks routes ─────────────────────────────────────────── */
-// app.use('/api/marks', require('./routes/marksRoutes'));
-
-/* ── Results routes ───────────────────────────────────────── */
-app.use('/api/results', require('./routes/resultsRoutes'));
-
-/* ── Reports routes ───────────────────────────────────────── */
-// app.use('/api/reports', require('./routes/reportRoutes'));
-
-/* ── Settings routes ──────────────────────────────────────── */
-// app.use('/api/settings', require('./routes/settingsRoutes'));
-
+/* Core */
+app.use('/api/students',   require('./routes/studentRoutes'));
+app.use('/api/classes',    require('./routes/classRoutes'));
+app.use('/api/subjects',   require('./routes/subjectRoutes'));
+app.use('/api/exams',      require('./routes/examRoutes'));
+app.use('/api/marks',      require('./routes/marksRoutes'));
+app.use('/api/results',    require('./routes/resultsRoutes'));
+app.use('/api/settings',   require('./routes/settingsRoutes'));
+app.use('/api/analytics',  require('./routes/analyticsRoutes'));
+app.use('/api/sms',        require('./routes/smsRoutes'));
 app.use('/api/superadmin', require('./routes/superAdminRoutes'));
-app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 /* ══════════════════════════════════════════════════════════
-   404 HANDLER — catches any unknown route
-   NOTE: No wildcard '*' — fixed for Express v5+
+   404 HANDLER
 ══════════════════════════════════════════════════════════ */
 app.use((req, res) => {
   res.status(404).json({
@@ -154,7 +139,6 @@ app.use((req, res) => {
 
 /* ══════════════════════════════════════════════════════════
    GLOBAL ERROR HANDLER
-   Catches ALL errors thrown anywhere in the app
 ══════════════════════════════════════════════════════════ */
 app.use((err, req, res, next) => {
 
@@ -162,10 +146,8 @@ app.use((err, req, res, next) => {
   console.error('Message:', err.message);
   console.error('─────────────────────────────────────────');
 
-  /* Mongoose validation error */
   if (err.name === 'ValidationError') {
-    const messages = Object.values(err.errors)
-      .map(e => e.message);
+    const messages = Object.values(err.errors).map(e => e.message);
     return res.status(400).json({
       success : false,
       message : messages[0],
@@ -173,7 +155,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* Mongoose duplicate key error (e.g. duplicate UPI) */
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
     return res.status(400).json({
@@ -182,7 +163,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* JWT invalid token */
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
       success : false,
@@ -190,7 +170,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* JWT expired token */
   if (err.name === 'TokenExpiredError') {
     return res.status(401).json({
       success   : false,
@@ -199,7 +178,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* Mongoose bad ObjectId */
   if (err.name === 'CastError') {
     return res.status(400).json({
       success : false,
@@ -207,7 +185,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* School locked error */
   if (err.code === 'SCHOOL_LOCKED') {
     return res.status(403).json({
       success    : false,
@@ -217,7 +194,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* School subscription expired */
   if (err.code === 'SUBSCRIPTION_EXPIRED') {
     return res.status(403).json({
       success   : false,
@@ -226,7 +202,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  /* Default — internal server error */
   res.status(err.statusCode || 500).json({
     success   : false,
     message   : err.message || 'Internal server error',

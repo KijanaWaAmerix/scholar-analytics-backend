@@ -155,19 +155,28 @@ exports.getSchool = async (req, res, next) => {
 
 /* ══════════════════════════════════════════════════════════
    CREATE SCHOOL
+   (Admin password is now set directly by the superadmin in the
+   form, instead of being randomly generated and returned once.)
 ══════════════════════════════════════════════════════════ */
 exports.createSchool = async (req, res, next) => {
   try {
     const {
       schoolName, schoolMotto, schoolEmail,
-      adminName, adminEmail,
+      adminName, adminEmail, adminPassword,
       plan, expiryDate,
     } = req.body;
 
-    if (!schoolName || !adminEmail || !adminName) {
+    if (!schoolName || !adminEmail || !adminName || !adminPassword) {
       return res.status(400).json({
         success: false,
-        message: 'School name, admin name and admin email are required.',
+        message: 'School name, admin name, admin email and admin password are required.',
+      });
+    }
+
+    if (adminPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Admin password must be at least 8 characters.',
       });
     }
 
@@ -193,13 +202,11 @@ exports.createSchool = async (req, res, next) => {
       },
     });
 
-    /* Create admin account */
-    const tempPassword = `Scholar${Math.floor(1000+Math.random()*9000)}`;
-
+    /* Create admin account with the password the superadmin set */
     const admin = await User.create({
       fullName      : adminName,
       email         : adminEmail,
-      password      : tempPassword,
+      password      : adminPassword,   // pre-save hook hashes this automatically
       role          : 'admin',
       school        : school._id,
       isActive      : true,
@@ -207,10 +214,10 @@ exports.createSchool = async (req, res, next) => {
     });
 
     res.status(201).json({
-      success     : true,
-      message     : `School "${schoolName}" created successfully.`,
+      success : true,
+      message : `School "${schoolName}" created successfully.`,
       school,
-      admin       : { email: adminEmail, tempPassword },
+      admin   : { email: adminEmail },
     });
 
   } catch (error) {

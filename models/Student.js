@@ -1,6 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Student Model
    File: backend/models/Student.js
+
+   UPDATED: upiNumber, dateOfBirth and gender are now optional,
+   so students can be created quickly (e.g. via Excel import)
+   with just a name, and completed later via the Students page.
 ═══════════════════════════════════════════════════════════ */
 
 const mongoose = require('mongoose');
@@ -13,16 +17,23 @@ const studentSchema = new mongoose.Schema(
       trim     : true,
     },
 
-    /* CBC identifiers */
+    /* CBC identifiers — now optional, fill in later if not known yet */
     upiNumber: {
       type     : String,
-      required : [true, 'UPI number is required'],
       trim     : true,
       uppercase: true,
+      default  : null,
       match    : [
         /^[A-Za-z0-9]{6,20}$/,
         'UPI must be 6-20 alphanumeric characters',
       ],
+      /* Only validate the pattern when a value is actually provided */
+      validate: {
+        validator: function (v) {
+          return v === null || v === '' || /^[A-Za-z0-9]{6,20}$/.test(v);
+        },
+        message: 'UPI must be 6-20 alphanumeric characters',
+      },
     },
 
     assessmentNo: {
@@ -33,7 +44,7 @@ const studentSchema = new mongoose.Schema(
 
     dateOfBirth: {
       type     : Date,
-      required : [true, 'Date of birth is required'],
+      default  : null,
     },
 
     gender: {
@@ -42,7 +53,7 @@ const studentSchema = new mongoose.Schema(
         values  : ['male', 'female'],
         message : 'Gender must be male or female',
       },
-      required : [true, 'Gender is required'],
+      default  : null,
     },
 
     class: {
@@ -68,6 +79,10 @@ const studentSchema = new mongoose.Schema(
     address : { type: String, trim: true },
     photo   : { type: String, default: null },
 
+    /* Flags an incomplete profile — set true by quick-add flows like
+       Excel import, cleared once UPI/DOB/gender are filled in */
+    profileIncomplete: { type: Boolean, default: false },
+
     isActive       : { type: Boolean, default: true  },
     enrollmentDate : { type: Date,    default: Date.now },
   },
@@ -79,8 +94,12 @@ const studentSchema = new mongoose.Schema(
 );
 
 /* ── Indexes ───────────────────────────────────────────── */
-/* UPI must be unique within a school */
-studentSchema.index({ upiNumber: 1, school: 1 }, { unique: true });
+/* UPI must be unique within a school — sparse so multiple students
+   with no UPI yet (null) don't collide with each other */
+studentSchema.index(
+  { upiNumber: 1, school: 1 },
+  { unique: true, sparse: true }
+);
 studentSchema.index({ class  : 1 });
 studentSchema.index({ school : 1 });
 /* Full-text search on name */

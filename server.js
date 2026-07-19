@@ -121,6 +121,7 @@ app.use('/api/classes',    require('./routes/classRoutes'));
 app.use('/api/subjects',   require('./routes/subjectRoutes'));
 app.use('/api/exams',      require('./routes/examRoutes'));
 app.use('/api/marks',      require('./routes/marksRoutes'));
+app.use('/api/marks',      require('./routes/importRoutes'));
 app.use('/api/results',    require('./routes/resultsRoutes'));
 app.use('/api/settings',   require('./routes/settingsRoutes'));
 app.use('/api/analytics',  require('./routes/analyticsRoutes'));

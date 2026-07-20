@@ -283,6 +283,265 @@ exports.getClassResults = async (req, res, next) => {
 };
 
 /* ══════════════════════════════════════════════════════════
+   GET GRADE RESULTS
+   Ranks students across every stream/class that shares the
+   same `grade` value (e.g. "Grade 7 East" + "Grade 7 West"),
+   for the same exam name/term/year, as one combined ranking.
+
+   Subjects are matched by CODE across streams — each stream
+   has its own separate Subject documents (Subject requires a
+   `class` field), so we can't match by subject _id directly.
+   This assumes every stream in the grade uses the same subject
+   codes (confirmed for this school's setup).
+══════════════════════════════════════════════════════════ */
+exports.getGradeResults = async (req, res, next) => {
+  try {
+    const { grade, term, examName, academicYear } = req.query;
+    const school = req.user.school;
+
+    if (!grade || !term || !examName) {
+      return res.status(400).json({
+        success: false,
+        message: 'grade, term and examName are required.',
+      });
+    }
+
+    const year = academicYear || new Date().getFullYear().toString();
+
+    /* Every stream/class under this grade */
+    const classes = await Class.find({ grade, school, isActive: true }).lean();
+    if (!classes.length) {
+      return res.status(404).json({ success:false, message:`No classes found for ${grade}.` });
+    }
+    const classIds = classes.map(c => c._id);
+
+    /* One Exam document per stream, matched by name+term+year */
+    const exams = await Exam.find({
+      name: examName,
+      term: Number(term),
+      academicYear: year,
+      class: { $in: classIds },
+      school,
+    }).lean();
+
+    if (!exams.length) {
+      return res.status(404).json({
+        success: false,
+        message: `No "${examName}" exam found for ${grade}, Term ${term}.`,
+      });
+    }
+
+    const examIds = exams.map(e => e._id);
+
+    /* All subjects across all streams — Subject docs are per-class,
+       so the same subject code exists as separate documents per stream */
+    const allSubjects = await Subject.find({ class: { $in: classIds }, school, isActive: true })
+      .populate('teacher', 'fullName');
+
+    /* subjectsByClass[classId][code] = subject doc (for mark lookup per student's own stream) */
+    const subjectsByClass = {};
+    allSubjects.forEach(s => {
+      const cid = s.class.toString();
+      if (!subjectsByClass[cid]) subjectsByClass[cid] = {};
+      subjectsByClass[cid][s.code] = s;
+    });
+
+    /* codeByObjectId — needed later for combined subject averages */
+    const codeByObjectId = {};
+    allSubjects.forEach(s => { codeByObjectId[s._id.toString()] = s.code; });
+
+    /* Canonical subject list/order — taken from the first stream that has subjects */
+    const firstClassId = classIds.find(id => subjectsByClass[id.toString()])?.toString();
+    const canonicalSubjects = firstClassId
+      ? allSubjects.filter(s => s.class.toString() === firstClassId).sort((a,b) => a.name.localeCompare(b.name))
+      : [];
+
+    const subjectsOut = canonicalSubjects.map(s => ({
+      _id         : s._id,
+      name        : s.name,
+      code        : s.code,
+      learningArea: s.learningArea || null,
+      teacherName : s.teacher?.fullName || null,
+    }));
+
+    /* Every student across every stream in this grade */
+    const students = await Student.find({ class: { $in: classIds }, school, isActive: true })
+      .sort({ fullName: 1 });
+
+    if (!students.length) {
+      return res.status(200).json({
+        success : true,
+        results : [],
+        subjects: subjectsOut,
+        stats   : { total:0, entered:0, passRate:0, avg:0 },
+        grade, term, examName,
+        streams : classes.map(c => c.name),
+      });
+    }
+
+    /* All marks across all matching exams */
+    const marks = await Mark.find({ exam: { $in: examIds }, school }).lean();
+
+    const markMap = {}; // studentId -> subjectId -> mark
+    marks.forEach(m => {
+      const sid = m.student.toString();
+      const sub = m.subject.toString();
+      if (!markMap[sid]) markMap[sid] = {};
+      markMap[sid][sub] = m;
+    });
+
+    /* Compute results per student, using each student's OWN stream's
+       subject documents to find the right marks */
+    const results = students.map(student => {
+      const sid           = student._id.toString();
+      const cid            = student.class.toString();
+      const studentSubjects= subjectsByClass[cid] || {};
+      const studentMarks   = markMap[sid] || {};
+
+      let totalScore  = 0;
+      let totalPoints = 0;
+      let subjectCount= 0;
+      let absentCount = 0;
+
+      const subjectResults = canonicalSubjects.map(canon => {
+        const subj = studentSubjects[canon.code];
+
+        if (!subj) {
+          return {
+            subjectId: null, code: canon.code, name: canon.name,
+            learningArea: canon.learningArea || null, teacherName: null,
+            score: null, grade: null, points: 0, absent: false, notEntered: true,
+          };
+        }
+
+        const mark = studentMarks[subj._id.toString()];
+
+        if (!mark) {
+          return {
+            subjectId: subj._id, code: subj.code, name: subj.name,
+            learningArea: subj.learningArea || null, teacherName: subj.teacher?.fullName || null,
+            score: null, grade: null, points: 0, absent: false, notEntered: true,
+          };
+        }
+
+        if (mark.absent) {
+          absentCount++;
+          return {
+            subjectId: subj._id, code: subj.code, name: subj.name,
+            learningArea: subj.learningArea || null, teacherName: subj.teacher?.fullName || null,
+            score: null, grade: null, points: 0, absent: true,
+          };
+        }
+
+        const gradeInfo = getGrade(mark.score);
+        totalScore     += Number(mark.score || 0);
+        totalPoints    += gradeInfo ? gradeInfo.points : 0;
+        subjectCount++;
+
+        return {
+          subjectId: subj._id, code: subj.code, name: subj.name,
+          learningArea: subj.learningArea || null, teacherName: subj.teacher?.fullName || null,
+          score: mark.score, grade: gradeInfo?.grade || null, points: gradeInfo?.points || 0, absent: false,
+        };
+      });
+
+      const avgScore  = subjectCount
+        ? parseFloat((totalScore / subjectCount).toFixed(1))
+        : 0;
+
+      const meanGrade = getMeanGrade(totalPoints, subjectCount);
+
+      return {
+        studentId    : student._id,
+        fullName     : student.fullName,
+        upiNumber    : student.upiNumber,
+        assessmentNo : student.assessmentNo,
+        gender       : student.gender,
+        streamName   : classes.find(c => c._id.toString() === cid)?.name || null,
+        subjectResults,
+        totalScore,
+        totalPoints,
+        avgScore,
+        meanGrade,
+        meanGradeInfo: GRADE_SCALE.find(g => g.grade === meanGrade) || null,
+        absentCount,
+        subjectCount,
+        position: 0,
+      };
+    });
+
+    /* Combined ranking across every stream */
+    results.sort((a, b) =>
+      b.totalPoints !== a.totalPoints
+        ? b.totalPoints - a.totalPoints
+        : b.totalScore  - a.totalScore
+    );
+
+    let pos = 1;
+    results.forEach((r, i) => {
+      if (i > 0 && r.totalPoints === results[i-1].totalPoints &&
+                   r.totalScore  === results[i-1].totalScore) {
+        r.position = results[i-1].position;
+      } else {
+        r.position = pos;
+      }
+      pos++;
+    });
+
+    /* Stats */
+    const studentsWithMarks = results.filter(r => r.subjectCount > 0);
+    const totalStudents     = results.length;
+    const passed            = studentsWithMarks.filter(r => r.avgScore >= 41).length;
+    const avgScores         = studentsWithMarks.map(r => r.avgScore);
+    const classAvg          = avgScores.length
+      ? parseFloat((avgScores.reduce((a,b)=>a+b,0)/avgScores.length).toFixed(1))
+      : 0;
+    const highest = avgScores.length ? Math.max(...avgScores) : 0;
+    const lowest  = avgScores.length ? Math.min(...avgScores) : 0;
+
+    /* Subject averages — combined across streams, matched by code */
+    const subjectAverages = canonicalSubjects.map(canon => {
+      const scores = marks
+        .filter(m => codeByObjectId[m.subject.toString()] === canon.code && !m.absent && m.score !== null)
+        .map(m => Number(m.score));
+      const avg = scores.length
+        ? parseFloat((scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1))
+        : 0;
+      return { subjectId: canon._id, code: canon.code, name: canon.name, avg, count: scores.length };
+    });
+
+    /* Grade distribution */
+    const gradeDist = {};
+    GRADE_SCALE.forEach(g => gradeDist[g.grade] = 0);
+    results.forEach(r => {
+      if (r.meanGrade && gradeDist[r.meanGrade] !== undefined) gradeDist[r.meanGrade]++;
+    });
+
+    res.status(200).json({
+      success  : true,
+      results,
+      subjects : subjectsOut,
+      subjectAverages,
+      gradeDist,
+      stats: {
+        total   : totalStudents,
+        entered : studentsWithMarks.length,
+        passed,
+        passRate: studentsWithMarks.length
+          ? parseFloat(((passed/studentsWithMarks.length)*100).toFixed(1))
+          : 0,
+        avg: classAvg, highest, lowest,
+      },
+      grade, streams: classes.map(c => c.name),
+      exam: { name: examName, term: Number(term), academicYear: year },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
    GET STUDENT RESULTS (single student across all exams)
 ══════════════════════════════════════════════════════════ */
 exports.getStudentResults = async (req, res, next) => {

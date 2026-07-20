@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Settings Controller
-   File: backend/controllers/settingsController.js
+   File: backend/controllers/settingscontrollers.js
 ═══════════════════════════════════════════════════════════ */
 
-const School  = require('../models/School');
-const User    = require('../models/User');
+const School = require('../models/School');
+const User   = require('../models/User');
 
 /* ══════════════════════════════════════════════════════════
    GET SCHOOL SETTINGS
@@ -58,19 +58,16 @@ exports.updateSchoolInfo = async (req, res, next) => {
       });
     }
 
-    /* Update fields */
     if (schoolName)    school.schoolName    = schoolName;
     if (schoolMotto)   school.schoolMotto   = schoolMotto;
     if (schoolEmail)   school.schoolEmail   = schoolEmail;
     if (schoolPhone)   school.schoolPhone   = schoolPhone;
     if (schoolAddress) school.schoolAddress = schoolAddress;
 
-    /* Principal info */
     if (!school.principal) school.principal = {};
     if (principalName)  school.principal.name  = principalName;
     if (principalPhone) school.principal.phone = principalPhone;
 
-    /* Academic settings */
     if (!school.academic) school.academic = {};
     if (currentTerm)     school.academic.currentTerm     = Number(currentTerm);
     if (currentYear)     school.academic.currentYear     = currentYear;

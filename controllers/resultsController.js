@@ -1,6 +1,11 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Results Controller
    File: backend/controllers/resultsController.js
+
+   UPDATED: getClassResults now populates each subject's
+   assigned teacher and includes learningArea + teacherName in
+   the response, so the Reports page can build the Pathway
+   Summary and show a real teacher name instead of guessing.
 ═══════════════════════════════════════════════════════════ */
 
 const Mark    = require('../models/Mark');
@@ -63,18 +68,29 @@ exports.getClassResults = async (req, res, next) => {
     const [cls, exam, subjects, students] = await Promise.all([
       Class.findOne({ _id: classId, school }),
       Exam.findOne( { _id: examId,  school }),
-      Subject.find( { class: classId, school, isActive: true }).sort({ name:1 }),
+      Subject.find( { class: classId, school, isActive: true })
+        .populate('teacher', 'fullName')
+        .sort({ name:1 }),
       Student.find( { class: classId, school, isActive: true }).sort({ fullName:1 }),
     ]);
 
     if (!cls)  return res.status(404).json({ success:false, message:'Class not found.'  });
     if (!exam) return res.status(404).json({ success:false, message:'Exam not found.'   });
 
+    /* Subject list shape shared by both the empty-state and populated response */
+    const subjectsOut = subjects.map(s => ({
+      _id         : s._id,
+      name        : s.name,
+      code        : s.code,
+      learningArea: s.learningArea || null,
+      teacherName : s.teacher?.fullName || null,
+    }));
+
     if (!students.length) {
       return res.status(200).json({
         success : true,
         results : [],
-        subjects: subjects.map(s => ({ _id:s._id, name:s.name, code:s.code })),
+        subjects: subjectsOut,
         stats   : { total:0, entered:0, passRate:0, avg:0 },
         class   : cls,
         exam,
@@ -116,6 +132,8 @@ exports.getClassResults = async (req, res, next) => {
             subjectId  : subject._id,
             code       : subject.code,
             name       : subject.name,
+            learningArea: subject.learningArea || null,
+            teacherName : subject.teacher?.fullName || null,
             score      : null,
             grade      : null,
             points     : 0,
@@ -130,6 +148,8 @@ exports.getClassResults = async (req, res, next) => {
             subjectId: subject._id,
             code     : subject.code,
             name     : subject.name,
+            learningArea: subject.learningArea || null,
+            teacherName : subject.teacher?.fullName || null,
             score    : null,
             grade    : null,
             points   : 0,
@@ -146,6 +166,8 @@ exports.getClassResults = async (req, res, next) => {
           subjectId: subject._id,
           code     : subject.code,
           name     : subject.name,
+          learningArea: subject.learningArea || null,
+          teacherName : subject.teacher?.fullName || null,
           score    : mark.score,
           grade    : gradeInfo?.grade  || null,
           points   : gradeInfo?.points || 0,
@@ -237,7 +259,7 @@ exports.getClassResults = async (req, res, next) => {
     res.status(200).json({
       success        : true,
       results,
-      subjects       : subjects.map(s => ({ _id:s._id, name:s.name, code:s.code })),
+      subjects       : subjectsOut,
       subjectAverages,
       gradeDist,
       stats          : {

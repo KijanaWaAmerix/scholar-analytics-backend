@@ -1,5 +1,5 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const ctrl    = require('../controllers/resultsController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -15,5 +15,8 @@ router.get('/grade', ctrl.getGradeResults);
 
 /* GET /api/results/student/:studentId */
 router.get('/student/:studentId', ctrl.getStudentResults);
+
+/* POST /api/results/import-marks */
+router.post('/import-marks', ctrl.importMarksFromExcel);
 
 module.exports = router;

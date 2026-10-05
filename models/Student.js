@@ -118,6 +118,21 @@ const studentSchema = new mongoose.Schema(
   }
 );
 
+/* Convert empty UPI to undefined before saving */
+studentSchema.pre('save', function (next) {
+  if (this.upiNumber === '' || this.upiNumber === null) {
+    this.upiNumber = undefined;
+  }
+  next();
+});
+
+studentSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update?.upiNumber === '' || update?.upiNumber === null) {
+    delete update.upiNumber;
+  }
+  next();
+});
 /*
  * UPI is unique only when an actual UPI exists.
  * Learners without a UPI are allowed.

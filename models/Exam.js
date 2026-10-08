@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Exam Model
    File: backend/models/Exam.js
+   v2: exam names are no longer hard-coded (Opener / Midterm /
+       Endterm). Any name can be created, e.g. "CAT 1", "Mock".
 ═══════════════════════════════════════════════════════════ */
 
 const mongoose = require('mongoose');
@@ -8,12 +10,12 @@ const mongoose = require('mongoose');
 const examSchema = new mongoose.Schema(
   {
     name: {
-      type     : String,
-      required : [true, 'Exam name is required'],
-      enum     : {
-        values  : ['Opener', 'Midterm', 'Endterm'],
-        message : 'Exam must be Opener, Midterm or Endterm',
-      },
+      type      : String,
+      required  : [true, 'Exam name is required'],
+      trim      : true,
+      minlength : [2,  'Exam name is too short'],
+      maxlength : [50, 'Exam name must be 50 characters or less'],
+      /* No enum — the school decides its own exam names */
     },
 
     term: {
@@ -66,7 +68,7 @@ const examSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* One exam type per class per term per year */
+/* One exam name per class per term per year (unchanged) */
 examSchema.index(
   { name: 1, term: 1, academicYear: 1, class: 1, school: 1 },
   { unique: true }

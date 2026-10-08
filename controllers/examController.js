@@ -1,6 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Exam Controller
    File: backend/controllers/examController.js
+   v2: • exam names are free text (trimmed)
+       • deleteExams: delete one or many exams AND their marks
+       • seedAllExams: accepts a custom list of names
 ═══════════════════════════════════════════════════════════ */
 
 const Exam    = require('../models/Exam');
@@ -91,20 +94,30 @@ const getExam = async (req, res, next) => {
 
 /* ══════════════════════════════════════════════════════════
    @route   POST /api/exams
-   @desc    Create a new exam
+   @desc    Create a new exam (any name)
    @access  Admin only
 ══════════════════════════════════════════════════════════ */
 const createExam = async (req, res, next) => {
   try {
     const {
-      name, term, academicYear,
+      term, academicYear,
       classId, startDate, endDate,
     } = req.body;
+
+    /* Free-text name: trim and collapse extra spaces */
+    const name = String(req.body.name || '').trim().replace(/\s+/g, ' ');
 
     if (!name || !term || !classId) {
       return res.status(400).json({
         success : false,
         message : 'name, term and classId are required.',
+      });
+    }
+
+    if (name.length < 2 || name.length > 50) {
+      return res.status(400).json({
+        success : false,
+        message : 'Exam name must be between 2 and 50 characters.',
       });
     }
 
@@ -209,7 +222,9 @@ const updateExam = async (req, res, next) => {
 
 /* ══════════════════════════════════════════════════════════
    @route   DELETE /api/exams/:id
-   @desc    Delete exam — only if no marks exist
+   @desc    Delete ONE exam — only if no marks exist
+            (safe delete; use POST /api/exams/delete to remove
+             exams together with their marks)
    @access  Admin only
 ══════════════════════════════════════════════════════════ */
 const deleteExam = async (req, res, next) => {
@@ -252,10 +267,54 @@ const deleteExam = async (req, res, next) => {
 };
 
 /* ══════════════════════════════════════════════════════════
+   @route   POST /api/exams/delete
+   @desc    Delete one or many exams AND all marks entered for them
+   @body    { examIds: [id, id, ...] }
+   @access  Admin only
+══════════════════════════════════════════════════════════ */
+const deleteExams = async (req, res, next) => {
+  try {
+    const { examIds } = req.body;
+    const school      = req.user.school;
+
+    if (!Array.isArray(examIds) || !examIds.length) {
+      return res.status(400).json({
+        success : false,
+        message : 'examIds is required.',
+      });
+    }
+
+    /* Only exams that belong to this school */
+    const found = await Exam.find({ _id: { $in: examIds }, school }).select('_id');
+    const ids   = found.map(e => e._id);
+
+    if (!ids.length) {
+      return res.status(404).json({
+        success : false,
+        message : 'Exam(s) not found.',
+      });
+    }
+
+    const marksRes = await Mark.deleteMany({ exam: { $in: ids }, school });
+    const examsRes = await Exam.deleteMany({ _id: { $in: ids }, school });
+
+    res.status(200).json({
+      success     : true,
+      message     : `${examsRes.deletedCount} exam(s) deleted.`,
+      deletedExams: examsRes.deletedCount,
+      deletedMarks: marksRes.deletedCount,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
    @route   POST /api/exams/seed-defaults
-   @desc    Create all 3 exams for a class
-           (Opener, Midterm, Endterm) for one term
-   @body    { classId, term, academicYear }
+   @desc    Create exams for one class and one term
+            (default Opener, Midterm, Endterm — or your own names)
+   @body    { classId, term, academicYear, names? }
    @access  Admin only
 ══════════════════════════════════════════════════════════ */
 const seedDefaultExams = async (req, res, next) => {
@@ -281,7 +340,7 @@ const seedDefaultExams = async (req, res, next) => {
       });
     }
 
-    const examNames = ['Opener', 'Midterm', 'Endterm'];
+    const examNames = namesFromBody(req.body.names);
     const created   = [];
     const skipped   = [];
 
@@ -324,8 +383,10 @@ const seedDefaultExams = async (req, res, next) => {
 
 /* ══════════════════════════════════════════════════════════
    @route   POST /api/exams/seed-all
-   @desc    Create all 9 exams (3 terms × 3 exams)
-           for ALL classes — full school setup
+   @desc    Create the chosen exam names for ALL classes and
+            ALL 3 terms — full school setup
+   @body    { academicYear?, names? }
+            names defaults to Opener, Midterm, Endterm
    @access  Admin only
 ══════════════════════════════════════════════════════════ */
 const seedAllExams = async (req, res, next) => {
@@ -344,7 +405,7 @@ const seedAllExams = async (req, res, next) => {
       });
     }
 
-    const examNames = ['Opener', 'Midterm', 'Endterm'];
+    const examNames = namesFromBody(req.body.names);
     const terms     = [1, 2, 3];
 
     let totalCreated = 0;
@@ -390,12 +451,25 @@ const seedAllExams = async (req, res, next) => {
   }
 };
 
+/* ── Helper: exam names from the request, or the usual three ── */
+function namesFromBody(names) {
+  const cleaned = Array.isArray(names)
+    ? [...new Set(
+        names
+          .map(n => String(n).trim().replace(/\s+/g, ' '))
+          .filter(n => n.length >= 2 && n.length <= 50)
+      )]
+    : [];
+  return cleaned.length ? cleaned : ['Opener', 'Midterm', 'Endterm'];
+}
+
 module.exports = {
   getAllExams,
   getExam,
   createExam,
   updateExam,
   deleteExam,
+  deleteExams,
   seedDefaultExams,
   seedAllExams,
 };

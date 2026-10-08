@@ -235,7 +235,38 @@ exports.deleteClassMarks = async (req, res, next) => {
     next(error);
   }
 };
+/* ══════════════════════════════════════════════════════════
+   DELETE EXAMS (one or many) + their marks
+══════════════════════════════════════════════════════════ */
+exports.deleteExams = async (req, res, next) => {
+  try {
+    const { examIds } = req.body;
+    const school = req.user.school;
 
+    if (!Array.isArray(examIds) || !examIds.length) {
+      return res.status(400).json({ success:false, message:'examIds is required.' });
+    }
+
+    const exams = await Exam.find({ _id: { $in: examIds }, school }).select('_id');
+    const ids   = exams.map(e => e._id);
+
+    if (!ids.length) {
+      return res.status(404).json({ success:false, message:'Exam(s) not found.' });
+    }
+
+    const marksRes = await Mark.deleteMany({ exam: { $in: ids }, school });
+    const examsRes = await Exam.deleteMany({ _id: { $in: ids }, school });
+
+    res.status(200).json({
+      success     : true,
+      message     : `${examsRes.deletedCount} exam(s) deleted.`,
+      deletedExams: examsRes.deletedCount,
+      deletedMarks: marksRes.deletedCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 /* ── KJSEA Grading helper ─────────────────────────────── */
 const getGrade = (score) => {
   if (score === null || score === undefined) return null;

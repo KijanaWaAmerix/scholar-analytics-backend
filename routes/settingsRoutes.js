@@ -16,4 +16,8 @@ router.get('/',         ctrl.getSettings);
 router.put('/school',   ctrl.updateSchoolInfo);
 router.put('/password', ctrl.changePassword);
 
+/* Class teacher + subject teacher names (Reports page) */
+router.get('/class-teachers',          ctrl.getClassTeachers);
+router.put('/class-teachers/:classId', ctrl.updateClassTeachers);
+
 module.exports = router;

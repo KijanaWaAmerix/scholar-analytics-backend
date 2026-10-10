@@ -43,6 +43,23 @@ const classSchema = new mongoose.Schema(
       default : null,
     },
 
+    /* ── NEW: names typed on the Reports page ──────────────────
+       classTeacherName : printed on report cards and class sheets
+       subjectTeachers  : { "mathematics": "Mr. Brian Bii", … }
+                          keys are lower-case subject names
+                          (a "." in a key is stored as %2E)        */
+    classTeacherName: {
+      type     : String,
+      trim     : true,
+      default  : '',
+      maxlength: 80,
+    },
+
+    subjectTeachers: {
+      type    : mongoose.Schema.Types.Mixed,
+      default : {},
+    },
+
     academicYear: {
       type     : String,
       required : [true, 'Academic year is required'],
@@ -54,6 +71,7 @@ const classSchema = new mongoose.Schema(
   },
   {
     timestamps : true,
+    minimize   : false,            // keep an empty subjectTeachers object
     toJSON     : { virtuals: true },
     toObject   : { virtuals: true },
   }

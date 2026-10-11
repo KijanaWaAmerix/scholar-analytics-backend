@@ -95,12 +95,12 @@ exports.getSchools = async (req, res, next) => {
     /* Enrich with counts */
     const enriched = await Promise.all(
       schools.map(async (s) => {
-        const [students, users, admins] = await Promise.all([
+                const [students, users, admins, adminDoc] = await Promise.all([
           Student.countDocuments({ school: s._id }),
           User.countDocuments({ school: s._id, role:'teacher' }),
           User.countDocuments({ school: s._id, role:'admin' }),
+          User.findOne({ school: s._id, role:'admin' }).select('fullName email').lean(),
         ]);
-
         const daysLeft = s.subscription?.expiryDate
           ? Math.ceil(
               (new Date(s.subscription.expiryDate) - new Date()) /
@@ -108,7 +108,13 @@ exports.getSchools = async (req, res, next) => {
             )
           : null;
 
-        return { ...s, students, users, admins, daysLeft };
+                return {
+          ...s,
+          students, users, admins, daysLeft,
+          studentCount: students,
+          adminEmail  : adminDoc?.email    || s.adminEmail || '',
+          adminName   : adminDoc?.fullName || s.adminName  || '',
+        };
       })
     );
 

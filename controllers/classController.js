@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Class Controller
    File: backend/controllers/classController.js
+   Change: seedDefaultClasses removed
 ═══════════════════════════════════════════════════════════ */
 
 const Class   = require('../models/Class');
@@ -255,66 +256,10 @@ const deleteClass = async (req, res, next) => {
   }
 };
 
-/* ══════════════════════════════════════════════════════════
-   @route   POST /api/classes/seed-defaults
-   @desc    Create all 6 default JSS CBC classes at once
-           Useful when setting up a new school
-   @access  Admin only
-══════════════════════════════════════════════════════════ */
-const seedDefaultClasses = async (req, res, next) => {
-  try {
-    const academicYear = req.body.academicYear || '2024';
-
-    const defaultClasses = [
-      { name:'Grade 7 East', grade:7, stream:'East' },
-      { name:'Grade 7 West', grade:7, stream:'West' },
-      { name:'Grade 8 East', grade:8, stream:'East' },
-      { name:'Grade 8 West', grade:8, stream:'West' },
-      { name:'Grade 9 East', grade:9, stream:'East' },
-      { name:'Grade 9 West', grade:9, stream:'West' },
-    ];
-
-    const created = [];
-    const skipped = [];
-
-    for (const cls of defaultClasses) {
-      const existing = await Class.findOne({
-        name        : cls.name,
-        school      : req.user.school,
-        academicYear,
-      });
-
-      if (existing) {
-        skipped.push(cls.name);
-        continue;
-      }
-
-      await Class.create({
-        ...cls,
-        school      : req.user.school,
-        academicYear,
-      });
-
-      created.push(cls.name);
-    }
-
-    res.status(201).json({
-      success : true,
-      message : `${created.length} classes created, ${skipped.length} already existed.`,
-      created,
-      skipped,
-    });
-
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports = {
   getAllClasses,
   getClass,
   createClass,
   updateClass,
   deleteClass,
-  seedDefaultClasses,
 };

@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Class Routes
    File: backend/routes/classRoutes.js
+   Change: seed-defaults route removed
 ═══════════════════════════════════════════════════════════ */
 
 const express = require('express');
@@ -12,20 +13,12 @@ const {
   createClass,
   updateClass,
   deleteClass,
-  seedDefaultClasses,
 } = require('../controllers/classController');
 
 const { protect }   = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
 
 router.use(protect);
-
-/* POST /api/classes/seed-defaults */
-router.post(
-  '/seed-defaults',
-  authorize('admin', 'superadmin'),
-  seedDefaultClasses
-);
 
 /* GET  /api/classes */
 /* POST /api/classes */

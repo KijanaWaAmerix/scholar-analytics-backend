@@ -20,6 +20,10 @@ connectDB();
 /* ── Create Express App ───────────────────────────────────── */
 const app = express();
 
+/* Render sits behind a reverse proxy. Without this, every visitor
+   looks like the same IP address to the rate limiters below. */
+app.set('trust proxy', 1);
+
 /* ══════════════════════════════════════════════════════════
    MIDDLEWARE STACK
 ══════════════════════════════════════════════════════════ */
@@ -57,15 +61,32 @@ const limiter = rateLimit({
 
 app.use('/api/', limiter);
 
-/* Stricter limit for login — 5 attempts per 15 min */
+/* Stricter limit for sign-in style endpoints — 10 FAILED attempts per
+   15 min. Successful requests are not counted, so normal use never
+   trips it. */
 const loginLimiter = rateLimit({
+  windowMs              : 15 * 60 * 1000,
+  max                   : 10,
+  skipSuccessfulRequests: true,
+  standardHeaders       : true,
+  legacyHeaders         : false,
+  message               : {
+    success   : false,
+    message   : 'Too many login attempts. Try again in 15 minutes.',
+    errorCode : 'TOO_MANY_ATTEMPTS',
+  },
+});
+
+/* Reset-email limit — 5 requests per 15 min (all requests count, so
+   nobody can spam an inbox with reset links). */
+const resetEmailLimiter = rateLimit({
   windowMs       : 15 * 60 * 1000,
   max            : 5,
   standardHeaders: true,
   legacyHeaders  : false,
   message        : {
     success   : false,
-    message   : 'Too many login attempts. Try again in 15 minutes.',
+    message   : 'Too many reset requests. Try again in 15 minutes.',
     errorCode : 'TOO_MANY_ATTEMPTS',
   },
 });
@@ -113,7 +134,13 @@ app.get('/api/health', (req, res) => {
 });
 
 /* Auth */
-app.use('/api/auth',       loginLimiter, require('./routes/authRoutes'));
+/* Strict limits only on the endpoints that need them. Everything else
+   under /api/auth (e.g. /me) uses the normal 100-per-15-min limit. */
+app.use('/api/auth/login',           loginLimiter);
+app.use('/api/auth/reset-password',  loginLimiter);
+app.use('/api/auth/setup-account',   loginLimiter);
+app.use('/api/auth/forgot-password', resetEmailLimiter);
+app.use('/api/auth',       require('./routes/authRoutes'));
 
 /* Core */
 app.use('/api/students',   require('./routes/studentRoutes'));

@@ -7,7 +7,7 @@ const Mark    = require('../models/Mark');
 const Student = require('../models/Student');
 const Exam    = require('../models/Exam');
 const Class   = require('../models/Class');
-const Subject = require('../models/subject');
+const Subject = require('../models/Subject');
 
 const GRADE_SCALE = [
   { grade:'EE1', min:90, max:100, points:8 },

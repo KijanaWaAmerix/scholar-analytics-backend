@@ -189,19 +189,22 @@ exports.createSchool = async (req, res, next) => {
       });
     }
 
-    /* Create school */
-    const school = await School.create({
-      schoolName,
-      schoolMotto : schoolMotto || 'Excellence Through Knowledge',
-      schoolEmail : schoolEmail || adminEmail,
-      status      : 'active',
-      subscription: {
-        plan      : plan || 'standard',
-        expiryDate: expiryDate || new Date(Date.now() + 365*24*60*60*1000),
-        autoLock  : false,
-      },
-    });
-
+      // Create the admin account with the password the superadmin set.
+    // If this fails, remove the school so no school is left without an admin.
+    try {
+      await User.create({
+        fullName      : adminName,
+        email         : adminEmail,
+        password      : adminPassword,
+        role          : 'admin',
+        school        : school._id,
+        isActive      : true,
+        isAccountSetup: true,
+      });
+    } catch (err) {
+      await School.findByIdAndDelete(school._id);
+      throw err;
+    }
     /* Create admin account with the password the superadmin set */
     const admin = await User.create({
       fullName      : adminName,

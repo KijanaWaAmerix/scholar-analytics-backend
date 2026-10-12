@@ -153,6 +153,7 @@ app.use('/api/results',    require('./routes/resultsRoutes'));
 app.use('/api/settings',   require('./routes/settingsRoutes'));
 app.use('/api/analytics',  require('./routes/analyticsRoutes'));
 app.use('/api/sms',        require('./routes/smsRoutes'));
+app.use('/api/users',      require('./routes/userRoutes'));
 app.use('/api/superadmin', require('./routes/superAdminRoutes'));
 
 /* ══════════════════════════════════════════════════════════

@@ -58,6 +58,12 @@ exports.getStudents = async (req, res, next) => {
             $options: 'i',
           },
         },
+        {
+          admissionNo: {
+            $regex: search,
+            $options: 'i',
+          },
+        },
       ];
     }
 
@@ -171,6 +177,23 @@ exports.createStudent = async (req, res, next) => {
       parentContact,
     } = req.body;
 
+    const admissionNo =
+      String(req.body.admissionNo || '').trim();
+
+    if (admissionNo) {
+      const dup = await Student.findOne({
+        school: req.user.school,
+        admissionNo,
+      });
+      if (dup) {
+        return res.status(400).json({
+          success: false,
+          message:
+            `Admission number ${admissionNo} already exists.`,
+        });
+      }
+    }
+
 
     /*
      * IMPORTANT:
@@ -254,6 +277,8 @@ exports.createStudent = async (req, res, next) => {
       assessmentNo:
         assessmentNo || null,
 
+      admissionNo: admissionNo || null,
+
       class: classId,
       school: req.user.school,
 
@@ -333,6 +358,11 @@ exports.updateStudent = async (req, res, next) => {
       parentContact,
       isActive,
     } = req.body;
+
+    const newAdmissionNo =
+      req.body.admissionNo === undefined
+        ? undefined
+        : String(req.body.admissionNo || '').trim();
 
 
     const student =
@@ -415,6 +445,27 @@ exports.updateStudent = async (req, res, next) => {
     if (assessmentNo) {
       student.assessmentNo =
         assessmentNo;
+    }
+
+    if (newAdmissionNo !== undefined) {
+      if (
+        newAdmissionNo &&
+        newAdmissionNo !== student.admissionNo
+      ) {
+        const dup = await Student.findOne({
+          school: req.user.school,
+          admissionNo: newAdmissionNo,
+          _id: { $ne: student._id },
+        });
+        if (dup) {
+          return res.status(400).json({
+            success: false,
+            message:
+              `Admission number ${newAdmissionNo} already exists.`,
+          });
+        }
+      }
+      student.admissionNo = newAdmissionNo || null;
     }
 
     if (classId) {
@@ -527,32 +578,19 @@ exports.deleteStudent = async (req, res, next) => {
 exports.bulkImport = async (req, res, next) => {
   try {
 
-    const {
-      students,
-      classId,
-    } = req.body;
+    const { students, classId } = req.body;
 
-
-    if (
-      !students?.length ||
-      !classId
-    ) {
+    if (!Array.isArray(students) || !students.length || !classId) {
       return res.status(400).json({
         success: false,
-        message:
-          'Students array and classId are required.',
+        message: 'Students array and classId are required.',
       });
     }
 
-
-    /* Verify class */
-
-    const cls =
-      await Class.findOne({
-        _id: classId,
-        school: req.user.school,
-      });
-
+    const cls = await Class.findOne({
+      _id: classId,
+      school: req.user.school,
+    });
 
     if (!cls) {
       return res.status(404).json({
@@ -561,143 +599,122 @@ exports.bulkImport = async (req, res, next) => {
       });
     }
 
+    /* ── helpers ───────────────────────────────────────── */
 
-    const results = {
-      created: 0,
-      skipped: 0,
-      errors: [],
-    };
-
-
-    for (const row of students) {
-
-      try {
-
-        /*
-         * Read UPI from possible import column names.
-         */
-        const rawUpi =
-          row.upiNumber ??
-          row['UPI Number'] ??
-          '';
-
-
-        /*
-         * Blank UPI becomes undefined.
-         */
-        const upiNumber =
-          typeof rawUpi === 'string' &&
-          rawUpi.trim() !== ''
-            ? rawUpi
-                .trim()
-                .toUpperCase()
-            : undefined;
-
-
-        /*
-         * Check duplicate UPI only when
-         * an actual UPI exists.
-         */
-        if (upiNumber) {
-
-          const exists =
-            await Student.findOne({
-              upiNumber,
-              school: req.user.school,
-            });
-
-
-          if (exists) {
-            results.skipped++;
-            continue;
+    /* Read a column whatever its heading is called:
+       "Full Name", "full_name", "NAME" ... all work */
+    const key = (k) => String(k).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const pick = (row, names) => {
+      for (const k of Object.keys(row)) {
+        if (names.includes(key(k))) {
+          const v = row[k];
+          if (v !== undefined && v !== null && String(v).trim() !== '') {
+            return String(v).trim();
           }
         }
+      }
+      return '';
+    };
 
+    const cleanName = (n) => n.replace(/\s+/g, ' ').trim();
+    const nameKey   = (n) => cleanName(n).toLowerCase();
 
-        /*
-         * Build student data WITHOUT
-         * a blank UPI field.
-         */
-        const studentData = {
+    const toGender = (g) => {
+      const v = String(g || '').trim().toLowerCase();
+      if (['male', 'm', 'boy', 'b'].includes(v))   return 'male';
+      if (['female', 'f', 'girl', 'g'].includes(v)) return 'female';
+      return null;
+    };
 
-          fullName:
-            row.fullName ||
-            row['Full Name'] ||
-            '',
+    /* ── what is already there ─────────────────────────── */
+    const inClass = await Student.find({ school: req.user.school, class: classId })
+      .select('fullName');
+    const namesInClass = new Set(inClass.map(x => nameKey(x.fullName)));
 
-          gender:
-            (
-              row.gender ||
-              row['Gender'] ||
-              'male'
-            ).toLowerCase(),
+    const withAdm = await Student.find({
+      school: req.user.school,
+      admissionNo: { $type: 'string' },
+    }).select('admissionNo');
+    const admsInSchool = new Set(withAdm.map(x => x.admissionNo.toLowerCase()));
 
-          dateOfBirth:
-            row.dateOfBirth ||
-            row['Date of Birth'] ||
-            null,
+    const results = { created: 0, skipped: 0, skippedNames: [], errors: [] };
+    const seenNames = new Set();
+    const seenAdms  = new Set();
+    const valid     = [];
 
-          assessmentNo:
-            row.assessmentNo ||
-            row['Assessment No'] ||
-            null,
+    students.forEach((row, i) => {
+      const fullName = cleanName(pick(row, ['fullname', 'name', 'learnername', 'studentname', 'learner', 'student']));
+      const label    = fullName || `Row ${i + 2}`;
 
-          parentName:
-            row.parentName ||
-            row['Parent Name'] ||
-            null,
+      if (!fullName) {
+        results.errors.push({ row: label, error: 'Name is missing.' });
+        return;
+      }
 
-          parentPhone:
-            row.parentContact ||
-            row['Parent Contact'] ||
-            null,
+      /* TOTAL / MEAN style footer rows are not learners */
+      if (/^(total|totals|mean|average|avg|sum|grand total|mean score|class mean)$/i.test(fullName)) return;
 
-          class: classId,
+      /* Gender may be left blank (e.g. a broad sheet has no gender column):
+         the learner is imported and flagged "profile incomplete" so it is
+         easy to finish later. A value that is filled in must make sense. */
+      const genderRaw = pick(row, ['gender', 'sex']);
+      const gender    = genderRaw ? toGender(genderRaw) : null;
+      if (genderRaw && !gender) {
+        results.errors.push({ row: label, error: 'Gender must be Male or Female.' });
+        return;
+      }
 
-          school:
-            req.user.school,
+      const admissionNo  = pick(row, ['admissionno', 'admissionnumber', 'admno', 'admission', 'adm']);
+      const assessmentNo = pick(row, ['assessmentno', 'assessmentnumber', 'assessment', 'assno']);
+      const rawUpi       = pick(row, ['upinumber', 'upi']);
 
-          isActive: true,
-        };
+      /* already there → skip */
+      const nk = nameKey(fullName);
+      const ak = admissionNo.toLowerCase();
+      if (
+        namesInClass.has(nk) || seenNames.has(nk) ||
+        (ak && (admsInSchool.has(ak) || seenAdms.has(ak)))
+      ) {
+        results.skipped++;
+        results.skippedNames.push(fullName);
+        return;
+      }
+      seenNames.add(nk);
+      if (ak) seenAdms.add(ak);
 
+      const data = {
+        fullName,
+        gender,
+        assessmentNo: assessmentNo || null,
+        admissionNo : admissionNo  || null,
+        class : classId,
+        school: req.user.school,
+        isActive: true,
+        profileIncomplete: !gender,
+      };
+      if (rawUpi) data.upiNumber = rawUpi.toUpperCase();
 
-        /*
-         * Only save UPI when there is
-         * an actual UPI value.
-         */
-        if (upiNumber) {
-          studentData.upiNumber =
-            upiNumber;
-        }
+      valid.push(data);
+    });
 
+    /* A–Z by name, so the class is stored in alphabetical order */
+    valid.sort((a, b) => a.fullName.localeCompare(b.fullName, 'en', { sensitivity: 'base' }));
 
-        await Student.create(
-          studentData
-        );
-
-
+    for (const data of valid) {
+      try {
+        await Student.create(data);
         results.created++;
-
       } catch (err) {
-
-        results.errors.push({
-          row:
-            row.fullName ||
-            row['Full Name'] ||
-            'Unknown',
-
-          error: err.message,
-        });
+        results.errors.push({ row: data.fullName, error: err.message });
       }
     }
 
-
     res.status(200).json({
       success: true,
-
       message:
-        `${results.created} students imported, ${results.skipped} skipped.`,
-
+        `${results.created} imported, ` +
+        `${results.skipped} already there (skipped)` +
+        (results.errors.length ? `, ${results.errors.length} with problems.` : '.'),
       results,
     });
 

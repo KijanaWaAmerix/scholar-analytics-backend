@@ -12,6 +12,7 @@ const multer  = require('multer');
 const router  = express.Router();
 
 const { importMarksFromExcel } = require('../controllers/importMarksController');
+const { importGradeMarks }     = require('../controllers/importGradeController');
 const { protect, authorize, checkSchool } = require('../middleware/authMiddleware');
 
 /* Keep the file in memory — we parse it directly, never write to disk */
@@ -35,6 +36,15 @@ router.post(
   authorize('admin', 'teacher'),
   upload.single('file'),
   importMarksFromExcel
+);
+
+/* Whole-grade import (e.g. Grade 9 East + West from one sheet) — admin only */
+router.post(
+  '/import-grade',
+  protect,
+  checkSchool,
+  authorize('admin'),
+  importGradeMarks
 );
 
 module.exports = router;

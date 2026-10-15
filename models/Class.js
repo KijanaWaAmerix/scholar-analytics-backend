@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    SCHOLAR ANALYTICS — Class Model
    File: backend/models/Class.js
-   Handles: Grade 7, 8, 9 — with streams
+   Any grade (1-12) with an optional stream (East, West, Alpha, Beta ...)
 ═══════════════════════════════════════════════════════════ */
 
 const mongoose = require('mongoose');
@@ -18,9 +18,11 @@ const classSchema = new mongoose.Schema(
     grade: {
       type     : Number,
       required : [true, 'Grade is required'],
-      enum     : {
-        values  : [7, 8, 9],
-        message : 'Grade must be 7, 8 or 9 for JSS CBC',
+      min      : [1,  'Grade must be a number from 1 to 12'],
+      max      : [12, 'Grade must be a number from 1 to 12'],
+      validate : {
+        validator: Number.isInteger,
+        message  : 'Grade must be a whole number, e.g. 7',
       },
     },
 

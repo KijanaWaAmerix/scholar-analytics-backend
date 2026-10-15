@@ -104,7 +104,7 @@ exports.importGradeMarks = async (req, res, next) => {
       rows, resolutions = {},
     } = req.body;
 
-    if (![7, 8, 9].includes(Number(grade)) || ![1, 2, 3].includes(Number(term)) ||
+    if (!Number.isInteger(Number(grade)) || Number(grade) < 1 || Number(grade) > 12 || ![1, 2, 3].includes(Number(term)) ||
         !String(examName || '').trim() || !Array.isArray(rows) || !rows.length) {
       return res.status(400).json({
         success: false,

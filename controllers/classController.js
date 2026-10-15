@@ -106,23 +106,29 @@ const getClass = async (req, res, next) => {
 const createClass = async (req, res, next) => {
   try {
     const {
-      name, grade, stream,
+      grade, stream,
       classTeacher, academicYear, capacity,
     } = req.body;
 
-    if (!name || !grade) {
+    if (!grade) {
       return res.status(400).json({
         success : false,
-        message : 'Class name and grade are required.',
+        message : 'Grade is required.',
       });
     }
 
-    if (![7, 8, 9].includes(Number(grade))) {
+    if (!Number.isInteger(Number(grade)) || Number(grade) < 1 || Number(grade) > 12) {
       return res.status(400).json({
         success : false,
-        message : 'Grade must be 7, 8 or 9 for JSS CBC.',
+        message : 'Grade must be a whole number from 1 to 12.',
       });
     }
+
+    /* The class name is made from the grade and the stream, e.g. "Grade 8 Alpha".
+       (A name can still be sent explicitly.) */
+    const streamText = String(stream || '').trim();
+    const name = String(req.body.name || '').trim() ||
+      `Grade ${Number(grade)}${streamText ? ' ' + streamText : ''}`;
 
     /* Check class name not already taken in this school + year */
     const existing = await Class.findOne({
@@ -141,7 +147,7 @@ const createClass = async (req, res, next) => {
     const newClass = await Class.create({
       name        : name.trim(),
       grade       : Number(grade),
-      stream      : stream       || null,
+      stream      : streamText   || null,
       school      : req.user.school,
       classTeacher: classTeacher || null,
       academicYear: academicYear || '2024',
@@ -184,6 +190,15 @@ const updateClass = async (req, res, next) => {
       'name', 'stream', 'classTeacher',
       'capacity', 'isActive',
     ];
+
+    /* the grade can be changed too (e.g. a class typed wrongly) */
+    if (req.body.grade !== undefined) {
+      const g = Number(req.body.grade);
+      if (!Number.isInteger(g) || g < 1 || g > 12) {
+        return res.status(400).json({ success: false, message: 'Grade must be a whole number from 1 to 12.' });
+      }
+      cls.grade = g;
+    }
 
     allowed.forEach(field => {
       if (req.body[field] !== undefined) {

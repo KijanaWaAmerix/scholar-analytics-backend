@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   SCHOLAR ANALYTICS — Whole-grade marks import
+   SCHOLAR ANALYTICS — Whole-grade marks import (CORRECTED)
    File: backend/controllers/importGradeController.js
 
    POST /api/marks/import-grade   (admin only)
@@ -9,14 +9,31 @@
    that grade, and the marks are saved into the learner's own
    class, in that class's exam and subjects.
 
+   FIXES vs previous version
+   1. Column → subject now matches the EXACT subject code first
+      (as importMarksController did), then the subject name, and
+      only then the slot patterns as a fallback. Before, a header
+      like "SCI" matched no slot and was dropped, or went to a
+      different subject than the one on screen.
+   2. Subjects are sorted, so "first subject for a slot" is stable,
+      and duplicate subjects in a slot are reported.
+   3. Closed / missing exams are no longer hidden behind a
+      "success" message. They are reported, and if nothing was
+      saved the import returns an error.
+   4. Optional examIds { "<classId>": "<examId>" } lets you pin the
+      exact exam per class (avoids hitting a duplicate exam).
+   5. The response includes columnMap: which subject each column
+      was saved into, per class, so you can verify it.
+
    dryRun: true  → only reports what WOULD happen (nothing saved)
    dryRun: false → saves the marks
 
    Body: {
-     grade, term, examName, academicYear?,      // which exam
+     grade, term, examName, academicYear?,
+     examIds?: { "<classId>": "<examId>" },
      createMissingExams?: boolean,
      dryRun: boolean,
-     rows: [{ name, scores: { eng: 66, math: 'AB', ... } }],
+     rows: [{ name, scores: { eng: 66, MAT: 'AB', ... } }],
      resolutions?: { "<normalised file name>": "<studentId>" | "" }
    }
 ═══════════════════════════════════════════════════════════ */
@@ -27,7 +44,7 @@ const Subject = require('../models/Subject');
 const Student = require('../models/Student');
 const Class   = require('../models/Class');
 
-/* Same KJSEA scale used everywhere else (highest band first).
+/* KJSEA scale (highest band first).
    Matching on `min` only means decimal scores such as 74.5 still get a grade. */
 const GRADE_SCALE = [
   { grade: 'EE1', min: 90, points: 8 },
@@ -69,10 +86,8 @@ const levenshtein = (a, b) => {
   return prev[b.length];
 };
 
-/* ── subject slots (same 9 learning areas everywhere) ───────
-   Patterns run on norm()-ed text, so "PRE-TECH" arrives as "pre tech".
-   `\b` stops short codes matching longer words: "cre" must not match
-   "creative", "inter" must not match "international". */
+/* ── subject slots (fallback only) ───────────────────────────
+   Patterns run on norm()-ed text, so "PRE-TECH" arrives as "pre tech". */
 const SLOT_PATTERNS = {
   eng    : /^(eng|english)\b/,
   math   : /^(mat|math|maths|mathematics)\b/,
@@ -94,11 +109,10 @@ const matchSlot = (text) => {
   return null;
 };
 
-/* Match by CODE first; only fall back to the name if the code matches nothing */
+/* Subject → slot: code first, then name */
 const slotOf = (code, name) => matchSlot(code) || matchSlot(name);
 
-/* Column keys from the file may be slot names (eng, math…) or sheet headers
-   (MAT, AGN…) — accept both. */
+/* Header/key from the file → slot (accepts slot names or sheet headers) */
 const slotKey = (key) => (SLOT_PATTERNS[key] ? key : matchSlot(key));
 
 const parseCell = (v) => {
@@ -115,10 +129,11 @@ exports.importGradeMarks = async (req, res, next) => {
     const {
       grade, term, examName, academicYear,
       createMissingExams = false, dryRun = true,
-      rows, resolutions = {},
+      rows, resolutions = {}, examIds = {},
     } = req.body;
 
-    if (!Number.isInteger(Number(grade)) || Number(grade) < 1 || Number(grade) > 12 || ![1, 2, 3].includes(Number(term)) ||
+    if (!Number.isInteger(Number(grade)) || Number(grade) < 1 || Number(grade) > 12 ||
+        ![1, 2, 3].includes(Number(term)) ||
         !String(examName || '').trim() || !Array.isArray(rows) || !rows.length) {
       return res.status(400).json({
         success: false,
@@ -136,35 +151,74 @@ exports.importGradeMarks = async (req, res, next) => {
 
     const [students, subjects] = await Promise.all([
       Student.find({ school, class: { $in: classIds }, isActive: true }).select('fullName class'),
-      Subject.find({ school, class: { $in: classIds }, isActive: true }),
+      Subject.find({ school, class: { $in: classIds }, isActive: true }).sort({ _id: 1 }),
     ]);
 
-    /* slot → subject, per class (first subject found for a slot wins) */
-    const subjectBySlot = new Map();         // classId -> Map(slot -> subject)
-    classes.forEach(c => subjectBySlot.set(String(c._id), new Map()));
-    subjects.forEach(s => {
-      const slot = slotOf(s.code, s.name);
-      const bucket = subjectBySlot.get(String(s.class));
-      if (slot && bucket && !bucket.has(slot)) bucket.set(slot, s);
+    /* ── subject lookups per class: by code, by name, by slot ── */
+    const byCode = new Map();                // classId -> Map(normCode -> subject)
+    const byName = new Map();                // classId -> Map(normName -> subject)
+    const bySlot = new Map();                // classId -> Map(slot -> subject)
+    const duplicateSubjects = {};            // className -> ["slot: A vs B"]
+    classes.forEach(c => {
+      const id = String(c._id);
+      byCode.set(id, new Map());
+      byName.set(id, new Map());
+      bySlot.set(id, new Map());
     });
+
+    subjects.forEach(s => {
+      const cid = String(s.class);
+      const code = norm(s.code), name = norm(s.name);
+      if (code && !byCode.get(cid).has(code)) byCode.get(cid).set(code, s);
+      if (name && !byName.get(cid).has(name)) byName.get(cid).set(name, s);
+
+      const slot = slotOf(s.code, s.name);
+      if (!slot) return;
+      const bucket = bySlot.get(cid);
+      if (bucket.has(slot)) {
+        const cn = classById.get(cid).name;
+        (duplicateSubjects[cn] = duplicateSubjects[cn] || [])
+          .push(`${slot}: ${bucket.get(slot).name} vs ${s.name}`);
+      } else {
+        bucket.set(slot, s);
+      }
+    });
+
+    /* column key (from file) → subject, for one class.
+       1) exact code  2) exact name  3) slot pattern */
+    const resolveSubject = (cid, rawKey) => {
+      const k = norm(rawKey);
+      return byCode.get(cid).get(k)
+          || byName.get(cid).get(k)
+          || (slotKey(rawKey) ? bySlot.get(cid).get(slotKey(rawKey)) : null)
+          || (slotKey(k) ? bySlot.get(cid).get(slotKey(k)) : null)
+          || null;
+    };
 
     /* ── exams: one per class ── */
     const examName_ = String(examName).trim();
     const exams = new Map();                 // classId -> { exam, status }
     for (const c of classes) {
-      const filter = {
-        school, class: c._id, term: Number(term),
-        name: new RegExp('^' + examName_.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i'),
-      };
-      if (academicYear) filter.academicYear = String(academicYear);
-      const found = await Exam.findOne(filter).sort({ academicYear: -1 });
-      if (!found)               exams.set(String(c._id), { status: 'missing' });
-      else if (!found.isOpen)   exams.set(String(c._id), { status: 'closed', exam: found });
-      else                      exams.set(String(c._id), { status: 'found',  exam: found });
+      const cid = String(c._id);
+      let found = null;
+
+      if (examIds && examIds[cid]) {
+        found = await Exam.findOne({ _id: examIds[cid], school, class: c._id });
+      } else {
+        const filter = {
+          school, class: c._id, term: Number(term),
+          name: new RegExp('^' + examName_.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i'),
+        };
+        if (academicYear) filter.academicYear = String(academicYear);
+        found = await Exam.findOne(filter).sort({ academicYear: -1 });
+      }
+
+      if (!found)             exams.set(cid, { status: 'missing' });
+      else if (!found.isOpen) exams.set(cid, { status: 'closed', exam: found });
+      else                    exams.set(cid, { status: 'found',  exam: found });
     }
 
-    /* Preview only: pretend the missing exams will be created, so the
-       counts show what the real import will save */
+    /* Preview only: pretend the missing exams will be created */
     if (dryRun && createMissingExams) {
       for (const c of classes) {
         const e = exams.get(String(c._id));
@@ -202,11 +256,11 @@ exports.importGradeMarks = async (req, res, next) => {
         .sort((a, b) => a.d - b.d).slice(0, 3).map(x => label(x.s));
     };
 
-    const merged     = new Map();            // studentId -> { scores:{slot: cell}, names:[] }
-    const unmatched  = [];
-    const ambiguous  = [];
-    const conflicts  = [];
-    const unknownColumns = new Set();
+    const merged       = new Map();          // studentId -> { scores:{colKey: cell}, names:[] }
+    const rawNames     = new Map();          // colKey -> header as written in the file
+    const unmatched    = [];
+    const ambiguous    = [];
+    const conflicts    = [];
     const notFoundSeen = new Set();
 
     for (const row of rows) {
@@ -245,43 +299,51 @@ exports.importGradeMarks = async (req, res, next) => {
       if (!merged.has(id)) merged.set(id, { scores: {}, names: [] });
       const m = merged.get(id);
       m.names.push(fileName);
-      for (const [rawSlot, cell] of Object.entries(row.scores || {})) {
+      for (const [rawKey, cell] of Object.entries(row.scores || {})) {
         if (cell === null || cell === undefined || cell === '') continue;
-        const slot = slotKey(rawSlot);
-        if (!slot) { unknownColumns.add(rawSlot); continue; }
-        if (m.scores[slot] !== undefined && String(m.scores[slot]) !== String(cell)) {
-          conflicts.push({ learner: target.fullName, slot, kept: m.scores[slot], ignored: cell });
+        const colKey = norm(rawKey);
+        if (!colKey) continue;
+        if (!rawNames.has(colKey)) rawNames.set(colKey, rawKey);
+        if (m.scores[colKey] !== undefined && String(m.scores[colKey]) !== String(cell)) {
+          conflicts.push({ learner: target.fullName, subject: rawKey, kept: m.scores[colKey], ignored: cell });
           continue;                                          // keep the first value
         }
-        m.scores[slot] = cell;
+        m.scores[colKey] = cell;
       }
     }
 
     /* ── turn merged rows into mark operations ── */
     const ops = [];
     const invalidCells = [];
-    const missingSubject = {};               // className -> Set(slots)
+    const missingSubject = {};               // className -> Set(headers)
+    const columnMap = {};                    // className -> { header: "CODE – Name" }
+    const resolvedCols = new Set();
     const perClass = new Map();              // classId -> { learners, marks }
     classes.forEach(c => perClass.set(String(c._id), { learners: 0, marks: 0 }));
 
     for (const [id, m] of merged) {
       const st  = studentById.get(id);
       const cid = String(st.class);
+      const cn  = classById.get(cid).name;
       const ex  = exams.get(cid);
       perClass.get(cid).learners++;
-      if (!ex.exam) continue;                // exam missing (preview) → nothing to save yet
+      if (!ex.exam) continue;                // exam missing → nothing to save
       if (ex.status === 'closed') continue;
 
-      for (const [slot, cell] of Object.entries(m.scores)) {
-        const subj = subjectBySlot.get(cid).get(slot);
-        if (!subj) {
-          const cn = classById.get(cid).name;
-          (missingSubject[cn] = missingSubject[cn] || new Set()).add(slot);
-          continue;
-        }
+      for (const [colKey, cell] of Object.entries(m.scores)) {
         const p = parseCell(cell);
         if (p.skip) continue;
-        if (p.invalid) { invalidCells.push({ learner: st.fullName, subject: slot, value: cell }); continue; }
+
+        const header = rawNames.get(colKey) || colKey;
+        const subj = resolveSubject(cid, header);
+        if (!subj) {
+          (missingSubject[cn] = missingSubject[cn] || new Set()).add(header);
+          continue;
+        }
+        resolvedCols.add(colKey);
+        (columnMap[cn] = columnMap[cn] || {})[header] = `${subj.code || ''} – ${subj.name}`;
+
+        if (p.invalid) { invalidCells.push({ learner: st.fullName, subject: header, value: cell }); continue; }
 
         const gi = p.absent ? null : getGrade(p.score);
         ops.push({
@@ -306,15 +368,24 @@ exports.importGradeMarks = async (req, res, next) => {
         learnersInClass: students.filter(s => String(s.class) === String(c._id)).length,
         learnersMatched: pc.learners, marks: pc.marks,
         exam: e.status,                       // found | missing | closed | created | will-create
+        examId: e.exam?._id ? String(e.exam._id) : null,
       };
     });
+
+    const skippedClasses = classReport
+      .filter(c => ['closed', 'missing'].includes(c.exam) && c.learnersMatched > 0)
+      .map(c => `${c.className} (exam ${c.exam})`);
 
     const base = {
       success: true,
       classes: classReport,
       unmatched, ambiguous, conflicts, invalidCells,
-      unknownColumns: [...unknownColumns],
+      unknownColumns: [...rawNames.entries()]
+        .filter(([k]) => !resolvedCols.has(k)).map(([, v]) => v),
       missingSubjects: Object.fromEntries(Object.entries(missingSubject).map(([k, v]) => [k, [...v]])),
+      duplicateSubjects,
+      columnMap,
+      skippedClasses,
       learnersNotInFile: students
         .filter(s => !merged.has(String(s._id)))
         .map(label),
@@ -327,17 +398,46 @@ exports.importGradeMarks = async (req, res, next) => {
       });
     }
 
-    let created = 0, updated = 0;
-    if (ops.length) {
+    /* Nothing to save → say why, do NOT report success */
+    if (!ops.length) {
+      return res.status(400).json({
+        ...base, success: false, dryRun: false,
+        saved: { created: 0, updated: 0, total: 0 },
+        message: skippedClasses.length
+          ? `No marks saved. Exam closed or missing for: ${skippedClasses.join(', ')}.`
+          : 'No marks saved. No column matched a subject, or no learner matched. Check unknownColumns, missingSubjects and unmatched.',
+      });
+    }
+
+    let created = 0, updated = 0, writeErrors = [];
+    try {
       const r = await Mark.bulkWrite(ops, { ordered: false });
       created = r.upsertedCount || 0;
-      updated = (r.matchedCount || 0);
+      updated = r.matchedCount || 0;
+    } catch (err) {
+      /* ordered:false → the rest still saved; report what failed */
+      const r = err.result || {};
+      created = r.nUpserted || 0;
+      updated = r.nMatched || 0;
+      writeErrors = (err.writeErrors || []).slice(0, 20)
+        .map(w => w.errmsg || String(w.err?.errmsg || w));
+      if (!created && !updated && !writeErrors.length) throw err;
     }
+
+    const warnings = [];
+    if (skippedClasses.length) warnings.push(`Skipped (exam closed/missing): ${skippedClasses.join(', ')}.`);
+    if (Object.keys(missingSubject).length) warnings.push('Some columns have no subject in some classes (see missingSubjects).');
+    if (base.unknownColumns.length) warnings.push(`Columns not matched to any subject: ${base.unknownColumns.join(', ')}.`);
+    if (Object.keys(duplicateSubjects).length) warnings.push('Duplicate subjects found in some classes (see duplicateSubjects).');
+    if (writeErrors.length) warnings.push(`${writeErrors.length} write error(s).`);
 
     res.status(200).json({
       ...base, dryRun: false,
-      saved: { created, updated, total: ops.length },
-      message: `${ops.length} marks saved for ${merged.size} learners (${created} new, ${updated} updated).`,
+      saved: { created, updated, total: created + updated },
+      writeErrors,
+      warnings,
+      message: `${created + updated} marks saved for ${merged.size} learners (${created} new, ${updated} updated).` +
+               (warnings.length ? ' Warnings: ' + warnings.join(' ') : ''),
     });
   } catch (error) {
     next(error);

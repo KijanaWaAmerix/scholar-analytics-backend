@@ -27,19 +27,20 @@ const Subject = require('../models/Subject');
 const Student = require('../models/Student');
 const Class   = require('../models/Class');
 
-/* Same KJSEA scale used everywhere else */
+/* Same KJSEA scale used everywhere else (highest band first).
+   Matching on `min` only means decimal scores such as 74.5 still get a grade. */
 const GRADE_SCALE = [
-  { grade: 'EE1', min: 90, max: 100, points: 8 },
-  { grade: 'EE2', min: 75, max: 89,  points: 7 },
-  { grade: 'ME1', min: 58, max: 74,  points: 6 },
-  { grade: 'ME2', min: 41, max: 57,  points: 5 },
-  { grade: 'AE1', min: 31, max: 40,  points: 4 },
-  { grade: 'AE2', min: 21, max: 30,  points: 3 },
-  { grade: 'BE1', min: 11, max: 20,  points: 2 },
-  { grade: 'BE2', min: 1,  max: 10,  points: 1 },
+  { grade: 'EE1', min: 90, points: 8 },
+  { grade: 'EE2', min: 75, points: 7 },
+  { grade: 'ME1', min: 58, points: 6 },
+  { grade: 'ME2', min: 41, points: 5 },
+  { grade: 'AE1', min: 31, points: 4 },
+  { grade: 'AE2', min: 21, points: 3 },
+  { grade: 'BE1', min: 11, points: 2 },
+  { grade: 'BE2', min: 1,  points: 1 },
 ];
 const getGrade = (score) =>
-  GRADE_SCALE.find(g => score >= g.min && score <= g.max) || null;
+  GRADE_SCALE.find(g => score >= g.min) || null;
 
 /* ── name helpers ─────────────────────────────────────────── */
 const norm = (s) => String(s || '')
@@ -68,24 +69,37 @@ const levenshtein = (a, b) => {
   return prev[b.length];
 };
 
-/* ── subject slots (same 9 learning areas everywhere) ─────── */
+/* ── subject slots (same 9 learning areas everywhere) ───────
+   Patterns run on norm()-ed text, so "PRE-TECH" arrives as "pre tech".
+   `\b` stops short codes matching longer words: "cre" must not match
+   "creative", "inter" must not match "international". */
 const SLOT_PATTERNS = {
   eng    : /^(eng|english)\b/,
   math   : /^(mat|math|maths|mathematics)\b/,
   kisw   : /^(kis|kisw|kiswahili)\b/,
-  inter  : /^(inter|int sci|integrated)/,
-  sst    : /^(sst|social)/,
-  cre    : /^(cre|ire|hre|religious)/,
-  cas    : /^(cas|creative)/,
+  inter  : /^(inter|int ?sci|integrated)\b/,
+  sst    : /^(sst|social)\b/,
+  cre    : /^(cre|ire|hre)\b|religious/,
+  cas    : /^(cas\b|creative)/,
   agri   : /^(agn|agr|agri|agric|agriculture)\b/,
-  pretech: /^(pre ?tech|prt|pre technical|pre vocational|prevocational)/,
+  pretech: /^(pre ?tech|prt\b|pre technical|pre ?vocational)/,
 };
-const slotOf = (code, name) => {
+
+const matchSlot = (text) => {
+  const t = norm(text);
+  if (!t) return null;
   for (const [slot, re] of Object.entries(SLOT_PATTERNS)) {
-    if (re.test(norm(code)) || re.test(norm(name))) return slot;
+    if (re.test(t)) return slot;
   }
   return null;
 };
+
+/* Match by CODE first; only fall back to the name if the code matches nothing */
+const slotOf = (code, name) => matchSlot(code) || matchSlot(name);
+
+/* Column keys from the file may be slot names (eng, math…) or sheet headers
+   (MAT, AGN…) — accept both. */
+const slotKey = (key) => (SLOT_PATTERNS[key] ? key : matchSlot(key));
 
 const parseCell = (v) => {
   if (v === null || v === undefined || v === '') return { skip: true };
@@ -125,12 +139,13 @@ exports.importGradeMarks = async (req, res, next) => {
       Subject.find({ school, class: { $in: classIds }, isActive: true }),
     ]);
 
-    /* slot → subject, per class */
+    /* slot → subject, per class (first subject found for a slot wins) */
     const subjectBySlot = new Map();         // classId -> Map(slot -> subject)
     classes.forEach(c => subjectBySlot.set(String(c._id), new Map()));
     subjects.forEach(s => {
       const slot = slotOf(s.code, s.name);
-      if (slot) subjectBySlot.get(String(s.class)).set(slot, s);
+      const bucket = subjectBySlot.get(String(s.class));
+      if (slot && bucket && !bucket.has(slot)) bucket.set(slot, s);
     });
 
     /* ── exams: one per class ── */
@@ -191,6 +206,7 @@ exports.importGradeMarks = async (req, res, next) => {
     const unmatched  = [];
     const ambiguous  = [];
     const conflicts  = [];
+    const unknownColumns = new Set();
     const notFoundSeen = new Set();
 
     for (const row of rows) {
@@ -229,8 +245,10 @@ exports.importGradeMarks = async (req, res, next) => {
       if (!merged.has(id)) merged.set(id, { scores: {}, names: [] });
       const m = merged.get(id);
       m.names.push(fileName);
-      for (const [slot, cell] of Object.entries(row.scores || {})) {
+      for (const [rawSlot, cell] of Object.entries(row.scores || {})) {
         if (cell === null || cell === undefined || cell === '') continue;
+        const slot = slotKey(rawSlot);
+        if (!slot) { unknownColumns.add(rawSlot); continue; }
         if (m.scores[slot] !== undefined && String(m.scores[slot]) !== String(cell)) {
           conflicts.push({ learner: target.fullName, slot, kept: m.scores[slot], ignored: cell });
           continue;                                          // keep the first value
@@ -242,7 +260,7 @@ exports.importGradeMarks = async (req, res, next) => {
     /* ── turn merged rows into mark operations ── */
     const ops = [];
     const invalidCells = [];
-    const missingSubject = {};               // className -> [slots]
+    const missingSubject = {};               // className -> Set(slots)
     const perClass = new Map();              // classId -> { learners, marks }
     classes.forEach(c => perClass.set(String(c._id), { learners: 0, marks: 0 }));
 
@@ -287,7 +305,7 @@ exports.importGradeMarks = async (req, res, next) => {
         classId: String(c._id), className: c.name,
         learnersInClass: students.filter(s => String(s.class) === String(c._id)).length,
         learnersMatched: pc.learners, marks: pc.marks,
-        exam: e.status,                       // found | missing | closed | created
+        exam: e.status,                       // found | missing | closed | created | will-create
       };
     });
 
@@ -295,6 +313,7 @@ exports.importGradeMarks = async (req, res, next) => {
       success: true,
       classes: classReport,
       unmatched, ambiguous, conflicts, invalidCells,
+      unknownColumns: [...unknownColumns],
       missingSubjects: Object.fromEntries(Object.entries(missingSubject).map(([k, v]) => [k, [...v]])),
       learnersNotInFile: students
         .filter(s => !merged.has(String(s._id)))

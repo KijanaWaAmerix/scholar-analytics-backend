@@ -10,6 +10,9 @@ const Exam    = require('../models/Exam');
 const Class   = require('../models/Class');
 const Mark    = require('../models/Mark');
 
+/* The academic year is the calendar year unless the request says otherwise */
+const thisYear = () => String(new Date().getFullYear());
+
 /* ══════════════════════════════════════════════════════════
    @route   GET /api/exams
    @desc    Get all exams — filterable by class, term, year
@@ -138,7 +141,7 @@ const createExam = async (req, res, next) => {
     const existing = await Exam.findOne({
       name        : name,
       term        : Number(term),
-      academicYear: academicYear || '2024',
+      academicYear: academicYear || thisYear(),
       class       : classId,
       school      : req.user.school,
     });
@@ -153,7 +156,7 @@ const createExam = async (req, res, next) => {
     const exam = await Exam.create({
       name,
       term        : Number(term),
-      academicYear: academicYear || '2024',
+      academicYear: academicYear || thisYear(),
       class       : classId,
       school      : req.user.school,
       startDate   : startDate || null,
@@ -348,7 +351,7 @@ const seedDefaultExams = async (req, res, next) => {
       const existing = await Exam.findOne({
         name,
         term        : Number(term),
-        academicYear: academicYear || '2024',
+        academicYear: academicYear || thisYear(),
         class       : classId,
         school      : req.user.school,
       });
@@ -358,7 +361,7 @@ const seedDefaultExams = async (req, res, next) => {
       await Exam.create({
         name,
         term        : Number(term),
-        academicYear: academicYear || '2024',
+        academicYear: academicYear || thisYear(),
         class       : classId,
         school      : req.user.school,
         isOpen      : true,
@@ -391,7 +394,7 @@ const seedDefaultExams = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 const seedAllExams = async (req, res, next) => {
   try {
-    const academicYear = req.body.academicYear || '2024';
+    const academicYear = req.body.academicYear || thisYear();
 
     const classes = await Class.find({
       school  : req.user.school,

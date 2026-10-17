@@ -9,6 +9,9 @@ const Student = require('../models/Student');
 const Subject = require('../models/Subject');
 const Exam    = require('../models/Exam');
 
+/* The academic year is the calendar year unless the request says otherwise */
+const thisYear = () => String(new Date().getFullYear());
+
 /* ══════════════════════════════════════════════════════════
    @route   GET /api/classes
    @desc    Get all classes for this school
@@ -134,7 +137,7 @@ const createClass = async (req, res, next) => {
     const existing = await Class.findOne({
       name        : name.trim(),
       school      : req.user.school,
-      academicYear: academicYear || '2024',
+      academicYear: academicYear || thisYear(),
     });
 
     if (existing) {
@@ -150,7 +153,7 @@ const createClass = async (req, res, next) => {
       stream      : streamText   || null,
       school      : req.user.school,
       classTeacher: classTeacher || null,
-      academicYear: academicYear || '2024',
+      academicYear: academicYear || thisYear(),
       capacity    : capacity     || 45,
     });
 

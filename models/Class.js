@@ -65,7 +65,7 @@ const classSchema = new mongoose.Schema(
     academicYear: {
       type     : String,
       required : [true, 'Academic year is required'],
-      default  : '2024',
+      default  : () => String(new Date().getFullYear()),
     },
 
     capacity : { type: Number, default: 45  },

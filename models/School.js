@@ -16,7 +16,7 @@ const schoolSchema = new mongoose.Schema(
 
     academic: {
       currentTerm    : { type: Number, default: 1 },
-      currentYear    : { type: String, default: '2024' },
+      currentYear    : { type: String, default: () => String(new Date().getFullYear()) },
       termOpeningDate: { type: String },
       termClosingDate: { type: String },
       nextTermDate   : { type: String },

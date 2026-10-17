@@ -45,6 +45,48 @@ const getMeanGrade = (totalPoints, count) => {
   return 'BE2';
 };
 
+
+/* ── Previous exam & VAP helpers ─────────────────────────────
+   The previous exam of a class is the one just before this exam in time:
+   by academic year, then term, then the day it was created.
+   VAP = this exam's average points minus the previous exam's average points. */
+const examOrderKey = (e) => [
+  Number(e.academicYear) || 0,
+  Number(e.term) || 0,
+  new Date(e.createdAt || 0).getTime(),
+];
+const examBefore = (a, b) => {                 // is exam a earlier than exam b?
+  const ka = examOrderKey(a), kb = examOrderKey(b);
+  for (let i = 0; i < 3; i++) { if (ka[i] !== kb[i]) return ka[i] < kb[i]; }
+  return false;
+};
+
+const findPreviousExam = async (school, classId, exam) => {
+  const others = await Exam.find({ school, class: classId, _id: { $ne: exam._id } }).lean();
+  const earlier = others.filter(e => examBefore(e, exam));
+  earlier.sort((x, y) => (examBefore(x, y) ? -1 : 1));
+  return earlier.length ? earlier[earlier.length - 1] : null;
+};
+
+/* { studentId: average points in that exam } */
+const averagePointsMap = async (school, classId, examId) => {
+  const prevMarks = await Mark.find({
+    class: classId, exam: examId, school, absent: false, score: { $ne: null },
+  }).lean();
+  const acc = {};
+  prevMarks.forEach(m => {
+    const sid = m.student.toString();
+    if (!acc[sid]) acc[sid] = { points: 0, count: 0 };
+    const g = getGrade(m.score);
+    if (g) { acc[sid].points += g.points; acc[sid].count++; }
+  });
+  const out = {};
+  Object.keys(acc).forEach(sid => {
+    out[sid] = acc[sid].count ? parseFloat((acc[sid].points / acc[sid].count).toFixed(2)) : 0;
+  });
+  return out;
+};
+
 /* ══════════════════════════════════════════════════════════
    GET CLASS RESULTS — Full Analysis with VAP, Gender, Top3
 ══════════════════════════════════════════════════════════ */
@@ -95,30 +137,8 @@ exports.getClassResults = async (req, res, next) => {
     const marks = await Mark.find({ class: classId, exam: examId, school }).lean();
 
     /* Previous exam for VAP */
-    const prevExam = await Exam.findOne({
-      school,
-      class    : classId,
-      createdAt: { $lt: exam.createdAt },
-    }).sort({ createdAt: -1 });
-
-    let prevMarkMap = {};
-    if (prevExam) {
-      const prevMarks = await Mark.find({
-        class: classId, exam: prevExam._id, school,
-        absent: false, score: { $ne: null },
-      }).lean();
-      const prevStudentMap = {};
-      prevMarks.forEach(m => {
-        const sid = m.student.toString();
-        if (!prevStudentMap[sid]) prevStudentMap[sid] = { points: 0, count: 0 };
-        const g = getGrade(m.score);
-        if (g) { prevStudentMap[sid].points += g.points; prevStudentMap[sid].count++; }
-      });
-      Object.keys(prevStudentMap).forEach(sid => {
-        const s = prevStudentMap[sid];
-        prevMarkMap[sid] = s.count ? parseFloat((s.points / s.count).toFixed(2)) : 0;
-      });
-    }
+    const prevExam    = await findPreviousExam(school, classId, exam);
+    const prevMarkMap = prevExam ? await averagePointsMap(school, classId, prevExam._id) : {};
 
     /* Build mark lookup */
     const markMap = {};
@@ -466,6 +486,15 @@ exports.getGradeResults = async (req, res, next) => {
 
     const marks = await Mark.find({ exam: { $in: examIds }, school }).lean();
 
+    /* Previous exam of each class -> each learner's previous average points (for VAP) */
+    const prevMarkMap = {};
+    for (const c of classes) {
+      const curExam = exams.find(e => e.class.toString() === c._id.toString());
+      if (!curExam) continue;
+      const prevExam = await findPreviousExam(school, c._id, curExam);
+      if (prevExam) Object.assign(prevMarkMap, await averagePointsMap(school, c._id, prevExam._id));
+    }
+
     const markMap = {};
     marks.forEach(m => {
       const sid = m.student.toString();
@@ -550,7 +579,9 @@ exports.getGradeResults = async (req, res, next) => {
         meanGradeInfo: GRADE_SCALE.find(g => g.grade === meanGrade) || null,
         absentCount,
         subjectCount,
-        vap     : null,
+        prevPoints: (prevMarkMap[sid] ?? null),
+        vap     : (subjectCount > 0 && prevMarkMap[sid] !== undefined)
+          ? parseFloat((avgPoints - prevMarkMap[sid]).toFixed(2)) : null,
         position: 0,
       };
     });

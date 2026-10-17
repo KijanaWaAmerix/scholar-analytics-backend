@@ -70,8 +70,9 @@ const findPreviousExam = async (school, classId, exam) => {
 
 /* { studentId: average points in that exam } */
 const averagePointsMap = async (school, classId, examId) => {
+  /* by exam id: marks imported in bulk may not carry the class, and "absent" may be missing */
   const prevMarks = await Mark.find({
-    class: classId, exam: examId, school, absent: false, score: { $ne: null },
+    exam: examId, school, absent: { $ne: true }, score: { $ne: null },
   }).lean();
   const acc = {};
   prevMarks.forEach(m => {

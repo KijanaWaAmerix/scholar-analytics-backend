@@ -371,6 +371,10 @@ exports.getClassResults = async (req, res, next) => {
 
     res.status(200).json({
       success        : true,
+      vapInfo        : [{
+        class   : cls?.name || '',
+        previous: prevExam ? { name: prevExam.name, term: prevExam.term, year: prevExam.academicYear } : null,
+      }],
       results,
       subjects       : subjectsOut,
       subjectAverages,
@@ -489,11 +493,16 @@ exports.getGradeResults = async (req, res, next) => {
 
     /* Previous exam of each class -> each learner's previous average points (for VAP) */
     const prevMarkMap = {};
+    const vapInfo = [];
     for (const c of classes) {
       const curExam = exams.find(e => e.class.toString() === c._id.toString());
       if (!curExam) continue;
       const prevExam = await findPreviousExam(school, c._id, curExam);
       if (prevExam) Object.assign(prevMarkMap, await averagePointsMap(school, c._id, prevExam._id));
+      vapInfo.push({
+        class   : c.name,
+        previous: prevExam ? { name: prevExam.name, term: prevExam.term, year: prevExam.academicYear } : null,
+      });
     }
 
     const markMap = {};
@@ -700,6 +709,7 @@ exports.getGradeResults = async (req, res, next) => {
 
     res.status(200).json({
       success  : true,
+      vapInfo,
       results,
       subjects : subjectsOut,
       subjectAverages,

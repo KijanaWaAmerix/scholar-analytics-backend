@@ -51,6 +51,11 @@ const userSchema = new mongoose.Schema(
 
     resetPasswordToken : String,
     resetPasswordExpire: Date,
+    /* 6-digit reset code (SMS / email) — only a hash is stored */
+    resetCodeHash      : { type: String, select: false },
+    resetCodeExpire    : Date,
+    resetCodeAttempts  : { type: Number, default: 0 },
+    resetCodeSentAt    : Date,
     accountSetupToken  : String,
     accountSetupExpire : Date,
   },

@@ -10,6 +10,8 @@ const {
   login,
   getMe,
   forgotPassword,
+  requestResetCode,
+  verifyResetCode,
   resetPassword,
   setupAccount,
   updatePassword,
@@ -22,6 +24,8 @@ const { protect } = require('../middleware/authMiddleware');
 /* ── Public routes (no token needed) ─────────────────────── */
 router.post('/login',                    login);
 router.post('/forgot-password',          forgotPassword);
+router.post('/request-reset-code',        requestResetCode);
+router.post('/verify-reset-code',         verifyResetCode);
 router.post('/reset-password/:token',    resetPassword);
 router.post('/setup-account/:token',     setupAccount);
 

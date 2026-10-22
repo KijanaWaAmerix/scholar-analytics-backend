@@ -344,19 +344,78 @@ exports.extendSubscription = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 exports.updateSchool = async (req, res, next) => {
   try {
-    const { schoolName, schoolMotto, schoolEmail, status } = req.body;
+    const {
+      schoolName, schoolMotto, schoolEmail, status,
+      adminName, adminPassword, plan, expiryDate,
+    } = req.body;
 
-    const school = await School.findByIdAndUpdate(
-      req.params.id,
-      { schoolName, schoolMotto, schoolEmail, status },
-      { new:true, runValidators:true }
-    );
-
+    const school = await School.findById(req.params.id);
     if (!school) {
       return res.status(404).json({ success:false, message:'School not found.' });
     }
 
-    res.status(200).json({ success:true, school });
+    /* ── 1. Check the admin changes FIRST so nothing is half-saved ── */
+    const admin = await User.findOne({ school: school._id, role: 'admin' });
+
+    let newAdminEmail = null;
+    if (req.body.adminEmail !== undefined) {
+      newAdminEmail = String(req.body.adminEmail || '').toLowerCase().trim();
+      if (!newAdminEmail) {
+        return res.status(400).json({ success:false, message:'Admin email cannot be empty.' });
+      }
+    }
+    if (admin && newAdminEmail && newAdminEmail !== admin.email) {
+      const taken = await User.findOne({ email: newAdminEmail, _id: { $ne: admin._id } });
+      if (taken) {
+        return res.status(400).json({
+          success: false,
+          message: `Email ${newAdminEmail} is already registered.`,
+        });
+      }
+    }
+    if (adminPassword && String(adminPassword).length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Admin password must be at least 8 characters.',
+      });
+    }
+
+    /* ── 2. School details (only fields that were actually sent) ── */
+    if (schoolName  !== undefined && String(schoolName).trim()) school.schoolName  = String(schoolName).trim();
+    if (schoolMotto !== undefined) school.schoolMotto = schoolMotto;
+    if (schoolEmail !== undefined) school.schoolEmail = schoolEmail;
+    if (status) school.status = status;
+    if (plan) school.set('subscription.plan', plan);
+    if (expiryDate !== undefined) {
+      school.set('subscription.expiryDate', expiryDate ? new Date(expiryDate) : undefined);
+    }
+    await school.save();
+
+    /* ── 3. The school admin's login (name, email, password) ── */
+    let adminChanged = false;
+    if (admin) {
+      if (adminName !== undefined && String(adminName).trim() &&
+          String(adminName).trim() !== admin.fullName) {
+        admin.fullName = String(adminName).trim();
+        adminChanged = true;
+      }
+      if (newAdminEmail && newAdminEmail !== admin.email) {
+        admin.email = newAdminEmail;
+        adminChanged = true;
+      }
+      if (adminPassword) {
+        admin.password       = adminPassword;   /* hashed by the pre-save hook */
+        admin.isAccountSetup = true;
+        adminChanged = true;
+      }
+      if (adminChanged) await admin.save();
+    }
+
+    res.status(200).json({
+      success      : true,
+      school,
+      adminUpdated : adminChanged,
+    });
   } catch (error) {
     next(error);
   }

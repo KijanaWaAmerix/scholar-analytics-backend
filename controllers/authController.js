@@ -8,8 +8,10 @@ const crypto  = require('crypto');
 const jwt     = require('jsonwebtoken');
 const User    = require('../models/User');
 const School  = require('../models/School');
+const { sendSMS } = require('../utils/smsService');
 const {
   sendPasswordResetEmail,
+  sendResetCodeEmail,
   sendAccountSetupEmail,
   sendPasswordChangedEmail,
 } = require('../utils/emailService');
@@ -206,6 +208,179 @@ const forgotPassword = async (req, res, next) => {
 };
 
 /* ══════════════════════════════════════════════════════════
+   3b. RESET CODE (SMS or email)
+   POST /api/auth/request-reset-code   { method, identifier }
+   POST /api/auth/verify-reset-code    { method, identifier, code }
+   Public. The 6-digit code is stored hashed, expires in 10 min,
+   allows 5 wrong tries, and the reply never reveals whether the
+   phone / email is registered.
+══════════════════════════════════════════════════════════ */
+const CODE_MINUTES  = 10;
+const CODE_COOLDOWN = 60 * 1000;
+const CODE_MAX_TRIES = 5;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/* 0712345678 / +254 712 345 678 / 712345678  →  "712345678" */
+const phoneCore = (raw) => {
+  let d = String(raw || '').replace(/\D/g, '');
+  if (d.startsWith('254')) d = d.slice(3);
+  else if (d.startsWith('0')) d = d.slice(1);
+  return /^[17]\d{8}$/.test(d) ? d : '';
+};
+
+const hashCode = (userId, code) =>
+  crypto.createHash('sha256')
+    .update(`${userId}:${code}:${process.env.JWT_SECRET || ''}`)
+    .digest('hex');
+
+/* One box for both: anything with "@" is an email, otherwise a phone */
+const detectMethod = (identifier) => (String(identifier || '').includes('@') ? 'email' : 'phone');
+
+/* Returns the single matching active user, or null */
+const findResetUser = async (method, identifier) => {
+  if (method === 'phone') {
+    const core = phoneCore(identifier);
+    if (!core) return null;
+    /* saved phones may be 07.., +254.. or contain spaces */
+    const rx = new RegExp(
+      '^[^0-9]*(?:(?:254|0)[^0-9]*)?' + core.split('').join('[^0-9]*') + '[^0-9]*$'
+    );
+    const users = await User.find({ phone: rx, isActive: true })
+      .select('+resetCodeHash');
+    if (users.length > 1) {
+      console.warn('Reset code: phone matches several users, not sending.');
+      return null;
+    }
+    return users[0] || null;
+  }
+  const email = String(identifier || '').toLowerCase().trim();
+  if (!EMAIL_RE.test(email)) return null;
+  return User.findOne({ email, isActive: true }).select('+resetCodeHash');
+};
+
+const requestResetCode = async (req, res, next) => {
+  try {
+    const identifier = String(req.body.identifier || '').trim();
+    const method     = detectMethod(identifier);
+
+    const valid = method === 'phone'
+      ? !!phoneCore(identifier)
+      : EMAIL_RE.test(identifier);
+    if (!valid) {
+      return res.status(400).json({
+        success : false,
+        message : 'Enter the email address or Kenyan phone number on your account.',
+      });
+    }
+
+    const generic = {
+      success : true,
+      message : 'If that account exists, a code has been sent.',
+    };
+
+    const user = await findResetUser(method, identifier);
+    if (!user) return res.status(200).json(generic);
+
+    /* 60-second cooldown between codes */
+    if (user.resetCodeSentAt && Date.now() - user.resetCodeSentAt.getTime() < CODE_COOLDOWN) {
+      return res.status(200).json(generic);
+    }
+
+    const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
+    user.resetCodeHash     = hashCode(user._id, code);
+    user.resetCodeExpire   = new Date(Date.now() + CODE_MINUTES * 60 * 1000);
+    user.resetCodeAttempts = 0;
+    user.resetCodeSentAt   = new Date();
+    await user.save({ validateBeforeSave: false });
+
+    /* Send the SAME code by SMS and by email, at the same time */
+    const jobs = [];
+
+    if (user.phone && phoneCore(user.phone)) {
+      jobs.push(
+        sendSMS({
+          to      : user.phone,
+          message : `Scholar Analytics: your reset code is ${code}. ` +
+                    `It expires in ${CODE_MINUTES} minutes. Do not share it.`,
+        }).then((r) => {
+          if (!r.success) throw new Error(r.error || r.status || 'SMS not sent');
+        })
+      );
+    }
+    if (user.email) {
+      jobs.push(sendResetCodeEmail({ email: user.email, name: user.fullName, code }));
+    }
+
+    const results = await Promise.allSettled(jobs);
+    results.forEach((r) => {
+      if (r.status === 'rejected') console.error('Reset code send failed:', r.reason?.message || r.reason);
+    });
+    const sent = results.some((r) => r.status === 'fulfilled');
+
+    if (!sent) {
+      user.resetCodeHash   = undefined;
+      user.resetCodeExpire = undefined;
+      user.resetCodeSentAt = undefined;
+      await user.save({ validateBeforeSave: false });
+    }
+
+    res.status(200).json(generic);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyResetCode = async (req, res, next) => {
+  try {
+    const identifier = String(req.body.identifier || '').trim();
+    const method     = detectMethod(identifier);
+    const code       = String(req.body.code || '').replace(/\D/g, '');
+
+    const bad = (msg) => res.status(400).json({
+      success : false,
+      message : msg || 'That code is incorrect or has expired.',
+    });
+
+    if (code.length !== 6) return bad('Enter the 6-digit code.');
+
+    const user = await findResetUser(method, identifier);
+    if (!user || !user.resetCodeHash || !user.resetCodeExpire ||
+        user.resetCodeExpire.getTime() < Date.now()) {
+      return bad();
+    }
+
+    if (user.resetCodeAttempts >= CODE_MAX_TRIES) {
+      user.resetCodeHash = undefined;
+      user.resetCodeExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+      return bad('Too many wrong tries. Please request a new code.');
+    }
+
+    const given  = Buffer.from(hashCode(user._id, code));
+    const stored = Buffer.from(user.resetCodeHash);
+    const ok = given.length === stored.length && crypto.timingSafeEqual(given, stored);
+
+    if (!ok) {
+      user.resetCodeAttempts += 1;
+      await user.save({ validateBeforeSave: false });
+      return bad();
+    }
+
+    /* Correct: swap the code for a one-time reset token (30 min),
+       which the page then uses with POST /auth/reset-password/:token */
+    const resetToken = user.generateToken();
+    user.resetCodeHash     = undefined;
+    user.resetCodeExpire   = undefined;
+    user.resetCodeAttempts = 0;
+    await user.save({ validateBeforeSave: false });
+
+    res.status(200).json({ success: true, resetToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
    4. RESET PASSWORD
    POST /api/auth/reset-password/:token
    Public
@@ -261,10 +436,14 @@ const resetPassword = async (req, res, next) => {
     await user.save();
 
     /* Send confirmation email */
-    await sendPasswordChangedEmail({
-      email : user.email,
-      name  : user.fullName,
-    });
+    try {
+      await sendPasswordChangedEmail({
+        email : user.email,
+        name  : user.fullName,
+      });
+    } catch (mailErr) {
+      console.error('Password-changed email failed:', mailErr.message);
+    }
 
     /* Log them in immediately */
     await sendTokenResponse(user, 200, res);
@@ -446,6 +625,8 @@ module.exports = {
   login,
   getMe,
   forgotPassword,
+  requestResetCode,
+  verifyResetCode,
   resetPassword,
   setupAccount,
   updatePassword,

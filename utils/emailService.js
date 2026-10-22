@@ -6,8 +6,52 @@
 
 const nodemailer = require('nodemailer');
 
-/* ── Create reusable transporter ─────────────────────────── */
+/* ── Mail transport ──────────────────────────────────────────
+   Render's free plan blocks SMTP, so when BREVO_API_KEY is set we
+   send over HTTPS using Brevo's API (works on every Render plan).
+   If BREVO_API_KEY is not set we fall back to SMTP as before.
+
+   Env vars (Render → Environment):
+     BREVO_API_KEY       API key from Brevo (SMTP & API → API Keys)
+     BREVO_SENDER_EMAIL  the sender address you verified in Brevo
+     BREVO_SENDER_NAME   optional, default "Scholar Analytics"
+────────────────────────────────────────────────────────────── */
+const parseFrom = (from) => {
+  const m = /^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/.exec(String(from || ''));
+  return m ? { name: m[1] || undefined, email: m[2] } : { email: String(from || '') };
+};
+
+const brevoTransport = {
+  async sendMail({ from, to, subject, html }) {
+    const f      = parseFrom(from);
+    const sender = {
+      email : process.env.BREVO_SENDER_EMAIL || f.email,
+      name  : f.name || process.env.BREVO_SENDER_NAME || 'Scholar Analytics',
+    };
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method  : 'POST',
+      headers : {
+        'api-key'      : process.env.BREVO_API_KEY,
+        'content-type' : 'application/json',
+        accept         : 'application/json',
+      },
+      body: JSON.stringify({
+        sender,
+        to          : [{ email: to }],
+        subject,
+        htmlContent : html,
+      }),
+    });
+    if (!res.ok) {
+      const detail = await res.text().catch(() => '');
+      throw new Error(`Brevo email failed (${res.status}): ${detail}`);
+    }
+    return res.json().catch(() => ({}));
+  },
+};
+
 const createTransporter = () => {
+  if (process.env.BREVO_API_KEY) return brevoTransport;
   return nodemailer.createTransport({
     host   : process.env.EMAIL_HOST,
     port   : process.env.EMAIL_PORT,
@@ -66,7 +110,7 @@ const emailWrapper = (content) => `
     </div>
     <div class="body">${content}</div>
     <div class="footer">
-      &copy; 2024 Scholar Analytics &mdash;
+      &copy; 2026 Scholar Analytics &mdash;
       Empowering Education Through Data<br/>
       Support: <a href="mailto:${process.env.SUPPORT_EMAIL}"
         style="color:#2e86c1;">
@@ -107,9 +151,37 @@ const sendPasswordResetEmail = async ({ email, name, resetUrl }) => {
     </p>`;
 
   await transporter.sendMail({
-    from    : `"Scholar Analytics" <${process.env.EMAIL_USER}>`,
+    from    : `"Scholar Analytics" <${process.env.EMAIL_USER || process.env.BREVO_SENDER_EMAIL}>`,
     to      : email,
     subject : 'Scholar Analytics — Password Reset Request',
+    html    : emailWrapper(content),
+  });
+};
+
+/* ══════════════════════════════════════════════════════════
+   1b. PASSWORD RESET CODE EMAIL (6-digit code)
+══════════════════════════════════════════════════════════ */
+const sendResetCodeEmail = async ({ email, name, code }) => {
+  const transporter = createTransporter();
+
+  const content = `
+    <h2>Your password reset code</h2>
+    <p>Hello <strong>${name}</strong>,</p>
+    <p>Use this code to reset your Scholar Analytics password:</p>
+    <div style="text-align:center;margin:20px 0;">
+      <span style="display:inline-block;font-size:32px;font-weight:700;
+                   letter-spacing:8px;padding:12px 24px;background:#f4f6f9;
+                   border-radius:10px;color:#1a2a3a;">${code}</span>
+    </div>
+    <div class="notice">
+      <strong>⏰ This code expires in 10 minutes.</strong><br/>
+      If you did not request it, ignore this email. Never share this code.
+    </div>`;
+
+  await transporter.sendMail({
+    from    : `"Scholar Analytics" <${process.env.EMAIL_USER || process.env.BREVO_SENDER_EMAIL}>`,
+    to      : email,
+    subject : 'Scholar Analytics — Your password reset code',
     html    : emailWrapper(content),
   });
 };
@@ -146,7 +218,7 @@ const sendAccountSetupEmail = async ({
     </p>`;
 
   await transporter.sendMail({
-    from    : `"Scholar Analytics" <${process.env.EMAIL_USER}>`,
+    from    : `"Scholar Analytics" <${process.env.EMAIL_USER || process.env.BREVO_SENDER_EMAIL}>`,
     to      : email,
     subject : `Welcome to Scholar Analytics — ${schoolName}`,
     html    : emailWrapper(content),
@@ -175,7 +247,7 @@ const sendPasswordChangedEmail = async ({ email, name }) => {
     </div>`;
 
   await transporter.sendMail({
-    from    : `"Scholar Analytics" <${process.env.EMAIL_USER}>`,
+    from    : `"Scholar Analytics" <${process.env.EMAIL_USER || process.env.BREVO_SENDER_EMAIL}>`,
     to      : email,
     subject : 'Scholar Analytics — Password Changed',
     html    : emailWrapper(content),
@@ -257,6 +329,7 @@ const sendResultsEmail = async ({
 
 module.exports = {
   sendPasswordResetEmail,
+  sendResetCodeEmail,
   sendAccountSetupEmail,
   sendPasswordChangedEmail,
   sendResultsEmail,

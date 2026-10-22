@@ -140,6 +140,8 @@ app.use('/api/auth/login',           loginLimiter);
 app.use('/api/auth/reset-password',  loginLimiter);
 app.use('/api/auth/setup-account',   loginLimiter);
 app.use('/api/auth/forgot-password', resetEmailLimiter);
+app.use('/api/auth/request-reset-code', resetEmailLimiter);
+app.use('/api/auth/verify-reset-code',  loginLimiter);
 app.use('/api/auth',       require('./routes/authRoutes'));
 
 /* Core */

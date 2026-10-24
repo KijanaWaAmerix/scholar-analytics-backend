@@ -7,8 +7,33 @@ const Subject = require('../models/Subject');
 const Class   = require('../models/Class');
 const Mark    = require('../models/Mark');
 
-/* 9 Default CBC JSS Learning Areas */
-const CBC_SUBJECTS = [
+/* Standard CBC learning areas, by level.
+   Grades 1–3 : 7 learning areas (one class teacher)
+   Grades 4–6 : 8 learning areas (each with its own teacher)
+   Grades 7–9 : 9 learning areas (Junior Secondary)
+   The report cards read the learning-area NAME, so keep the names as they are here. */
+const CBC_LOWER_PRIMARY = [
+  { code:'LIT',   name:'Literacy Activities',             learningArea:'Languages'     },
+  { code:'KIS',   name:'Kiswahili Language Activities',   learningArea:'Languages'     },
+  { code:'IND',   name:'Indigenous Language Activities',  learningArea:'Languages'     },
+  { code:'MAT',   name:'Mathematical Activities',         learningArea:'Mathematics'   },
+  { code:'ENV',   name:'Environmental Activities',        learningArea:'Sciences'      },
+  { code:'REL',   name:'Religious Education Activities',  learningArea:'Life Skills'   },
+  { code:'CRA',   name:'Creative Activities',             learningArea:'Creative Arts' },
+];
+
+const CBC_UPPER_PRIMARY = [
+  { code:'ENG',   name:'English',                         learningArea:'Languages'     },
+  { code:'KIS',   name:'Kiswahili',                       learningArea:'Languages'     },
+  { code:'MAT',   name:'Mathematics',                     learningArea:'Mathematics'   },
+  { code:'SCI',   name:'Science and Technology',          learningArea:'Sciences'      },
+  { code:'SST',   name:'Social Studies',                  learningArea:'Humanities'    },
+  { code:'REL',   name:'Religious Education',             learningArea:'Life Skills'   },
+  { code:'CRA',   name:'Creative Arts',                   learningArea:'Creative Arts' },
+  { code:'AGN',   name:'Agriculture and Nutrition',       learningArea:'Technical'     },
+];
+
+const CBC_JUNIOR = [
   { code:'ENG',   name:'English',                learningArea:'Languages'      },
   { code:'KIS',   name:'Kiswahili',              learningArea:'Languages'      },
   { code:'MATH',  name:'Mathematics',            learningArea:'Mathematics'    },
@@ -19,6 +44,14 @@ const CBC_SUBJECTS = [
   { code:'AGR',   name:'Agriculture',            learningArea:'Technical'      },
   { code:'CAS',   name:'Creative Arts & Sports', learningArea:'Creative Arts'  },
 ];
+
+/* The list that fits a class's grade (anything else keeps the Junior list, as before) */
+const subjectsForGrade = (grade) => {
+  const g = Number(grade);
+  if (g >= 1 && g <= 3) return CBC_LOWER_PRIMARY;
+  if (g >= 4 && g <= 6) return CBC_UPPER_PRIMARY;
+  return CBC_JUNIOR;
+};
 
 /* ══════════════════════════════════════════════════════════
    @route   GET /api/subjects
@@ -247,7 +280,8 @@ const deleteSubject = async (req, res, next) => {
 
 /* ══════════════════════════════════════════════════════════
    @route   POST /api/subjects/seed-defaults
-   @desc    Create all 9 CBC subjects for a class at once
+   @desc    Create the standard CBC subjects for a class at once
+           (7 for Grades 1–3, 8 for Grades 4–6, 9 for Grades 7–9)
    @body    { classId }
    @access  Admin only
 ══════════════════════════════════════════════════════════ */
@@ -278,7 +312,9 @@ const seedDefaultSubjects = async (req, res, next) => {
     const created = [];
     const skipped = [];
 
-    for (const subj of CBC_SUBJECTS) {
+    const list = subjectsForGrade(classDoc.grade);
+
+    for (const subj of list) {
       const existing = await Subject.findOne({
         code  : subj.code,
         class : classId,
@@ -304,6 +340,7 @@ const seedDefaultSubjects = async (req, res, next) => {
     res.status(201).json({
       success : true,
       message : `${created.length} subjects created for ${classDoc.name}.`,
+      total   : list.length,
       created,
       skipped,
     });
@@ -315,7 +352,7 @@ const seedDefaultSubjects = async (req, res, next) => {
 
 /* ══════════════════════════════════════════════════════════
    @route   POST /api/subjects/seed-all-classes
-   @desc    Seed all 9 subjects for ALL classes in school
+   @desc    Seed the standard subjects for ALL classes in school (by grade)
            Run this once during school setup
    @access  Admin only
 ══════════════════════════════════════════════════════════ */
@@ -340,7 +377,7 @@ const seedAllClasses = async (req, res, next) => {
     for (const cls of classes) {
       let created = 0;
 
-      for (const subj of CBC_SUBJECTS) {
+      for (const subj of subjectsForGrade(cls.grade)) {
         const existing = await Subject.findOne({
           code  : subj.code,
           class : cls._id,

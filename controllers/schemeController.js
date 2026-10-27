@@ -224,4 +224,4 @@ const resetContent = async (req, res, next) => {
   }
 };
 
-module.exports = { getDesigns, previewScheme, getContent, resetContent };
+module.exports = { getDesigns, previewScheme, getContent, resetContent, loadDesign, getContentStore };

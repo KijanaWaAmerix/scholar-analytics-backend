@@ -22,16 +22,21 @@ const getGemini = () => {
     const model  = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 
     cached = {
-      async generateJson({ prompt, schema }) {
+      async generateJson({ prompt, schema, pdf }) {
         const res = await client.models.generateContent({
           model,
-          contents: prompt,
+          contents: pdf
+            ? [{ role: 'user', parts: [
+                { inlineData: { mimeType: 'application/pdf', data: pdf.toString('base64') } },
+                { text: prompt },
+              ] }]
+            : prompt,
           config: {
             responseMimeType: 'application/json',
             responseJsonSchema: schema,
-            maxOutputTokens: 8192,
+            maxOutputTokens: pdf ? 16384 : 8192,
             temperature: 0.4,
-            httpOptions: { timeout: 45000 },
+            httpOptions: { timeout: pdf ? 120000 : 45000 },
           },
         });
         return JSON.parse(res.text);

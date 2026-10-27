@@ -8,6 +8,48 @@
 
 const designs            = require('../data/curriculum');
 const { generateScheme } = require('../utils/schemeScheduler');
+const { getObjectStore } = require('../utils/objectStore');
+const { getGemini }      = require('../utils/gemini');
+const { createContentStore, DESIGN_KEY, SUB_ID } = require('../utils/contentStore');
+const { createLessonEngine } = require('../utils/lessonContent');
+
+/* Content store and engine are built on first use, so a missing setting
+   never stops the server from starting */
+let contentStore;
+const getContentStore = () => {
+  if (contentStore === undefined) {
+    const objects = getObjectStore();
+    contentStore = objects ? createContentStore(objects) : null;
+  }
+  return contentStore;
+};
+
+let engine;
+const getEngine = () => {
+  if (!engine) engine = createLessonEngine({ ai: getGemini(), store: getContentStore() });
+  return engine;
+};
+
+/* A design uploaded to storage replaces the one shipped in the code.
+   Kept in memory for 10 minutes. */
+const designCache = new Map();
+const DESIGN_TTL = 10 * 60 * 1000;
+
+const loadDesign = async (key) => {
+  if (typeof key !== 'string' || !DESIGN_KEY.test(key)) return null;
+  const hit = designCache.get(key);
+  if (hit && hit.until > Date.now()) return hit.design;
+
+  let design = null;
+  const store = getContentStore();
+  if (store) {
+    try { design = await store.getDesign(key); }
+    catch (err) { console.error('Design lookup failed:', err.message); }
+  }
+  design = design || designs[key] || null;
+  designCache.set(key, { design, until: Date.now() + DESIGN_TTL });
+  return design;
+};
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -62,7 +104,7 @@ const getDesigns = (req, res, next) => {
      lessonsPerDay?: { "1": 1, "2": 1, ... "5": 1 }    (1 = Monday)
    }
 ══════════════════════════════════════════════════════════ */
-const previewScheme = (req, res, next) => {
+const previewScheme = async (req, res, next) => {
   try {
     const {
       designKey, startSubStrand, endSubStrand,
@@ -72,7 +114,7 @@ const previewScheme = (req, res, next) => {
 
     const fail = (message) => res.status(400).json({ success: false, message });
 
-    const design = designs[designKey];
+    const design = await loadDesign(designKey);
     if (!design) return fail('Unknown curriculum design. Use GET /api/schemes/designs to see what is available.');
 
     if (!startSubStrand || !endSubStrand) {
@@ -129,4 +171,57 @@ const previewScheme = (req, res, next) => {
   }
 };
 
-module.exports = { getDesigns, previewScheme };
+/* ══════════════════════════════════════════════════════════
+   @route   POST /api/schemes/content
+   @desc    Lesson content for lessons from..to of one sub-strand.
+            At most 5 lessons per request; the page asks in steps.
+   @access  Admin, Teacher
+   body: { designKey, subStrandId, from, to }
+══════════════════════════════════════════════════════════ */
+const getContent = async (req, res, next) => {
+  try {
+    const { designKey, subStrandId, from, to } = req.body;
+    const fail = (message) => res.status(400).json({ success: false, message });
+
+    const design = await loadDesign(designKey);
+    if (!design) return fail('Unknown curriculum design.');
+    if (typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId)) return fail('Invalid sub-strand.');
+
+    let result;
+    try {
+      result = await getEngine().getLessons({ design, designKey, subStrandId, from, to });
+    } catch (err) {
+      if (err.statusCode === 400) return fail(err.message);
+      throw err;
+    }
+
+    res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
+   @route   DELETE /api/schemes/content
+   @desc    Throw away the saved lessons of one sub-strand so they
+            are written again (e.g. after better notes are added)
+   @access  Superadmin
+   body: { designKey, subStrandId }
+══════════════════════════════════════════════════════════ */
+const resetContent = async (req, res, next) => {
+  try {
+    const { designKey, subStrandId } = req.body;
+    const store = getContentStore();
+    if (!store) return res.status(503).json({ success: false, message: 'Storage is not set up.' });
+    if (typeof designKey !== 'string' || !DESIGN_KEY.test(designKey) ||
+        typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId)) {
+      return res.status(400).json({ success: false, message: 'Invalid design or sub-strand.' });
+    }
+    const removed = await store.deleteContent(designKey, subStrandId);
+    res.status(200).json({ success: true, removed });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getDesigns, previewScheme, getContent, resetContent };

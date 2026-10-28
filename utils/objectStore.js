@@ -89,11 +89,11 @@ const getObjectStore = () => {
     const raw = String(process.env.STORAGE_ENDPOINT).trim();
     const endpoint = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
     const client = new sdk.S3Client({
-      region  : process.env.STORAGE_REGION,
+      region  : String(process.env.STORAGE_REGION).trim(),
       endpoint,
       credentials: {
-        accessKeyId    : process.env.STORAGE_KEY_ID,
-        secretAccessKey: process.env.STORAGE_SECRET_KEY,
+        accessKeyId    : String(process.env.STORAGE_KEY_ID).trim().replace(/^["']|["']$/g, ''),
+        secretAccessKey: String(process.env.STORAGE_SECRET_KEY).trim().replace(/^["']|["']$/g, ''),
       },
       /* Backblaze and other S3-compatible services do not accept the extra
          checksum headers the AWS library adds by default */

@@ -23,6 +23,7 @@ const safeMessage = (err, env) => {
 const hint = (message, where) => {
   const m = message.toLowerCase();
   if (where === 'storage') {
+    if (m.includes('malformed access key')) return 'STORAGE_KEY_ID is not a Backblaze keyID. It is the SHORT code shown once when you create the application key (about 25 characters, like 004a1b2c3d4e5f60000000001), not the key name and not the long applicationKey. Copy it again without spaces or quotes.';
     if (m.includes('invalidaccesskeyid') || m.includes('not authorized') || m.includes('signaturedoesnotmatch') || m.includes('access denied')) {
       return 'The Backblaze key was refused. Check STORAGE_KEY_ID and STORAGE_SECRET_KEY, and that the key can read and write this bucket.';
     }

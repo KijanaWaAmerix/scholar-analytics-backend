@@ -12,6 +12,7 @@ const { getObjectStore } = require('../utils/objectStore');
 const { getGemini }      = require('../utils/gemini');
 const { createContentStore, DESIGN_KEY, SUB_ID } = require('../utils/contentStore');
 const { createLessonEngine } = require('../utils/lessonContent');
+const { runChecks }          = require('../utils/setupCheck');
 
 /* Content store and engine are built on first use, so a missing setting
    never stops the server from starting */
@@ -224,4 +225,18 @@ const resetContent = async (req, res, next) => {
   }
 };
 
-module.exports = { getDesigns, previewScheme, getContent, resetContent, loadDesign, getContentStore };
+/* ══════════════════════════════════════════════════════════
+   @route   GET /api/schemes/status
+   @desc    Try the storage and Gemini set-up and say what works
+   @access  Admin, Superadmin
+══════════════════════════════════════════════════════════ */
+const getStatus = async (req, res, next) => {
+  try {
+    const checks = await runChecks({ store: getObjectStore(), ai: getGemini() });
+    res.status(200).json({ success: true, ...checks });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getDesigns, previewScheme, getContent, resetContent, getStatus, loadDesign, getContentStore };

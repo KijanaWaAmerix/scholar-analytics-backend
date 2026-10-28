@@ -16,7 +16,7 @@ const contentLimiter = rateLimit({
   message        : { success: false, message: 'Too many requests. Please try again in a few minutes.' },
 });
 
-const { getDesigns, previewScheme, getContent, resetContent } = require('../controllers/schemeController');
+const { getDesigns, previewScheme, getContent, resetContent, getStatus } = require('../controllers/schemeController');
 
 const { protect }   = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
@@ -34,5 +34,10 @@ router.post('/content', contentLimiter, authorize('admin', 'teacher', 'superadmi
 
 /* DELETE /api/schemes/content — clear saved lessons of a sub-strand */
 router.delete('/content', authorize('superadmin'), resetContent);
+
+/* GET /api/schemes/status — does storage and Gemini work? */
+router.get('/status', rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false,
+  message: { success: false, message: 'Too many checks. Try again in a few minutes.' } }),
+  authorize('admin', 'superadmin'), getStatus);
 
 module.exports = router;

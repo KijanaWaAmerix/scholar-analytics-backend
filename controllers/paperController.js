@@ -4,7 +4,7 @@
 ═══════════════════════════════════════════════════════════ */
 
 const { loadDesign, getContentStore } = require('./schemeController');
-const { getGemini }       = require('../utils/gemini');
+const { getAi }           = require('../utils/ai');
 const { createPaperWriter, share, bandsFor } = require('../utils/examPaper');
 const { SUB_ID }          = require('../utils/contentStore');
 
@@ -13,7 +13,7 @@ const getWriter = () => {
   if (!writer) {
     const store = getContentStore();
     writer = createPaperWriter({
-      ai   : getGemini(),
+      ai   : getAi(),
       notes: store ? (key, subId) => store.getNotes(key, subId) : undefined,
       bank : store ? { get: (k, sId) => store.getBank(k, sId), add: (k, sId, a) => store.addToBank(k, sId, a) } : null,
     });

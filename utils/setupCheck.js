@@ -45,11 +45,12 @@ const hint = (message, where) => {
  * deps: { env, store, ai, nodeVersion }
  * Returns { node, storage:{configured, ok, message}, gemini:{configured, ok, message, model} }
  */
-const runChecks = async ({ env = process.env, store, ai, nodeVersion = process.versions.node, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) => {
+const runChecks = async ({ env = process.env, store, ai, backup = null, nodeVersion = process.versions.node, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) => {
   const out = {
     node: { version: nodeVersion, ok: Number(nodeVersion.split('.')[0]) >= 20 },
     storage: { configured: false, ok: false, message: '' },
     gemini: { configured: false, ok: false, message: '', model: env.GEMINI_MODEL || 'gemini-flash-latest' },
+    backup: { configured: Boolean(backup), ok: false, message: backup ? '' : 'Not set up (optional). It takes over when Gemini is down.', name: backup?.name || '' },
   };
   if (!out.node.ok) out.node.message = 'Node 20 or newer is needed. Set the Node version on Render.';
 
@@ -106,6 +107,19 @@ const runChecks = async ({ env = process.env, store, ai, nodeVersion = process.v
     if (lastErr) {
       const message = safeMessage(lastErr, env);
       out.gemini.message = `${message} ${hint(message, 'gemini')}`.trim();
+    }
+  }
+  /* Backup AI (optional): the same tiny question */
+  if (backup) {
+    try {
+      const res = await backup.generateJson({
+        prompt: 'Reply with JSON {"ok": true} and nothing else.',
+        schema: { type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] },
+      });
+      out.backup.ok = res?.ok === true;
+      out.backup.message = out.backup.ok ? `The backup AI works (${backup.name}, model ${backup.model}).` : 'The backup AI answered, but not in the expected form.';
+    } catch (err) {
+      out.backup.message = safeMessage(err, { ...env, GEMINI_API_KEY: env.BACKUP_AI_KEY });
     }
   }
   return out;

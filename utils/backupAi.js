@@ -8,10 +8,11 @@
 
    Settings (Render → Environment). Pick ONE kind:
 
-   1) Any service that works like OpenAI (OpenAI, Groq, DeepSeek, OpenRouter, ...)
+   1) Any service that works like OpenAI (OpenAI, Groq, DeepSeek, OpenRouter, Meta Llama API, ...)
         BACKUP_AI_KEY     the key
         BACKUP_AI_MODEL   the model name
         BACKUP_AI_URL     optional, default https://api.openai.com/v1
+                          Meta Llama API: https://api.llama.com/compat/v1
 
    2) Anthropic (Claude)
         BACKUP_AI_PROVIDER=anthropic
@@ -61,16 +62,24 @@ const createBackupAi = ({ provider = 'openai', key, model, url, fetchImpl, timeo
       }
 
       const base = String(url || 'https://api.openai.com/v1').replace(/\/+$/, '');
-      const res = await doFetch(`${base}/chat/completions`, {
+      const send = (withFormat) => doFetch(`${base}/chat/completions`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
         body: JSON.stringify({
-          model, temperature: 0.4, response_format: { type: 'json_object' },
+          model, temperature: 0.4,
+          ...(withFormat ? { response_format: { type: 'json_object' } } : {}),
           messages: [{ role: 'user', content: text }],
         }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(`Backup AI ${res.status}: ${data?.error?.message || 'request failed'}`);
+
+      let res = await send(true);
+      let data = await res.json().catch(() => ({}));
+      /* Some services do not know response_format. Ask again without it. */
+      if (!res.ok && (res.status === 400 || res.status === 422) && /response_format|json_object|json mode/i.test(JSON.stringify(data))) {
+        res = await send(false);
+        data = await res.json().catch(() => ({}));
+      }
+      if (!res.ok) throw new Error(`Backup AI ${res.status}: ${data?.error?.message || data?.message || 'request failed'}`);
       return parseJsonReply(data?.choices?.[0]?.message?.content);
     },
   };

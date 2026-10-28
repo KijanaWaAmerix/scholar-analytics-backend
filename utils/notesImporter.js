@@ -31,11 +31,16 @@ const findHeadings = (lines, subs) => {
 
   for (const sub of subs) {
     const target = norm(sub.name);
+    /* Best match first: a heading that is exactly the name (a number in front is fine).
+       Then a heading that merely contains it. Strand titles never count. */
+    const heading = (i) => looksLikeHeading(lines[i]) && !/^strand\b/i.test(lines[i]);
+    const bare = (i) => norm(lines[i]).replace(/^\d+( \d+)* /, '');
     let at = -1;
-    for (let i = from; i < lines.length; i += 1) {
-      if (!looksLikeHeading(lines[i])) continue;
-      const n = norm(lines[i]).replace(/^\d+( \d+)* /, '');
-      if (n === target || n.includes(target) || (target.length > 12 && target.includes(n) && n.length > 12)) { at = i; break; }
+    for (let i = from; i < lines.length && at === -1; i += 1) {
+      if (heading(i) && bare(i) === target) at = i;
+    }
+    for (let i = from; i < lines.length && at === -1; i += 1) {
+      if (heading(i) && bare(i).includes(target)) at = i;
     }
     if (at === -1) { missing.push(sub.id); continue; }
     found.push({ id: sub.id, name: sub.name, line: at });

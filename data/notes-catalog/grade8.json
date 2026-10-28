@@ -1,0 +1,122 @@
+{
+  "grade": "grade8",
+  "label": "Grade 8",
+  "source": "https://teacher.co.ke/grade-8-notes/",
+  "note": "Design key = <grade>-<subject>. Notes are reference only. Mathematics and English were not on the page; add links here when you find them.",
+  "subjects": [
+    {
+      "slug": "integrated-science",
+      "designKey": "grade8-integrated-science",
+      "name": "Integrated Science",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-INTEGRATED-SCIENCE-NOTES2024-TEACHER.CO_.KE_.docx",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-INTEGRATED-SCIENCE-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-INTEGRATED-SCIENCE-LESSON-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-INTEGRATED-SCIENCE-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-INTEGRATED-SCIENCE-NOTES-TERM-2-12024-TEACHER.CO_.KE_.doc"
+      ]
+    },
+    {
+      "slug": "pre-technical-studies",
+      "designKey": "grade8-pre-technical-studies",
+      "name": "Pre-Technical Studies",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-PRE-TECHNICAL-STUDIES-LESSON-NOTES-COMPLETE2024-TEACHER.CO_.KE_.docx",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-PRE-TECHNICAL-STUDIES-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-TERM-2-PRETECHNICAL-NOTES2024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-PRETECHNICAL-NOTES-V22024-TEACHER.CO_.KE_.docx",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-PRE-TECHNICAL-NOTES2024-TEACHER.CO_.KE_.docx"
+      ]
+    },
+    {
+      "slug": "cre",
+      "designKey": "grade8-cre",
+      "name": "Christian Religious Education",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-C-R-E-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-C-R-E-NOTES-TERM-12024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CRE-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf"
+      ]
+    },
+    {
+      "slug": "agriculture-and-nutrition",
+      "designKey": "grade8-agriculture-and-nutrition",
+      "name": "Agriculture and Nutrition",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-AGRICULTURE-AND-NUTRITION-LESSON-NOTES2024-TEACHER.CO_.KE_.docx",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-AGRICULTURE-AND-NUTRITION-LESSON-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-TERM-2-AGRI-NUTRITION-NOTES2024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-AGRIC-NUTRITION-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-AGRIC-NUTRITION-NOTES-TERM-2-12024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALIZED-AGRIC-NUTRITION-NOTES-TERM-12024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-AGRICULTURE-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf"
+      ]
+    },
+    {
+      "slug": "social-studies",
+      "designKey": "grade8-social-studies",
+      "name": "Social Studies",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-RATIONALISED-SOCIAL-STUDIES-LESSON-NOTES2024-TEACHER.CO_.KE_.docx"
+      ]
+    },
+    {
+      "slug": "kiswahili",
+      "designKey": "grade8-kiswahili",
+      "name": "Kiswahili",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-KISWAHILI-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf"
+      ]
+    },
+    {
+      "slug": "creative-arts-and-sports",
+      "designKey": "grade8-creative-arts-and-sports",
+      "name": "Creative Arts and Sports",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-SPORTS-NOTES2024-TEACHER.CO_.KE_.docx",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-AND-SPORTS-NOTES-STRAND-1-NOTES-FOUNDATIONS-OF-CREATIVE-ARTS-AND-SPORTS2024-TEACHER.CO_.KE_.pdf",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-AND-SPORTS-NOTES-STRAND-2-NOTES-CREATING-AND-PERFORMING-IN-CREATIVE-ARTS-AND-SPORTS2024-TEACHER.CO_.KE_.pdf",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-AND-SPORTS-LESSON-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-SPORTS-NOTES-TERM-22024-TEACHER.CO_.KE_.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-SPORTS-NOTES-TERM-2-12024-TEACHER.CO_.KE_-1.doc",
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-CREATIVE-ARTS-SPORTS-NOTES-TERM-12024-TEACHER.CO_.KE_.doc"
+      ]
+    },
+    {
+      "slug": "french",
+      "designKey": "grade8-french",
+      "name": "French",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-TERM-2-RATIONALIZED-FRENCH-NOTES2024-TEACHER.CO_.KE_.docx"
+      ]
+    },
+    {
+      "slug": "home-science",
+      "designKey": "grade8-home-science",
+      "name": "Home Science",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-HOME-SCIENCE-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf"
+      ]
+    },
+    {
+      "slug": "computer-studies",
+      "designKey": "grade8-computer-studies",
+      "name": "Computer Studies",
+      "notes": [
+        "https://teacher.co.ke/wp-content/uploads/2024/07/GRADE-8-COMPUTER-STUDIES-NOTES-TERM-12024-TEACHER.CO_.KE_.pdf"
+      ]
+    },
+    {
+      "slug": "mathematics",
+      "designKey": "grade8-mathematics",
+      "name": "Mathematics",
+      "notes": []
+    },
+    {
+      "slug": "english",
+      "designKey": "grade8-english",
+      "name": "English",
+      "notes": []
+    }
+  ]
+}

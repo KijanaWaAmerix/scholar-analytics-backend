@@ -15,7 +15,7 @@
    - You choose each document. It does not crawl a website.
    - Links are downloaded one at a time, with a pause, and the source is saved with the notes.
    - The notes are only reference for Gemini. They are never shown to learners as they are.
-   - Old .doc files must be saved as .docx first.
+   - Word (.docx and .doc), PDF (with real text) and .txt files can be read.
    - Only use documents you are happy to use for this project. If the app is ever sold
      to schools, get permission from the owners of the notes first. */
 require('dotenv').config();
@@ -25,6 +25,7 @@ const crypto = require('crypto');
 const designs = require('./data/curriculum');
 const { getObjectStore } = require('./utils/objectStore');
 const { splitIntoSections } = require('./utils/notesImporter');
+const { readNotesBuffer } = require('./utils/readNotesFile');
 const { DESIGN_KEY } = require('./utils/contentStore');
 
 const readText = async (input) => {
@@ -39,14 +40,7 @@ const readText = async (input) => {
     buffer = fs.readFileSync(input);
   }
 
-  if (/\.docx$/i.test(name)) {
-    let mammoth;
-    try { mammoth = require('mammoth'); } catch { throw new Error('Run "npm install" first (the docx reader is missing).'); }
-    return (await mammoth.extractRawText({ buffer })).value;
-  }
-  if (/\.(txt|md)$/i.test(name)) return buffer.toString('utf8');
-  if (/\.doc$/i.test(name)) throw new Error('Old .doc files cannot be read. Open it in Word and save as .docx.');
-  throw new Error('Only .docx and .txt files are supported.');
+  return readNotesBuffer(buffer, name);
 };
 
 (async () => {

@@ -1,3 +1,6 @@
 .env
 node_modules/
 fixIndex.js
+imported-notes/
+downloaded-notes/
+links.txt

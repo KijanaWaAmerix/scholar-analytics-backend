@@ -356,7 +356,7 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
    * Returns { lessons: [{ lessonNo, source, content }], ai: {...}, labels }
    * source: 'gemini' (stored AI lesson), 'edited' (stored, edited), 'design'
    */
-  const getLessons = async ({ design, designKey, subStrandId, from, to }) => {
+  const getLessons = async ({ design, designKey, subStrandId, from, to, useAi = true }) => {
     const found = findSubStrand(design, subStrandId);
     if (!found) throw Object.assign(new Error('Unknown sub-strand.'), { statusCode: 400 });
     const { sub } = found;
@@ -372,7 +372,7 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     const numbers = [];
     for (let n = from; n <= to; n += 1) numbers.push(n);
 
-    const aiState = { configured: Boolean(ai && store), used: false, failed: false };
+    const aiState = { configured: Boolean(ai && store), used: false, failed: false, skipped: !useAi };
     const have = {};
 
     if (store) {
@@ -385,7 +385,7 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     const missing = numbers.filter((n) => !have[n]);
 
     /* Gemini only runs when the lessons can be saved afterwards */
-    if (missing.length && ai && store) {
+    if (missing.length && ai && store && useAi) {
       aiState.used = true;
       const flightKey = `${designKey}|${sub.id}|${lang}|${missing.join(',')}`;
       try {

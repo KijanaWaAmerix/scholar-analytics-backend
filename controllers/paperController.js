@@ -15,6 +15,7 @@ const getWriter = () => {
     writer = createPaperWriter({
       ai   : getGemini(),
       notes: store ? (key, subId) => store.getNotes(key, subId) : undefined,
+      bank : store ? { get: (k, sId) => store.getBank(k, sId), add: (k, sId, a) => store.addToBank(k, sId, a) } : null,
     });
   }
   return writer;
@@ -69,11 +70,11 @@ const planPaper = async (req, res, next) => {
    @desc    Write the questions of ONE sub-strand (one request each,
             so a long paper never waits on a single slow call)
    @access  Admin, Teacher
-   body: { designKey, subStrandId, mcq, structured }
+   body: { designKey, subStrandId, mcq, structured, source?: 'auto' | 'gemini' | 'saved' }
 ══════════════════════════════════════════════════════════ */
 const writePart = async (req, res, next) => {
   try {
-    const { designKey, subStrandId, mcq, structured } = req.body;
+    const { designKey, subStrandId, mcq, structured, source = 'auto' } = req.body;
     const design = await loadDesign(designKey);
     if (!design) return res.status(400).json({ success: false, message: 'Unknown curriculum design.' });
     if (typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId)) {
@@ -82,7 +83,7 @@ const writePart = async (req, res, next) => {
 
     let part;
     try {
-      part = await getWriter().writePart({ design, designKey, subStrandId, mcq, structured });
+      part = await getWriter().writePart({ design, designKey, subStrandId, mcq, structured, mode: source });
     } catch (err) {
       if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message });
       throw err;

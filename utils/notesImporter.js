@@ -16,8 +16,33 @@ const URL_RE = /(https?:\/\/|www\.)\S+/gi;
 
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
-/* A line that could be a heading: short, and not a sentence */
-const looksLikeHeading = (line) => line.length > 0 && line.length <= 140 && !/[.!?]$/.test(line.trim());
+/* A line that could be a heading: short, and not a sentence.
+   Teachers often end a heading with a full stop ("2.1 The Cell."), so a short
+   line is allowed to end with one. */
+const looksLikeHeading = (line) => {
+  const t = line.trim();
+  if (!t || t.length > 140) return false;
+  if (/[!?]$/.test(t)) return false;
+  if (/\.$/.test(t)) return t.length <= 80;
+  return true;
+};
+
+/* Light word clean-up so "Material" and "Materials" count as the same word */
+const stem = (w) => (w.length > 3 ? w.replace(/(es|s)$/, '') : w);
+const words = (s) => norm(s).split(' ').filter(Boolean).map(stem);
+
+const editDistanceAtMost1 = (a, b) => {
+  if (a === b) return true;
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i += 1;
+  if (a.length === b.length) return a.slice(i + 1) === b.slice(i + 1);
+  return a.length > b.length ? a.slice(i + 1) === b.slice(i) : b.slice(i + 1) === a.slice(i);
+};
+
+/* Same words in the same order; a one-letter slip in a long word is allowed ("compunds") */
+const sameWords = (a, b) =>
+  a.length === b.length && a.every((w, i) => w === b[i] || (w.length >= 6 && editDistanceAtMost1(w, b[i])));
 
 /**
  * Find where each sub-strand starts. A heading line has to contain the
@@ -38,6 +63,11 @@ const findHeadings = (lines, subs) => {
     let at = -1;
     for (let i = from; i < lines.length && at === -1; i += 1) {
       if (heading(i) && bare(i) === target) at = i;
+    }
+    /* Same words, allowing "Material"/"Materials" and a small spelling slip */
+    const targetWords = words(sub.name);
+    for (let i = from; i < lines.length && at === -1; i += 1) {
+      if (heading(i) && sameWords(words(bare(i)), targetWords)) at = i;
     }
     for (let i = from; i < lines.length && at === -1; i += 1) {
       if (heading(i) && bare(i).includes(target)) at = i;

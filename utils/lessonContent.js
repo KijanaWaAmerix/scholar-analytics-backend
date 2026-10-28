@@ -182,6 +182,40 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   };
 };
 
+/* ── Layer 3b: the same plain lesson, with the teaching points taken from stored notes ── */
+const noteItems = (text) => {
+  const items = [];
+  for (const line of String(text || '').split(/\n+/)) {
+    const clean = cleanText(line.replace(/^[-•*\d.)\s]+/, ''), 2000);
+    if (clean.length < 30) continue;                         /* headings and fragments */
+    /* long paragraphs become sentences */
+    clean.split(/(?<=[.!?])\s+(?=[A-Z])/).forEach((sentence) => {
+      const t = sentence.trim();
+      if (t.length >= 30) items.push(t.slice(0, 300));
+    });
+  }
+  return items;
+};
+
+/**
+ * Takes the plain lesson and puts this lesson's share of the notes in as the
+ * teaching points. Returns the lesson, or null when there are too few notes.
+ */
+const buildFromNotes = ({ base, notes, lessonNo, total }) => {
+  const items = noteItems(notes);
+  if (items.length < 3 || !base) return null;
+  const mine = pickItems(items, lessonNo, total).slice(0, 6);
+  const sw = (base.organisation || '').startsWith('Wanafunzi');
+  const steps = base.development?.[0]?.steps || [];
+  return {
+    ...base,
+    development: [
+      { title: sw ? 'Mambo muhimu' : 'Key points', steps: mine },
+      ...(steps.length ? [{ title: sw ? 'Shughuli za wanafunzi' : 'Learner activities', steps }] : []),
+    ],
+  };
+};
+
 /* ── Prompts and schemas ───────────────────────────────────── */
 const str = { type: 'string' };
 const strList = { type: 'array', items: str };
@@ -354,7 +388,7 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
   /**
    * Content for lessons from..to (1-based, inclusive) of one sub-strand.
    * Returns { lessons: [{ lessonNo, source, content }], ai: {...}, labels }
-   * source: 'gemini' (stored AI lesson), 'edited' (stored, edited), 'design'
+   * source: 'gemini' (stored AI lesson), 'edited' (stored, edited), 'notes' (built from stored notes), 'design'
    */
   const getLessons = async ({ design, designKey, subStrandId, from, to, useAi = true }) => {
     const found = findSubStrand(design, subStrandId);
@@ -402,18 +436,22 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
       }
     }
 
+    /* Stored notes can make the plain lesson better, so read them once if any lesson needs the fallback */
+    let notesText = '';
+    if (store && numbers.some((n) => !have[n])) {
+      try { notesText = (await store.getNotes(designKey, sub.id)) || ''; } catch { notesText = ''; }
+    }
+
     const lessons = numbers.map((n) => {
       if (have[n]) {
         return { lessonNo: n, source: have[n].edited ? 'edited' : 'gemini', content: have[n] };
       }
-      return {
-        lessonNo: n,
-        source  : 'design',
-        content : buildFallback({ design, subStrandId: sub.id, lessonNo: n, lang }),
-      };
+      const base = buildFallback({ design, subStrandId: sub.id, lessonNo: n, lang });
+      const fromNotes = buildFromNotes({ base, notes: notesText, lessonNo: n, total: sub.lessons });
+      return { lessonNo: n, source: fromNotes ? 'notes' : 'design', content: fromNotes || base };
     });
 
-    if (aiState.used && !aiState.failed && lessons.some((l) => l.source === 'design')) {
+    if (aiState.used && !aiState.failed && lessons.some((l) => l.source !== 'gemini' && l.source !== 'edited')) {
       aiState.failed = true; /* some lessons came back unusable */
     }
 
@@ -425,5 +463,5 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
 
 module.exports = {
   MAX_BATCH, LABELS, languageFor, findSubStrand, cleanText, cleanLesson,
-  buildFallback, createLessonEngine, outlinePrompt, lessonsPrompt,
+  buildFallback, buildFromNotes, noteItems, createLessonEngine, outlinePrompt, lessonsPrompt,
 };

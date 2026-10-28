@@ -9,7 +9,9 @@
 const designs            = require('../data/curriculum');
 const { generateScheme } = require('../utils/schemeScheduler');
 const { getObjectStore } = require('../utils/objectStore');
+const { getAi }          = require('../utils/ai');
 const { getGemini }      = require('../utils/gemini');
+const { getBackupAi }    = require('../utils/backupAi');
 const { createContentStore, DESIGN_KEY, SUB_ID } = require('../utils/contentStore');
 const { createLessonEngine } = require('../utils/lessonContent');
 const { runChecks }          = require('../utils/setupCheck');
@@ -27,7 +29,7 @@ const getContentStore = () => {
 
 let engine;
 const getEngine = () => {
-  if (!engine) engine = createLessonEngine({ ai: getGemini(), store: getContentStore() });
+  if (!engine) engine = createLessonEngine({ ai: getAi(), store: getContentStore() });
   return engine;
 };
 
@@ -234,7 +236,7 @@ const resetContent = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 const getStatus = async (req, res, next) => {
   try {
-    const checks = await runChecks({ store: getObjectStore(), ai: getGemini() });
+    const checks = await runChecks({ store: getObjectStore(), ai: getGemini(), backup: getBackupAi() });
     res.status(200).json({ success: true, ...checks });
   } catch (error) {
     next(error);

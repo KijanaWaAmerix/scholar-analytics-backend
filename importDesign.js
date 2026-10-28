@@ -33,8 +33,16 @@ const { DESIGN_KEY } = require('./utils/contentStore');
 
   let pdf;
   if (/^https:\/\//i.test(input)) {
-    const res = await fetch(input);
-    if (!res.ok) throw new Error(`Could not download the file (${res.status}).`);
+    const res = await fetch(input, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; ScholarAnalytics-DesignImporter/1.0; personal project)',
+        Accept: 'application/pdf,*/*',
+      },
+      redirect: 'follow',
+    });
+    if (!res.ok) {
+      throw new Error(`Could not download the file (${res.status}). If the link opens in your browser, save the PDF into this folder and run the command with the file name instead of the link.`);
+    }
     pdf = Buffer.from(await res.arrayBuffer());
   } else {
     pdf = fs.readFileSync(input);

@@ -27,6 +27,7 @@ const hint = (message, where) => {
       return 'The Backblaze key was refused. Check STORAGE_KEY_ID and STORAGE_SECRET_KEY, and that the key can read and write this bucket.';
     }
     if (m.includes('nosuchbucket') || m.includes('specified bucket')) return 'The bucket was not found. Check STORAGE_BUCKET.';
+    if (m.includes('invalid url') || m.includes('invalid_url')) return 'The storage address is not valid. STORAGE_ENDPOINT must look like https://s3.us-west-004.backblazeb2.com (no spaces, no bucket name, and the same region as your bucket).';
     if (m.includes('enotfound') || m.includes('getaddrinfo') || m.includes('endpoint')) return 'The storage address could not be reached. Check STORAGE_ENDPOINT (it starts with https://s3.).';
   }
   if (where === 'gemini') {

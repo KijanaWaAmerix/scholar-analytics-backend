@@ -85,9 +85,12 @@ const getObjectStore = () => {
 
   try {
     const sdk = require('@aws-sdk/client-s3');
+    /* People often paste the address without https:// or with spaces */
+    const raw = String(process.env.STORAGE_ENDPOINT).trim();
+    const endpoint = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
     const client = new sdk.S3Client({
       region  : process.env.STORAGE_REGION,
-      endpoint: process.env.STORAGE_ENDPOINT,
+      endpoint,
       credentials: {
         accessKeyId    : process.env.STORAGE_KEY_ID,
         secretAccessKey: process.env.STORAGE_SECRET_KEY,

@@ -34,6 +34,7 @@ const hint = (message, where) => {
     if (m.includes('api key') || m.includes('api_key') || m.includes('permission') || m.includes('401') || m.includes('403')) {
       return 'Gemini refused the key. Create a new key and set GEMINI_API_KEY again.';
     }
+    if (m.includes('504') || m.includes('deadline') || m.includes('timeout') || m.includes('timed out') || m.includes('503') || m.includes('overloaded')) return 'Google was too slow or busy. Try again in a minute. If it keeps happening, set GEMINI_MODEL to a fixed model such as gemini-2.5-flash.';
     if (m.includes('429') || m.includes('quota') || m.includes('rate')) return 'Gemini says the limit was reached. Wait a while or check the quota.';
     if (m.includes('not found') || m.includes('404') || m.includes('model')) return 'The Gemini model name was not found. Check GEMINI_MODEL.';
   }
@@ -44,7 +45,7 @@ const hint = (message, where) => {
  * deps: { env, store, ai, nodeVersion }
  * Returns { node, storage:{configured, ok, message}, gemini:{configured, ok, message, model} }
  */
-const runChecks = async ({ env = process.env, store, ai, nodeVersion = process.versions.node } = {}) => {
+const runChecks = async ({ env = process.env, store, ai, nodeVersion = process.versions.node, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) => {
   const out = {
     node: { version: nodeVersion, ok: Number(nodeVersion.split('.')[0]) >= 20 },
     storage: { configured: false, ok: false, message: '' },
@@ -83,15 +84,27 @@ const runChecks = async ({ env = process.env, store, ai, nodeVersion = process.v
     out.gemini.message = 'The Gemini library could not be loaded. Redeploy after the packages install.';
   } else {
     out.gemini.configured = true;
-    try {
-      const res = await ai.generateJson({
-        prompt: 'Reply with JSON {"ok": true} and nothing else.',
-        schema: { type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] },
-      });
-      out.gemini.ok = res?.ok === true;
-      out.gemini.message = out.gemini.ok ? 'Gemini works.' : 'Gemini answered, but not in the expected form.';
-    } catch (err) {
-      const message = safeMessage(err, env);
+    /* A busy moment on Google's side is common, so try up to three times */
+    let lastErr;
+    for (let attempt = 0; attempt < 3 && !out.gemini.ok; attempt += 1) {
+      try {
+        const res = await ai.generateJson({
+          prompt: 'Reply with JSON {"ok": true} and nothing else.',
+          schema: { type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] },
+        });
+        out.gemini.ok = res?.ok === true;
+        out.gemini.message = out.gemini.ok
+          ? `Gemini works.${attempt ? ` (it needed ${attempt + 1} tries)` : ''}`
+          : 'Gemini answered, but not in the expected form.';
+        lastErr = null;
+        if (!out.gemini.ok) break;
+      } catch (err) {
+        lastErr = err;
+        await sleep(1500);
+      }
+    }
+    if (lastErr) {
+      const message = safeMessage(lastErr, env);
       out.gemini.message = `${message} ${hint(message, 'gemini')}`.trim();
     }
   }

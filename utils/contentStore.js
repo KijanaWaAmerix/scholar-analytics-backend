@@ -11,6 +11,7 @@ const DESIGN_KEY = /^[a-z0-9-]{1,60}$/;
 const SUB_ID     = /^\d{1,2}\.\d{1,2}$/;
 const LANGS      = ['en', 'sw'];
 const NOTES_MAX  = 12000;
+const BANK_MAX   = 300;   /* saved questions kept for each kind in each sub-strand */
 
 const check = (designKey, subId, lang) => {
   if (!DESIGN_KEY.test(designKey || '')) throw new Error('Invalid design key');
@@ -47,6 +48,29 @@ const createContentStore = (objects) => ({
       if (text.length >= NOTES_MAX) break;
     }
     return text.slice(0, NOTES_MAX).trim();
+  },
+
+  /* Saved questions for a sub-strand: { mcq: [...], structured: [...] } */
+  async getBank(designKey, subId) {
+    check(designKey, subId);
+    const bank = await objects.getJson(`bank/${designKey}/${subId}.json`);
+    return { mcq: Array.isArray(bank?.mcq) ? bank.mcq : [], structured: Array.isArray(bank?.structured) ? bank.structured : [] };
+  },
+  async addToBank(designKey, subId, add) {
+    check(designKey, subId);
+    const key = `bank/${designKey}/${subId}.json`;
+    const bank = await this.getBank(designKey, subId);
+    const mcqKey = (q) => String(q.question || '').toLowerCase();
+    const strKey = (q) => String(q.parts?.[0]?.text || '').toLowerCase();
+    const merge = (old, incoming, k) => {
+      const seen = new Set(old.map(k));
+      const out = old.slice();
+      for (const q of incoming || []) { if (!seen.has(k(q))) { seen.add(k(q)); out.push(q); } }
+      return out.slice(-BANK_MAX);
+    };
+    const next = { mcq: merge(bank.mcq, add.mcq, mcqKey), structured: merge(bank.structured, add.structured, strKey) };
+    await objects.putJson(key, next);
+    return { mcq: next.mcq.length, structured: next.structured.length };
   },
 
   async getDesign(designKey) {

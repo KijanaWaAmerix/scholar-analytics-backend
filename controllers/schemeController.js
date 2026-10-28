@@ -177,12 +177,14 @@ const previewScheme = async (req, res, next) => {
    @desc    Lesson content for lessons from..to of one sub-strand.
             At most 5 lessons per request; the page asks in steps.
    @access  Admin, Teacher
-   body: { designKey, subStrandId, from, to }
+   body: { designKey, subStrandId, from, to, source?: 'auto' | 'saved' }
+   source 'saved' never calls Gemini: saved lessons, then the design only.
 ══════════════════════════════════════════════════════════ */
 const getContent = async (req, res, next) => {
   try {
-    const { designKey, subStrandId, from, to } = req.body;
+    const { designKey, subStrandId, from, to, source = 'auto' } = req.body;
     const fail = (message) => res.status(400).json({ success: false, message });
+    if (!['auto', 'saved'].includes(source)) return fail('Unknown source.');
 
     const design = await loadDesign(designKey);
     if (!design) return fail('Unknown curriculum design.');
@@ -190,7 +192,7 @@ const getContent = async (req, res, next) => {
 
     let result;
     try {
-      result = await getEngine().getLessons({ design, designKey, subStrandId, from, to });
+      result = await getEngine().getLessons({ design, designKey, subStrandId, from, to, useAi: source !== 'saved' });
     } catch (err) {
       if (err.statusCode === 400) return fail(err.message);
       throw err;

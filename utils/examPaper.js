@@ -149,7 +149,25 @@ const cleanStructured = (raw) => {
 };
 
 /* ── The writer ────────────────────────────────────────────── */
-const createPaperWriter = ({ ai, notes = async () => '', random = Math.random } = {}) => {
+const MODES = ['auto', 'gemini', 'saved'];
+
+/* n random items from a list */
+const sample = (list, n, random) => {
+  const pool = list.slice();
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, n);
+};
+
+/*
+   mode: 'auto'   Gemini first; saved questions fill in what is missing (or everything if Gemini is down)
+         'gemini' Gemini only
+         'saved'  only questions already saved in the bank (no Gemini)
+   bank: { get(designKey, subId) -> { mcq:[], structured:[] }, add(designKey, subId, { mcq, structured }) }
+*/
+const createPaperWriter = ({ ai, notes = async () => '', bank = null, random = Math.random } = {}) => {
 
   const askFor = async ({ design, designKey, sub, lang, mcq, structured }) => {
     const text = (await notes(designKey, sub.id)) || '';
@@ -166,42 +184,80 @@ const createPaperWriter = ({ ai, notes = async () => '', random = Math.random } 
     throw lastErr || new Error('No usable answer from the AI');
   };
 
-  /* One sub-strand: ask, keep the good ones, ask again once for what is missing */
+  /* One sub-strand: Gemini (if allowed), then saved questions for whatever is missing */
   const writeForSub = async (args) => {
-    const { mcq, structured } = args;
+    const { mcq, structured, designKey, sub, mode = 'auto' } = args;
     const seen = new Set();
     const goodMcq = [];
     const goodStr = [];
+    const fresh = { mcq: [], structured: [] };
 
-    const take = (out) => {
+    const take = (out, source) => {
       for (const raw of out.mcq || []) {
         if (goodMcq.length >= mcq) break;
         const q = cleanMcq(raw, random);
-        if (q && !seen.has(q.question.toLowerCase())) { seen.add(q.question.toLowerCase()); goodMcq.push(q); }
+        if (q && !seen.has(q.question.toLowerCase())) {
+          seen.add(q.question.toLowerCase());
+          goodMcq.push({ ...q, source });
+          if (source === 'gemini') fresh.mcq.push(q);
+        }
       }
       for (const raw of out.structured || []) {
         if (goodStr.length >= structured) break;
         const q = cleanStructured(raw);
         const key = (q?.parts[0].text || '').toLowerCase();
-        if (q && !seen.has(key)) { seen.add(key); goodStr.push(q); }
+        if (q && !seen.has(key)) {
+          seen.add(key);
+          goodStr.push({ ...q, source });
+          if (source === 'gemini') fresh.structured.push(q);
+        }
       }
     };
 
-    take(await askFor(args));
-    if (goodMcq.length < mcq || goodStr.length < structured) {
-      try {
-        take(await askFor({ ...args, mcq: mcq - goodMcq.length, structured: structured - goodStr.length }));
-      } catch { /* keep what we have */ }
+    let aiError = null;
+    if (mode !== 'saved') {
+      if (!ai) {
+        aiError = new Error('Writing exams needs Gemini, which is not set up yet.');
+      } else {
+        try {
+          take(await askFor(args), 'gemini');
+          if (goodMcq.length < mcq || goodStr.length < structured) {
+            try {
+              take(await askFor({ ...args, mcq: mcq - goodMcq.length, structured: structured - goodStr.length }), 'gemini');
+            } catch { /* keep what we have */ }
+          }
+        } catch (err) { aiError = err; }
+      }
+      /* Every good question Gemini writes is kept, so the bank grows by itself */
+      if (bank && (fresh.mcq.length || fresh.structured.length)) {
+        try { await bank.add(designKey, sub.id, fresh); } catch (err) { console.error('Saving questions failed:', err.message); }
+      }
     }
-    return { mcq: goodMcq, structured: goodStr };
+
+    if (mode !== 'gemini' && (goodMcq.length < mcq || goodStr.length < structured)) {
+      if (bank) {
+        try {
+          const saved = await bank.get(designKey, sub.id);
+          take({ mcq: sample(saved.mcq || [], (saved.mcq || []).length, random) }, 'saved');
+          take({ structured: sample(saved.structured || [], (saved.structured || []).length, random) }, 'saved');
+        } catch (err) { console.error('Reading saved questions failed:', err.message); }
+      } else if (mode === 'saved') {
+        throw Object.assign(new Error('Saved questions need the storage set-up (Backblaze).'), { statusCode: 503 });
+      }
+    }
+
+    /* Nothing at all, and it was Gemini's job: say why */
+    if (!goodMcq.length && !goodStr.length && aiError && mode === 'gemini') throw aiError;
+    return { mcq: goodMcq, structured: goodStr, aiError: aiError ? String(aiError.message || aiError).slice(0, 200) : null };
   };
 
   /**
    * options: { design, designKey, subStrandIds, mcq, structured }
    * Returns { lang, sections: { mcq:[...], structured:[...] }, totals, short }
    */
-  const writePaper = async ({ design, designKey, subStrandIds, mcq, structured }) => {
-    if (!ai) throw Object.assign(new Error('Writing exams needs Gemini, which is not set up yet.'), { statusCode: 503 });
+  const writePaper = async ({ design, designKey, subStrandIds, mcq, structured, mode = 'auto' }) => {
+    if (!MODES.includes(mode)) throw Object.assign(new Error('Unknown source.'), { statusCode: 400 });
+    if ((mode === 'gemini' && !ai) || (mode === 'auto' && !ai && !bank)) throw Object.assign(new Error('Writing exams needs Gemini, which is not set up yet.'), { statusCode: 503 });
 
     const bad = (m) => Object.assign(new Error(m), { statusCode: 400 });
     if (!Array.isArray(subStrandIds) || !subStrandIds.length || subStrandIds.length > LIMITS.maxSubStrands) {
@@ -232,7 +288,7 @@ const createPaperWriter = ({ ai, notes = async () => '', random = Math.random } 
         const i = next; next += 1;
         if (!mcqShare[i] && !strShare[i]) { results[i] = { mcq: [], structured: [] }; continue; }
         try {
-          results[i] = await writeForSub({ design, designKey, sub: subs[i], lang, mcq: mcqShare[i], structured: strShare[i] });
+          results[i] = await writeForSub({ design, designKey, sub: subs[i], lang, mode, mcq: mcqShare[i], structured: strShare[i] });
         } catch (err) {
           console.error('Exam writing failed for', subs[i].id, err.message);
           results[i] = { mcq: [], structured: [], failed: true };
@@ -258,8 +314,9 @@ const createPaperWriter = ({ ai, notes = async () => '', random = Math.random } 
   };
 
   /* One sub-strand on its own (what the web page asks for, one request each) */
-  const writePart = async ({ design, designKey, subStrandId, mcq, structured }) => {
-    if (!ai) throw Object.assign(new Error('Writing exams needs Gemini, which is not set up yet.'), { statusCode: 503 });
+  const writePart = async ({ design, designKey, subStrandId, mcq, structured, mode = 'auto' }) => {
+    if (!MODES.includes(mode)) throw Object.assign(new Error('Unknown source.'), { statusCode: 400 });
+    if ((mode === 'gemini' && !ai) || (mode === 'auto' && !ai && !bank)) throw Object.assign(new Error('Writing exams needs Gemini, which is not set up yet.'), { statusCode: 503 });
     const bad = (m) => Object.assign(new Error(m), { statusCode: 400 });
     const found = findSubStrand(design, subStrandId);
     if (!found) throw bad('Unknown sub-strand.');
@@ -267,12 +324,14 @@ const createPaperWriter = ({ ai, notes = async () => '', random = Math.random } 
     if (!Number.isInteger(structured) || structured < 0 || structured > 10) throw bad('Structured questions per sub-strand must be from 0 to 10.');
     if (mcq + structured < 1) throw bad('Ask for at least one question.');
 
-    const got = await writeForSub({ design, designKey, sub: found.sub, lang: languageFor(design), mcq, structured });
+    const got = await writeForSub({ design, designKey, sub: found.sub, lang: languageFor(design), mode, mcq, structured });
     const tag = { subStrandId: found.sub.id, subStrand: found.sub.name };
     return {
       mcq: got.mcq.map((q) => ({ ...q, ...tag })),
       structured: got.structured.map((q) => ({ ...q, ...tag })),
       short: { mcq: mcq - got.mcq.length, structured: structured - got.structured.length },
+      saved: got.mcq.filter((q) => q.source === 'saved').length + got.structured.filter((q) => q.source === 'saved').length,
+      aiError: got.aiError,
     };
   };
 
@@ -293,4 +352,4 @@ const bandsFor = (total) => {
   });
 };
 
-module.exports = { createPaperWriter, share, bandsFor, cleanMcq, cleanStructured, paperPrompt, LIMITS };
+module.exports = { createPaperWriter, share, bandsFor, cleanMcq, cleanStructured, paperPrompt, sample, MODES, LIMITS };

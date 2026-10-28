@@ -22,9 +22,10 @@ const getGemini = () => {
     const model  = process.env.GEMINI_MODEL || 'gemini-flash-latest';
 
     /* GEMINI_MODEL first, then any in GEMINI_FALLBACK_MODELS (comma separated),
-       used only when the first is busy or slow */
+       used when the first is busy, slow, out of quota or retired */
     const models = [model, ...String(process.env.GEMINI_FALLBACK_MODELS || '').split(',').map((m) => m.trim()).filter(Boolean)];
-    const busy = (err) => /\b(429|500|502|503|504)\b|unavailable|deadline|overloaded|high demand|timed? ?out/i.test(String(err?.message || err));
+    /* Busy, out of quota, or the model is retired for this account: try the next one */
+    const busy = (err) => /\b(404|429|500|502|503|504)\b|unavailable|deadline|overloaded|high demand|timed? ?out|quota|not_found|no longer available|not found/i.test(String(err?.message || err));
 
     const callModel = async (name, { prompt, schema, pdf }) => {
       const res = await client.models.generateContent({

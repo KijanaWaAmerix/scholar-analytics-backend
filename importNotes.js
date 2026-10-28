@@ -2,6 +2,7 @@
    Run on your own computer (needs STORAGE_* in .env for --upload):
 
      node importNotes.js <designKey> <file or https link> [more files or links...] [--upload]
+     node importNotes.js <designKey> --list links.txt [--upload]     (links from listLinks.js)
 
    Example:
      node importNotes.js grade8-integrated-science GRADE-8-INTEGRATED-SCIENCE-NOTES2024.docx
@@ -50,10 +51,18 @@ const readText = async (input) => {
 
 (async () => {
   const upload = process.argv.includes('--upload');
-  const [key, ...inputs] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+  const listIdx = process.argv.indexOf('--list');
+  const listFile = listIdx >= 0 ? process.argv[listIdx + 1] : null;
+  const [key, ...given] = process.argv.slice(2).filter((a) => !a.startsWith('--') && a !== listFile);
+  let inputs = given;
+  if (listFile) {
+    /* At most 40 documents in one run, one link per line */
+    inputs = fs.readFileSync(listFile, 'utf8').split(/\r?\n/).map((l) => l.trim()).filter((l) => /^https:\/\//i.test(l)).slice(0, 40);
+  }
   const design = designs[key];
   if (!DESIGN_KEY.test(key || '') || !design || !inputs.length) {
     console.error('Usage: node importNotes.js <designKey> <file or https link> [more...] [--upload]');
+    console.error('   or: node importNotes.js <designKey> --list links.txt [--upload]');
     console.error('Designs: ' + Object.keys(designs).join(', '));
     process.exit(1);
   }

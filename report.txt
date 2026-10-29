@@ -1,0 +1,98 @@
+﻿
+Looking at 7 PDF file(s) in C:\Users\robin\Desktop\grade 8 designs
+  skipped GRADE-8-CURRICULUM-DESIGNS-ENGLISH-12024-TEACHER.CO_.KE_.pdf: cover says "", no subject in the list
+  GRADE-8-AGRICULTURE-NUTRITION.pdf -> Agriculture and Nutrition
+Warning: TT: undefined function: 32
+  GRADE-8-PRE-TECHNICAL-STUDIES.pdf -> Pre-Technical Studies
+Warning: TT: undefined function: 32
+  GRADE 8 CREATIVE ARTS & SPORTS.pdf -> Creative Arts and Sports
+  Social-Studies-Grade-8-Formatted-April-2024.pdf -> Social Studies
+Warning: TT: undefined function: 32
+  CRE-Grade-8-Design-Formatted-April-2024.pdf -> Christian Religious Education
+
+=== Grade 8 designs ===
+
+--- Integrated Science (grade8-integrated-science) ---
+  already have it (use --force to read it again)
+
+--- Mathematics (grade8-mathematics) ---
+  already have it (use --force to read it again)
+
+--- English (grade8-english) ---
+  not available: English-Grade-8-Design-Formatted-April-2024.pdf (HTTP 404)
+  not available: English-Grade-8-Formatted-April-2024.pdf (HTTP 404)
+  not available: GRADE.8.ENGLISH.pdf (HTTP 404)
+  no PDF found. Download the English design from https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-eight-designs/ and run again with --from <the folder it is in> (or save it as design-pdfs/grade8-english.pdf).
+
+--- Kiswahili (grade8-kiswahili) ---
+  not available: Kiswahili-Grade-8-Design-Formatted-April-2024.pdf (HTTP 404)
+  not available: Kiswahili-Grade-8-Formatted-April-2024.pdf (HTTP 404)
+  not available: GRADE.8.KISWAHILI.pdf (HTTP 404)
+  no PDF found. Download the Kiswahili design from https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-eight-designs/ and run again with --from <the folder it is in> (or save it as design-pdfs/grade8-kiswahili.pdf).
+
+--- Christian Religious Education (grade8-cre) ---
+  using CRE-Grade-8-Design-Formatted-April-2024.pdf from your folder
+Warning: TT: undefined function: 32
+Warning: TT: undefined function: 32
+  Christian Religious Education, Grade 8: 0 strands, 0 sub-strands, 0 lessons
+  NEEDS A LOOK, written to data/curriculum-review/ (not used by the app):
+   - Could not read the summary table of strands.
+   - No strands.
+
+--- Social Studies (grade8-social-studies) ---
+  using Social-Studies-Grade-8-Formatted-April-2024.pdf from your folder
+Warning: TT: undefined function: 32
+Warning: TT: undefined function: 32
+  Social Studies, Grade 8: 0 strands, 0 sub-strands, 0 lessons
+  NEEDS A LOOK, written to data/curriculum-review/ (not used by the app):
+   - Could not read the summary table of strands.
+   - No strands.
+
+--- Pre-Technical Studies (grade8-pre-technical-studies) ---
+  using GRADE-8-PRE-TECHNICAL-STUDIES.pdf from your folder
+Warning: TT: undefined function: 32
+  Pre-Technical Studies, Grade 8: 0 strands, 0 sub-strands, 0 lessons
+  NEEDS A LOOK, written to data/curriculum-review/ (not used by the app):
+   - Could not read the summary table of strands.
+   - No strands.
+
+--- Agriculture and Nutrition (grade8-agriculture-and-nutrition) ---
+  using GRADE-8-AGRICULTURE-NUTRITION.pdf from your folder
+Warning: TT: undefined function: 32
+  Agriculture and Nutrition, Grade 8: 0 strands, 0 sub-strands, 0 lessons
+  NEEDS A LOOK, written to data/curriculum-review/ (not used by the app):
+   - Could not read the summary table of strands.
+   - No strands.
+
+--- Creative Arts and Sports (grade8-creative-arts-and-sports) ---
+  using GRADE 8 CREATIVE ARTS & SPORTS.pdf from your folder
+Warning: TT: undefined function: 32
+  Creative Arts and Sports, Grade 8: 0 strands, 0 sub-strands, 0 lessons
+  NEEDS A LOOK, written to data/curriculum-review/ (not used by the app):
+   - Could not read the summary table of strands.
+   - No strands.
+
+--- Islamic Religious Education (grade8-ire) ---
+  not available: IRE-Grade-8-Design-Formatted-April-2024.pdf (HTTP 404)
+  not available: GRADE.8.IRE_.pdf (HTTP 404)
+  no PDF found. Download the Islamic Religious Education design from https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-eight-designs/ and run again with --from <the folder it is in> (or save it as design-pdfs/grade8-ire.pdf).
+
+--- Hindu Religious Education (grade8-hre) ---
+  not available: HRE-Grade-8-Design-Formatted-April-2024.pdf (HTTP 404)
+  not available: GRADE.8.HRE_.pdf (HTTP 404)
+  no PDF found. Download the Hindu Religious Education design from https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-eight-designs/ and run again with --from <the folder it is in> (or save it as design-pdfs/grade8-hre.pdf).
+
+Summary
+  Integrated Science | already have
+  Mathematics | already have
+  English | no PDF | save it as design-pdfs/grade8-english.pdf
+  Kiswahili | no PDF | save it as design-pdfs/grade8-kiswahili.pdf
+  Christian Religious Education | needs a look | 2 problem(s), see data/curriculum-review/grade8-cre.json
+  Social Studies | needs a look | 2 problem(s), see data/curriculum-review/grade8-social-studies.json
+  Pre-Technical Studies | needs a look | 2 problem(s), see data/curriculum-review/grade8-pre-technical-studies.json
+  Agriculture and Nutrition | needs a look | 2 problem(s), see data/curriculum-review/grade8-agriculture-and-nutrition.json
+  Creative Arts and Sports | needs a look | 2 problem(s), see data/curriculum-review/grade8-creative-arts-and-sports.json
+  Islamic Religious Education | no PDF | save it as design-pdfs/grade8-ire.pdf
+  Hindu Religious Education | no PDF | save it as design-pdfs/grade8-hre.pdf
+
+Read each new design once against its PDF. Learning resources (appendix) are not copied.

@@ -1,0 +1,3168 @@
+
+
+ 
+ 
+ 
+ 
+KENYA INSTITUTE OF CURRICULUM DEVELOPMENT 
+A Skilled and Ethical Society  
+ 
+ 
+ 
+JUNIOR SCHOOL CURRICULUM DESIGN 
+ 
+MATHEMATICS 
+GRADE 8 
+
+ 
+ 
+ 
+ 
+First published 2023 
+ 
+Revised 2024 
+ 
+All rights reserved.  No part of this book may be reproduced, stored in a retrieval system or transcribed, in any form or by any 
+means, electronic, mechanical, photocopy, recording or otherwise, without the prior written permission of the publisher. 
+ 
+ 
+ 
+ 
+ 
+ISBN: 978-9914-43-793-5 
+ 
+ 
+ 
+Published and printed by Kenya Institute of Curriculum Development
+
+ 
+i 
+ 
+FOREWORD 
+The Government of Kenya is committed to ensuring that policy objectives for Education, Training and Research meet the aspirations of the 
+Constitution of Kenya 2010, the Kenya Vision 2030, National Curriculum Policy 2019, the United Nations Sustainable Development Goals 
+(SDGs) and the regional and global conventions to which Kenya is a signatory. Towards achieving the mission of basic education, the Ministry 
+of Education (MoE) has successfully and progressively rolled out the implementation of the Competency Based Curriculum (CBC) at Pre-
+Primary, Primary and Junior School levels.  
+ 
+The  implementation  of  Competency  Based  Curriculum  involves  monitoring  and  evaluation  to  determine  its  success.  After  the  five-year 
+implementation  cycle,  a  summative  evaluation  of  the  primary  education  cycle  was  undertaken  to  establish  the  achievement  of  learning 
+outcomes as envisaged in the Basic Education Curriculum Framework. The Government of Kenya constituted a Presidential working Party 
+on Education Reforms(PWPER) in 2022 to address salient issues affecting the education sector. PWPER made far reaching recommendations 
+for basic education that necessitated curriculum review. The recommendations of the PWPER, monitoring reports, summative evaluation of 
+the  primary education cycle, feedback from curriculum implementers  and  other stakeholders  led  to rationalisation and  review of the  basic 
+education curriculum. 
+ 
+The reviewed Grade 8 curriculum designs build on competencies attained by learners at the end of Grade 7. Further, they provide opportunities 
+for learners to continue exploring and nurturing their potentials as they prepare to transit to Senior Secondary School. 
+The curriculum designs  present National Goals  of Education, essence statements, general and specific  expected learning outcomes for the 
+subjects as well as strands and sub strands. The designs also outline suggested learning experiences, key inquiry questions, core competencies, 
+Pertinent and Contemporary Issues (PCIs), values and assessment rubric. 
+ 
+It  is  my  hope  that  all  Government  agencies  and  other  stakeholders  in  Education  will  use  the  designs  to  plan  for  effective  and  efficient 
+implementation of the CBC. 
+ 
+ 
+HON. EZEKIEL OMBAKI MACHOGU, CBS 
+CABINET SECRETARY,  
+MINISTRY OF EDUCATION 
+
+ 
+ii 
+ 
+PREFACE 
+The Ministry of Education (MoE) nationally implemented Competency Based  Curriculum (CBC) in 2019. Grade 8 is the second  grade of 
+Junior School in the reformed education structure.  
+ 
+The reviewed Grade 8 curriculum furthers implementation of the CBC from Grade 7 in Junior School. The main feature of this level is a broad 
+curriculum for the learner to explore talents, interests and abilities before selection of pathways and tracks at the Senior Secondary education 
+level. This is very critical in the realisation of the Vision and Mission of the on-going curriculum reforms as enshrined in the Sessional Paper 
+No.  I  of  2019  whose  title  is: Towards  Realizing  Quality,  Relevant  and  Inclusive  Education  and  Training  for  Sustainable  Development in 
+Kenya. The Sessional Paper explains the shift from a Content - Focused Curriculum to a focus on Nurturing every Learner’s potential.  
+ 
+Therefore,  the  Grade 8 curriculum designs are intended to enhance the learners’ development in the CBC core competencies, namely: 
+Communication  and  Collaboration, Critical  Thinking  and  Problem  Solving,  Creativity  and  Imagination,  Citizenship,  Digital  Literacy, 
+Learning to Learn and Self-efficacy. 
+ 
+The curriculum designs provide suggestions for interactive and differentiated learning experiences linked to the various sub strands and the 
+other aspects of the CBC. They also offer several suggested learning resources and a variety of assessment techniques. It is expected that the 
+designs will guide teachers to effectively facilitate learners to attain the expected learning outcomes for Grade 8 and prepare them for smooth 
+transition to 9.  Furthermore, it is my hope that teachers will use the designs to make learning interesting, exciting and enjoyable. 
+ 
+ 
+DR. BELIO KIPSANG’, CBS 
+PRINCIPAL SECRETARY 
+STATE DEPARTMENT FOR BASIC EDUCATION 
+MINISTRY OF EDUCATION 
+
+ 
+iii 
+ 
+ACKNOWLEDGEMENT 
+The Kenya Institute of Curriculum Development (KICD) Act Number 4 of 2013 (Revised 2019) mandates the Institute to develop and review 
+(SNE adapt) curricula and curriculum support materials for basic and tertiary education and training. The curriculum development process for 
+any level of education involves thorough research, international benchmarking and robust stakeholder engagement. Through a systematic and 
+consultative  process,  the  KICD  conceptualised  the  Competency  Based  Curriculum  (CBC)  as  captured  in the  Basic  Education  Curriculum 
+Framework (BECF)2017, that responds to the demands of the 21
+st
+ Century and the aspirations captured in the Constitution of Kenya 2010, the 
+Kenya  Vision  2030,  East African Community  Protocol,  International  Bureau  of  Education  Guidelines and  the  United  Nations  Sustainable 
+Development Goals (SDGs).  
+ 
+KICD receives its funding from the Government of Kenya to facilitate successful achievement of the stipulated mandate and implementation 
+of the Government and Sector (Ministry of Education (MoE) plans. The Institute also receives support from development partners targeting 
+specific programmes. The revised Grade 8 curriculum designs were developed with the support of the World Bank through the Kenya Primary 
+Education Equity in Learning Programme (KPEELP); a project coordinated by MoE. Therefore, the Institute is very grateful for the support 
+of the Government of Kenya, through the MoE and the development partners for policy, resource and logistical support. Specifically, special 
+thanks to the Cabinet Secretary-MoE and the Principal Secretary-State Department of Basic Education, 
+ 
+We also wish to acknowledge the KICD curriculum developers and other staff, all teachers, educators who took part as panelists; the Semi-
+Autonomous Government Agencies (SAGAs) and representatives of various stakeholders for their roles in the development of the Grade 8 
+curriculum  designs.  In  relation to  this,  we acknowledge  the  support  of  the Chief  Executive  Officers  of  the  Teachers  Service  Commission 
+(TSC) and the Kenya National Examinations Council (KNEC) for their support in the process of developing these designs. Finally, we are 
+very grateful to the KICD Council Chairperson and other members of the Council for very consistent guidance in the process.  
+ 
+We assure all teachers, parents and other stakeholders that this curriculum design will effectively guide the implementation of the CBC at 
+Grade 8 and preparation of learners for transition to 9.   
+  
+ 
+PROF. CHARLES O. ONG’ONDO, PhD, MBS 
+DIRECTOR/CHIEF EXECUTIVE OFFICER 
+KENYA INSTITUTE OF CURRICULUM DEVELOPMENT 
+
+ 
+iv 
+ 
+TABLE OF CONTENT  
+FOREWORD ........................................................................................................................................................................................................ i 
+PREFACE ............................................................................................................................................................................................................ ii 
+ACKNOWLEDGEMENT .................................................................................................................................................................................. iii 
+TABLE OF CONTENT ...................................................................................................................................................................................... iv 
+NATIONAL GOALS OF EDUCATION ............................................................................................................................................................ v 
+LESSON ALLOCATION AT JUNIOR SCHOOL ........................................................................................................................................... vii 
+LEARNING OUTCOMES FOR JUNIOR SCHOOL ...................................................................................................................................... viii 
+ESSENCE STATEMENT ................................................................................................................................................................................ viii 
+SUBJECT GENERAL LEARNING OUTCOMES ............................................................................................................................................ ix 
+SUMMARY OF STRANDS AND SUB STRANDS .......................................................................................................................................... x 
+STRAND 1.0: NUMBERS .................................................................................................................................................................................. 1 
+STRAND 2.0: ALGEBRA ................................................................................................................................................................................. 13 
+STRAND 3.0: MEASUREMENTS ................................................................................................................................................................... 18 
+STRAND 4.0: GEOMETRY ............................................................................................................................................................................. 28 
+STRAND 5.0: DATA HANDLING AND PROBABILITY ............................................................................................................................. 41 
+APPENDIX 1: GUIDELINES FOR INTEGRATING COMMUNITY SERVICE LEARNING (CSL) PROJECT ........................................ 47 
+APPENDIX 2: LIST OF ASSESSMENT METHODS, LEARNING RESOURCES AND NON-FORMAL ACTIVITIES ........................... 49 
+APPENDIX 3: USE OF ICT DEVICES ............................................................................................................................................................ 54 
+  
+
+ 
+v 
+ 
+NATIONAL GOALS OF EDUCATION 
+Education in Kenya should: 
+1. Foster nationalism and patriotism and promote national unity 
+Kenya’s people belong to different communities, races and religions, but these differences need not divide them. They must be able 
+to  live  and  interact  as  Kenyans.  It  is  a  paramount  duty  of  education  to  help  young  people  acquire  this  sense  of  nationhood  by 
+removing conflicts and promoting positive attitudes of mutual respect which enable them to live together in harmony and  foster 
+patriotism in order to make a positive contribution to the life of the nation. 
+ 
+2. Promote the social, economic, technological and industrial needs for national development 
+ Education should prepare the youth of the country to play an effective and productive role in the life of the nation. 
+i) Social Needs 
+Education in Kenya must prepare children for changes in attitudes and relationships which are necessary for the smooth progress 
+of  a  rapidly  developing  modern  economy.  There  is  bound  to  be  a  silent  social  revolution  following  in  the  wake  of  rapid 
+modernization. Education should assist our youth to adapt to this change. 
+ii) Economic Needs  
+Education  in  Kenya  should  produce  citizens  with  the  skills,  knowledge,  expertise and  personal  qualities  that  are  required  to 
+support a growing economy. Kenya is building up a modern and independent economy which is in need of an adequate  
+and relevant domestic workforce. 
+iii) Technological and Industrial Needs 
+Education in Kenya should provide learners with the necessary skills and attitudes for industrial development. Kenya recognizes 
+the  rapid  industrial  and  technological  changes  taking  place,  especially  in  the  developed  world.  We  can  only  be  part  of  this 
+development if our education system is deliberately focused on the knowledge, skills and attitudes that will prepare our young 
+people for these changing global trends. 
+ 
+3. Promote individual development and self-fulfilment 
+Education should provide opportunities for the fullest development of individual talents and personality. It should help children to 
+develop their potential interests and abilities. A vital aspect of individual development is the building of character. 
+
+ 
+vi 
+ 
+4. Promote sound moral and religious values 
+ Education  should  provide  for  the  development  of  knowledge,  skills  and  attitudes  that  will  enhance  the  acquisition  of  sound 
+ moral values and help children to grow up into self-disciplined, self-reliant and integrated citizens. 
+ 
+5. Promote social equity and responsibility  
+Education respect should  promote  social  equality  and  foster  a  sense  of  social  responsibility  within  an  education  system  which 
+provides  equal  educational  opportunities  for  all.  It  should  give  all  children  varied  and  challenging  opportunities  for  collective 
+activities and corporate social service irrespective of gender, ability or geographical environment.  
+ 
+6. Promote for and development of Kenya’s rich and varied cultures 
+Education should instill in the youth of Kenya an understanding of past and present cultures and their valid place in   
+contemporary  society.  Children  should  be  able  to  blend  the  best  of  traditional  values  with  the  changing  requirements  that  must 
+follow rapid development in order to build a stable and modern society.  
+ 
+7. Promote international consciousness and foster positive attitudes towards other nations  
+Kenya  is  part  of  the  international  community.  It  is  part  of  the  complicated  and  interdependent  network  of  peoples  and  nations. 
+Education  should  therefore  lead  the  youth  of  the  country  to  accept  membership  of this  international  community  with  all  the 
+obligations and responsibilities, rights and benefits that this membership entails. 
+ 
+8. Promote positive attitudes towards good health and environmental protection 
+Education should inculcate in young people the value of good health in order for them to avoid indulging in activities that will lead 
+to physical or mental ill health. It should foster positive attitudes towards environmental development and conservation. It should 
+lead the youth of Kenya to appreciate the need for a healthy environment. 
+ 
+  
+
+ 
+vii 
+ 
+LESSON ALLOCATION AT JUNIOR SCHOOL  
+S/No Learning Area  Number of Lessons Per Week 
+1.  English   5 
+2.  Kiswahili / Kenya Sign Language  4 
+3.  Mathematics  5 
+4.  Religious Education  4 
+5.  Social Studies  4 
+6.  Integrated Science 5 
+7.  Pre-Technical Studies  4 
+8.  Agriculture  4 
+9.  Creative Arts and Sports  5 
+ Pastoral /Religious Instructional Program 1* 
+Total  40 + 1* 
+ 
+ 
+ 
+ 
+ 
+  
+
+ 
+viii 
+ 
+LEARNING OUTCOMES FOR JUNIOR SCHOOL 
+By end of Junior School, the learner should be able to: 
+1. Apply literacy, numeracy and logical thinking skills for appropriate self-expression.  
+2. Communicate effectively, verbally and non-verbally, in diverse contexts.  
+3. Demonstrate social skills, spiritual and moral values for peaceful co-existence.  
+4. Explore, manipulate, manage and conserve the environment effectively for learning and sustainable development.  
+5. Practise relevant hygiene, sanitation and nutrition skills to promote health.  
+6. Demonstrate ethical behaviour and exhibit good citizenship as a civic responsibility.  
+7. Appreciate the country's rich and diverse cultural heritage for harmonious co-existence.  
+8. Manage pertinent and contemporary issues in society effectively.  
+9. Apply digital literacy skills for communication and learning.  
+ 
+ESSENCE STATEMENT  
+We live in a world of Mathematics whereby we count, add, subtract, multiply or divide quantities and substances throughout our 
+daily interactions. Mathematics involves understanding numbers and the numerical operations used to develop strategies for mental 
+mathematical problem solving skills, estimation and computational fluency. We live in a world of space, shape and structures. It 
+is  impossible  to  think  of  a  world  without  Mathematics.  It  is  applied  in  the  economic  activities,  scientific,  social,  religious  and 
+political worlds. It is therefore imperative that children are taught Mathematics from early years. 
+ 
+In Junior Secondary, Mathematics builds on the competencies acquired by the learner from primary school. It enhances the learner's 
+competencies in mathematical skills as a foundation for Science, Technology, Engineering and Mathematics (STEM) and other 
+pathways  at  Senior  School.  Mathematics  also  prepares  the  learner  to  have  sufficient  skills  and  competencies  for  application  in 
+solving problems in real life situations. This is in line with vision 2030 and sessional paper number 1 of 2019 which emphasizes 
+on STEM areas.  
+
+ 
+ix 
+ 
+SUBJECT GENERAL LEARNING OUTCOMES 
+By the end of the Junior School, the learner should be able to: 
+1. Demonstrate mastery of number concepts by working out problems in day to day life 
+2. Represent and apply algebraic expressions in different ways 
+3. Apply measurement skills to find solutions to problems in a variety of contexts 
+4. Use money and carry out financial transactions in real life situations  
+5. Generate geometrical shapes and describe spatial relationships in different contexts 
+6. Collect and organize data to inform and solve problems in real life situations  
+7. Develop  logical  thinking,  reasoning,  communication  and  application  skills through  a  mathematical  approach  to  problem 
+solving 
+8. Apply mathematical ideas and concepts to other learning areas or subjects and in real life contexts. 
+9. Develop confidence and interest in mathematics for further training and enjoyment. 
+ 
+ 
+  
+
+ 
+x 
+ 
+SUMMARY OF STRANDS AND SUB STRANDS 
+STRANDS   SUB STRANDS Suggested Number of Lessons 
+1.0 Numbers 1.1 Integers 6 
+1.2 Fractions  6 
+1.3 Decimals 8 
+1.4 Squares and Square Roots 6 
+1.5 Rates, Ratio, Proportions and Percentages 14 
+2.0 Algebra 
+2.1 Algebraic Expressions 6 
+2.2 Linear Equations 7 
+3.0 Measurements 3.1 Circles 5 
+3.2 L Area 10 
+3.3 Money 9 
+4.0 Geometry 4.1 Geometrical Constructions 12 
+4.2 Coordinates and graphs 14 
+4.3 Scale Drawing 14 
+4.4 Common Solids 16 
+5.0 Data Handling and 
+Probability 
+5.1 Data Presentation and Interpretation 10 
+5.2 Probability 7 
+Total Number of Lessons 150 
+Note: The suggested number of lessons per sub strand may be less or more depending on the context. 
+ 
+
+ 
+1 
+ 
+STRAND 1.0: NUMBERS 
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested Key 
+Inquiry 
+Question(s) 
+1.0 Numbers 1.1 Integers  
+(6 lessons) 
+ 
+ represent 
+integers on a 
+number line 
+ operations of 
+addition and 
+subtraction 
+integers on the 
+number line 
+By the end of the sub- strand 
+the learner should be able to: 
+a) identify integers in 
+different situations 
+b) represent integers on a 
+number line in different 
+situations 
+c) carry out operations of 
+addition and subtraction 
+integers on the number 
+line in real life situations 
+d) use IT or print resources 
+for learning more on 
+integers and for skills 
+development 
+e) reflect on use of integers 
+in real life situations. 
+The learner is guided to: 
+ identify integers by carrying out 
+activities involving positive and 
+negative numbers and zero. For 
+example, climbing upstairs 
+(positive), going down stairs 
+(negative). Others may include 
+standing at a point (the zero point) 
+and count the number of steps 
+moved either forward or 
+backward.  
+ draw and represent integers on 
+number lines on learning 
+materials.  
+ perform operations, including 
+combined operations of integers 
+on a number line.  
+ play creative games that involve 
+number lines, for example jumping 
+steps. 
+1. Where do 
+we use 
+integers in 
+real life 
+situations? 
+2. How do we 
+carry out 
+operations 
+of integers? 
+ 
+ 
+
+ 
+2 
+ 
+ use IT tools or other resources to 
+learn more on operations of 
+integers on number lines.  
+ 
+Core Competencies to be developed 
+ Creativity and imagination- creating games: as the learner plays creative games that involve number lines, for example 
+jumping steps. 
+ Learning to learn: as the learner represents integers on the number line.  
+ Digital literacy- interacting with technologies: as the learner uses IT devices to learn and play games on integers. 
+Values 
+ Respect: as the learner works with peers to play games that involve integers. 
+ Unity: as the learner works together in creating games on integers.  
+Pertinent and Contemporary Issues (PCIs):  
+Environmental education: as the learner uses available resources and spaces to jump steps. 
+Link to other learning areas 
+Integrated Science: as the learner works out different arithmetic’s in Science that involve integers. 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+3 
+ 
+Sub-Strand: Fractions  
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning Experiences Suggested Key 
+Inquiry Question(s) 
+1.0 Numbers 1.2 Fractions  
+(6 lessons) 
+ 
+ Reciprocal 
+of fractions 
+ combined 
+operations 
+on 
+fractions 
+ 
+By the end of the sub- strand, the 
+learner should be able to: 
+a) work out reciprocal of fractions 
+in different Situations 
+b) carry out combined operations 
+on fractions in different 
+situations 
+c) promote use of fractions in real 
+life situations. 
+The learner is guided to: 
+ discuss and use the correct 
+order of operations in fractions. 
+ discuss and carry out 
+operations on fractions from 
+activities such as model 
+shopping and other real life 
+cases.  
+ play games on operations of 
+fractions using IT devices or 
+other resources.  
+How do we use 
+fractions in real life 
+situations? 
+ 
+Core Competencies to be developed 
+ Citizenship: as the learner discusses and uses the correct order of operations in fractions in some aspects such as populations. 
+ Critical thinking and problem solving: as the learner works out operations on fractions from model shopping activities, 
+Values: 
+ Responsibility: as the learner plays games of operations on fractions using IT devices or other resources.  
+ Respect: as the learner works together to work out operations on fractions from shopping activities. 
+Pertinent and Contemporary Issues (PCIs):  
+Self-esteem: as the learner plays games of operations on fractions using IT devices or other resources.  
+Link to other learning areas 
+ Languages: as the learner discusses and uses the correct order of operations in fractions. 
+ Agriculture : as the learner estimates different quantities in fractions such in harvests, seeds or fertilizer. 
+ 
+ 
+
+ 
+4 
+ 
+Sub-Strand: Decimals 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s) 
+1.0  
+Numbers 
+1.3 Decimals  
+(8 lessons) 
+ 
+ Conversions in 
+decimals 
+ Recurring 
+decimals 
+ Rounding off 
+decimals 
+ significant 
+figures 
+ numbers in 
+standard form 
+ combined 
+operations on 
+decimals 
+ 
+ 
+ 
+By the end of the sub- strand, the 
+learner should be able to: 
+a) convert fractions to decimals in 
+different situations 
+b) identify recurring decimals in 
+different situations 
+c) convert recurring decimals into 
+fractions in different situations 
+d) round off a decimal number to a 
+required number of decimal 
+places in different situations 
+e) express numbers to a required 
+significant figures in real life 
+situations. 
+f) express numbers in standard 
+form in different situations 
+g) carry out combined operations 
+on decimals in different 
+situations 
+h) apply decimals to real life 
+situations 
+The learner is guided to: 
+ practice converting fractions 
+to decimals. 
+● discuss and classify non- 
+recurring and recurring 
+decimals. Indicate the 
+recurring digits. 
+● practice converting recurring 
+decimals to fractions. 
+● discuss and round off decimal 
+numbers to a required number 
+of decimal places 
+● write decimal and whole 
+numbers to a given significant 
+figures 
+● write numbers in standard 
+form in learning materials 
+such as cards or charts.   
+● work out combined operations 
+on decimals in the correct 
+order. 
+1. How do we 
+work out 
+operations on 
+decimals? 
+2. How do we 
+use decimals in 
+real life 
+situations? 
+ 
+ 
+
+ 
+5 
+ 
+i) use IT tools or other resources 
+for learning more on decimals 
+and for enjoyment, 
+j) promote use of decimals in real 
+life situations. 
+● discuss and apply decimals to 
+real life cases. 
+● play games of operations on 
+decimals using IT tools or 
+other materials.  
+Core Competencies to be developed: 
+ Citizenship: as the learner works together with others, discusses and classifies non- recurring and recurring decimals. 
+ Critical thinking and problem solving: as the learner practices converting recurring decimals to fractions. 
+Values 
+ Responsibility: as the learner discusses and classifies non- recurring and recurring decimals. 
+ Respect: as the learner works with peers to discuss and classify non- recurring and recurring decimals. 
+Pertinent and Contemporary Issues (PCIs):  
+ Self-esteem: as the learner works out combined operations on decimals in the correct order. 
+ ESD: as the learner plays games of operations on decimals using IT or other materials. 
+Link to other learning areas: 
+Integrated Science: as the learner expresses different quantities of measurement in Science in decimals.  
+ 
+ 
+ 
+ 
+  
+
+ 
+6 
+ 
+Sub-Strand: Squares and Square Roots 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s) 
+1.0 Numbers  1.4 Squares 
+and Square 
+roots 
+(6 lessons) 
+ 
+Squares and 
+square roots of 
+numbers from 
+tables and 
+calculators 
+ 
+By the end of the sub- strand the 
+learner should be able to: 
+a) work out the squares of numbers 
+from tables in different situations 
+b) work out the square roots of 
+numbers from tables in different 
+situations 
+c) work out squares and square 
+roots of numbers using a 
+calculator in different situations 
+d) enjoy using squares and square 
+roots in real life situations 
+The learner is guided to: 
+ read and write the squares 
+of numbers from tables  
+ read and write the square 
+roots of numbers from 
+tables  
+ practice working out 
+squares and square roots 
+using a calculator.  
+ use IT devices or other 
+materials to play square 
+and square root games. 
+ create games that involve 
+squares and square roots of 
+numbers. 
+1. What are 
+squares and 
+square roots of 
+numbers?   
+2. Where do we 
+apply squares 
+and square roots 
+in real life 
+situations? 
+ 
+Core Competencies to be developed 
+ Communication and collaboration: as the learner works with peers to read and write the square roots of numbers from 
+tables. 
+ Imagination and creativity: as the learner reads and writes the square roots of numbers from tables. 
+Values 
+ Respect: as the learner appreciates each other’s contribution in creating games that involve squares and square roots of 
+numbers. 
+
+ 
+7 
+ 
+ Unity: as the learner works in teams to play games involving squares and square roots of numbers. 
+Pertinent and Contemporary Issues (PCIs):  
+Life skills: as the learner uses IT devices or other materials to play games on squares and square root games. 
+Link to other learning areas 
+Pre-Technical Studies: as the learner applies skills of working out squares and square roots in designing items to make.  
+ 
+ 
+  
+
+ 
+8 
+ 
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s) 
+1.0 Numbers 1.5 Rates, Ratio, 
+Proportions and 
+Percentages 
+(14 lessons) 
+ 
+ Rates and 
+fractions 
+ Comparing ratios 
+ Increase and 
+decrease of 
+quantities 
+ percentage 
+change of given 
+quantities 
+ direct and 
+indirect 
+proportions 
+ 
+ 
+ 
+ 
+By the end of the sub- strand 
+the learner should be able to: 
+a) identify rates in different 
+situations 
+b) work out rates in real life 
+situations 
+c) express fractions as ratios 
+in real life situations  
+d) compare two or more 
+ratios in different 
+situations 
+e) divide quantities in given 
+ratios in real life situations  
+f) work out ratios in different 
+situations 
+g) work out increase and 
+decrease of quantities 
+using ratios in real life 
+situations 
+h) work out percentage 
+change of given quantities 
+in real life situations. 
+The learner is guided to: 
+ time while doing different 
+activities such as calling 
+using for example different 
+mobile service providers.  
+ role play this activity and 
+note time taken to call, 
+Record on a table and 
+compare.  
+ use cut outs from whole 
+objects or substances to 
+relate fractions to ratios. 
+ discuss and compare ratios 
+from the cut outs.  
+ discuss and share quantities 
+of concrete objects in 
+different ratios.  
+ discuss and determine 
+percentage increase and 
+decrease of different 
+quantities.  
+1. How do we use 
+rates in real life 
+situations? 
+2. How do we use 
+ratios in daily 
+activities?  
+ 
+
+ 
+9 
+ 
+i) identify direct and indirect 
+proportions in real life 
+situations  
+j) work out direct and 
+indirect proportions in real 
+life situations  
+k) promote use of ratios and 
+proportions in real life. 
+ use IT devices or other 
+materials to explore 
+percentage change. 
+ role play shopping activities 
+to show and determine direct 
+relationships and can use any 
+other activities. 
+ use hourglass to show and 
+determine indirect 
+relationships and can use any 
+other activities. 
+ watch videos on ratios and 
+proportions as used in daily 
+activities 
+Core Competencies to be developed 
+ Critical thinking and problem solving: as the learner carries out different activities such as calling using different service 
+providers to determine calling rates.  
+ Imagination and creativity: as the learner uses hourglass to show indirect relationships. 
+Values 
+ Respect: as the learner shares out different quantities of items in given ratios 
+ Fairness: as the learner shares out quantities in different proportions or percentages.  
+Pertinent and Contemporary Issues (PCIs):  
+ Social cohesion: is enhanced as the learner role plays calling for a specified time and also charges from different telecom 
+service providers. 
+
+ 
+10 
+ 
+ Decision making: as the learner uses ratios to divide quantities such as money on different items to buy as part of consumer 
+awareness.    
+Link to other learning areas 
+ Agriculture : as the learner works out ratios of ingredients in various aspects of home care e.g. baking. 
+ Pre-technical studies: as the learner works out ratios or proportions of different building materials 
+ 
+Suggested Assessment Rubric 
+                       Level           
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below Expectations 
+Ability to represent 
+integers and carry 
+out operations of 
+integers on a number 
+line  
+The learner represents 
+integers and carries out 
+operations of integers on 
+a number line correctly 
+and systematically 
+The learner represents 
+integers and carries out 
+operations of integers 
+on a number line 
+correctly  
+The learner represents 
+integers or carries out 
+operations of integers 
+on a number line 
+correctly  
+The learner represents 
+integers on a number 
+line partially correctly  
+Ability to carry out 
+combined operations 
+on fractions and 
+convert fractions to 
+decimals 
+The learner carries out 
+combined operations on 
+fractions and converts 
+fractions to decimals 
+correctly and 
+systematically 
+The learner carries out 
+combined operations 
+on fractions and 
+converts fractions to 
+decimals correctly  
+The learner carries out 
+combined operations 
+on fractions or converts 
+fractions to decimals 
+correctly  
+The learner carries out 
+combined operations 
+on fractions or 
+converts fractions to 
+decimals partially 
+correctly  
+
+ 
+11 
+ 
+                       Level           
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below Expectations 
+Ability to identify 
+and convert recurring 
+decimals into 
+fractions 
+The learner identifies and 
+convert recurring 
+decimals into fractions 
+correctly and 
+systematically 
+The learner identifies 
+and converts recurring 
+decimals into fractions 
+correctly  
+The learner identifies    
+or converts recurring 
+decimals into fractions 
+correctly  
+The learner identifies    
+recurring decimals 
+correctly  
+Ability to round off a 
+decimal number to 
+required number of 
+decimal places, 
+express numbers in 
+standard form and 
+carry out combined 
+operations on 
+decimals 
+The learner rounds off a 
+decimal number to a 
+required number of 
+decimal places, expresses 
+numbers in standard form 
+and carries out combined 
+operations on decimals 
+correctly and 
+systematically 
+The learner rounds off 
+a decimal number to a 
+required number of 
+decimal places, 
+expresses numbers in 
+standard form and 
+carries out combined 
+operations on decimals 
+correctly  
+The learner rounds off 
+a decimal number to a 
+required number of 
+decimal places or 
+expresses numbers in 
+standard form or carries 
+out combined 
+operations on decimals 
+correctly  
+The learner rounds off 
+a decimal number to a 
+required number of 
+decimal places or 
+expresses numbers in 
+standard form or 
+carries out combined 
+operations on 
+decimals partially 
+correctly  
+Ability to work out 
+squares and square 
+roots of numbers 
+using Mathematical 
+tables and a 
+calculator  
+The learner works out 
+squares and square roots 
+of numbers using 
+Mathematical tables and a 
+calculator correctly and 
+systematically 
+The learner works out 
+squares and square 
+roots of numbers using 
+Mathematical tables 
+and a calculator 
+correctly  
+The learner works out 
+squares or square roots 
+of numbers using 
+Mathematical tables or 
+a calculator correctly   
+The learner works out 
+squares or square 
+roots of numbers 
+using Mathematical 
+tables or a calculator 
+partially correctly   
+
+ 
+12 
+ 
+                       Level           
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below Expectations 
+Ability to identify 
+and work out rates  
+The learner identifies and 
+works out rates correctly 
+and systematically 
+The learner identifies 
+and works out rates 
+correctly 
+The learner identifies 
+or works out rates 
+correctly 
+The learner identifies 
+rates correctly 
+Ability to express 
+fractions as ratios, 
+compare two or more 
+ratios and divide 
+quantities in given 
+ratios 
+The learner expresses 
+fractions as ratios, 
+compares two or more 
+ratios and divides 
+quantities in given ratios 
+accurately and logically 
+The learner expresses 
+fractions as ratios, 
+compares two or more 
+ratios and divides 
+quantities in given 
+ratios accurately  
+The learner expresses 
+fractions as ratios or 
+compares two or more 
+ratios accurately  
+The learner expresses 
+fractions as ratios or 
+compares two ratios 
+accurately  
+Ability to work out 
+percentage increase 
+and decrease of 
+quantities 
+The learner works out 
+percentage increase and 
+decrease of quantities 
+correctly and 
+systematically 
+The learner works out 
+percentage increase and 
+decrease of quantities 
+correctly  
+The learner works out 
+percentage increase or 
+decrease of quantities 
+correctly  
+The learner works out 
+percentage increase or 
+decrease of quantities 
+partially correctly  
+Ability to identify 
+and work out direct 
+and indirect 
+proportions 
+The learner identifies and 
+works out direct and 
+indirect proportions 
+correctly and 
+systematically. 
+The learner identifies 
+and works out direct 
+and indirect 
+proportions correctly  
+The learner identifies 
+or works out direct or 
+indirect proportions 
+correctly  
+The learner identifies 
+or works out direct 
+proportions correctly  
+  
+
+ 
+13 
+ 
+STRAND 2.0: ALGEBRA 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning Experiences Suggested Key 
+Inquiry Question(s) 
+2.0 Algebra 2.1 Algebraic 
+Expressions  
+(6 Lessons) 
+  
+Factorizing, 
+simplifying and 
+evaluating 
+algebraic 
+expressions 
+ 
+By the end of the sub- strand 
+the learner should be able to: 
+a) factorize algebraic 
+expressions in different 
+situations 
+b) simplify algebraic 
+fractions in different 
+situations 
+c) evaluate algebraic 
+expressions by 
+substituting numerical 
+values in different 
+situations 
+d) enjoy using algebraic 
+expressions in real life 
+situations.  
+The learner is guided to: 
+ discuss and identify like and 
+unlike terms and factorize 
+algebraic expressions. 
+ discuss like and unlike terms and 
+simplify the algebraic fractions 
+ discuss how to substitute the 
+given numerical values to work 
+out a given algebraic expression. 
+ use IT to work out exercises and 
+activities in algebra or drag and 
+drop activities of grouping 
+similar terms to simplify 
+algebraic expressions 
+ use other resources to work out 
+exercises involving algebra.  
+1. How do we 
+factorize 
+algebraic 
+expressions?  
+2. How do we 
+simplify 
+algebraic 
+expressions?  
+ 
+Core Competencies to be developed 
+Critical thinking and problem solving: as the learner discusses like and unlike terms to factorize and simplify algebra.    
+Values 
+Responsibility: as the learner discusses and substitute values in algebraic expressions. 
+ 
+
+ 
+14 
+ 
+Pertinent and Contemporary Issues (PCIs):  
+Environmental education: as the learner uses varied local resources for like and unlike terms in algebra.  
+Link to other learning areas 
+Integrated Science: as the learner uses symbols to represent quantities for substances.  
+ 
+  
+
+ 
+15 
+ 
+Sub-Strand: Linear Equations 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry Question(s) 
+2.0 Algebra 2.2 Linear 
+Equations  
+ (7 Lessons) 
+ 
+ linear 
+equations in 
+two 
+unknowns 
+ solving 
+linear 
+equations by 
+elimination 
+method 
+ 
+By the end of the sub strand 
+the learner should be able to: 
+a) form linear equations in 
+two unknowns in real life 
+situations 
+b) solve linear equations in 
+two unknowns by 
+Substitution method in real 
+life situations 
+c) solve linear equations in 
+two unknowns by 
+elimination method in real 
+life situations 
+d) apply linear equations in 
+two unknowns in real life 
+situations  
+e) recognize use of linear 
+equations in real life. 
+The learner is guided to: 
+ role play activities such as 
+shopping on two different 
+items in the shop to form 
+linear equations in two 
+unknowns.  
+ discuss with others and use 
+activities involving two 
+unknowns 
+ discuss and use substitution 
+method to find the solutions 
+of simultaneous equations in 
+two unknowns.  
+ discuss and use elimination 
+method to find the solutions 
+of simultaneous equations in 
+two unknowns.  
+ practice forming and solving 
+simultaneous equations in 
+two unknowns of real-life 
+cases using any method.  
+1. How do we solve 
+linear equations in 
+two unknowns? 
+2. Where do we use 
+linear equations in 
+two unknowns in 
+real life situations? 
+ 
+
+ 
+16 
+ 
+ watch videos or use other 
+materials involving linear 
+equations in two unknowns.  
+Core Competencies to be developed 
+Communication and collaboration: as the learner discusses and uses substitution methods to find the solutions of simultaneous 
+equations in two unknowns.  
+Values 
+Responsibility: as the learner practices forming and solving simultaneous equations in two unknowns of real life cases 
+Pertinent and Contemporary Issues (PCIs):  
+Citizenship: as the learner role plays shopping activities on two different items in the shop to form linear equations in two 
+unknowns. 
+Link to other learning areas 
+Language: as the learner discusses and uses substitution methods to find the solutions of simultaneous equations. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+17 
+ 
+Suggested Assessment Rubric 
+                        Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below Expectations 
+Ability to factorize, 
+simplify and evaluate 
+algebraic expressions  
+The learner factorises, 
+simplifies and 
+evaluates algebraic 
+expressions 
+systematically and 
+correctly 
+The learner factorises, 
+simplifies and 
+evaluates algebraic 
+expressions correctly 
+The learner factorises, 
+simplifies or evaluates 
+algebraic expressions 
+correctly 
+The learner factorises, 
+or simplifies algebraic 
+expressions   correctly 
+Ability to form linear 
+equations in two 
+unknowns and solve 
+the equations by 
+substitution and 
+elimination method 
+The learner forms 
+linear equations in two 
+unknowns and solves 
+the equations by 
+substitution and 
+elimination method 
+systematically and 
+accurately 
+The learner forms 
+linear equations in two 
+unknowns and solves 
+the equations by 
+substitution and 
+elimination method 
+accurately 
+The learner forms linear 
+equations in two 
+unknowns or solves the 
+equations by substitution 
+or elimination method 
+accurately 
+The learner forms 
+linear equations in two 
+unknowns accurately 
+Ability to apply 
+linear equations in 
+two unknowns to real 
+life cases 
+The learner applies 
+linear equations in two 
+unknowns correctly 
+with sufficient 
+examples  
+The learner applies 
+linear equations in two 
+unknowns correctly 
+The learner applies linear 
+equations in two 
+unknowns correctly 
+partially correctly 
+The learner applies 
+linear equations in one 
+unknowns partially 
+correctly 
+
+ 
+18 
+ 
+STRAND 3.0: MEASUREMENTS 
+Sub-Strand: Circles 
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry Question(s) 
+3.0 Measurements 3.1 Circles 
+(5 lessons) 
+ 
+ circumference of 
+a circle 
+ length of an Arc 
+of a circle 
+ perimeter of a 
+sector of a circle 
+ 
+By the end of the sub- 
+strand the learner should 
+be able to: 
+a) work out the 
+circumference of a 
+circle in real life 
+situations 
+b) work out the length of 
+an Arc of a circle in 
+different situations 
+c) calculate the perimeter 
+of a sector of a circle 
+in different situations 
+d) promote use of circles 
+in real life situations.  
+ 
+The learner is guided to: 
+ discuss with others and 
+find the circumference 
+of different circular 
+objects in the 
+environment. 
+ use cut outs to relate arc 
+length to the 
+circumference of a 
+circle, starting with 
+semicircle, then quarter 
+of a circle etc. 
+ draw circles and work 
+out the circumference of 
+a circle, and arc length 
+of a circle.  
+ use cut outs of sectors of 
+circles from locally 
+available materials and 
+work out the perimeter 
+1. How do we 
+determine the 
+circumference of 
+a circle? 
+2. How do we use 
+sectors of a circle 
+in real life 
+situations? 
+ 
+ 
+ 
+ 
+
+ 
+19 
+ 
+of the sectors. Discuss 
+and make any object 
+with the sector that can 
+be used in real life 
+situations. 
+ use IT tools or other 
+resources to explore use 
+of sectors of circles in 
+daily life. 
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses and finds the circumference of different circular objects in the 
+environment. 
+ Creativity and imagination: as the learner uses cut outs to relate arc length to the circumference of a circle. 
+Values 
+ Integrity: as the learner draws circles of given dimensions and work out the circumference of a circle. 
+ Responsibility: as the learner makes any objects with the sector that can be used in real life situations. 
+Pertinent and Contemporary Issues (PCIs):  
+Environmental education: as the learner uses locally available materials to cut out sectors responsibly.  
+Link to other learning areas 
+Language: as the learner discusses with others and finds the circumference of different circular objects in the environment. 
+ 
+  
+
+ 
+20 
+ 
+Sub-Strand: Area 
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s) 
+3.0 Measurements 3.2 Area  
+(10 lessons) 
+ 
+ area of circles 
+ area of a sector of a 
+circle 
+ Surface Area of 
+Cubes, Cuboids, 
+cylinders, and 
+triangular Prism 
+ Area of irregular 
+shapes 
+ 
+ 
+ 
+By the end of the sub- 
+strand the learner should 
+be able to: 
+a) calculate the area of 
+circles in different 
+situations 
+b) work out the area of a 
+sector of a circle in 
+different situations 
+c) work out the Surface 
+Area of Cubes and 
+Cuboids in real life 
+situations 
+d) work out the Surface 
+area of a cylinders in 
+real life situations 
+e) determine the Surface 
+Area of a triangular 
+Prism in different 
+situations 
+The learner is guided to: 
+ discuss and work out 
+areas of different 
+circles.  
+ use cut outs of sectors 
+of circles from locally 
+available materials 
+and find the area of 
+the sectors and relate 
+the angle of the sector 
+to the area of the 
+circle. Determine the 
+area of a sector of a 
+circle.  
+ use models to find the 
+surface area of cubes, 
+cuboids and cylinders 
+and derive the 
+formulas for each.  
+How do we use 
+area in real life 
+situations? 
+ 
+ 
+ 
+
+ 
+21 
+ 
+f) work out the Area of 
+irregular shapes using 
+square grids in real 
+life situations 
+g) use IT tools and other 
+materials for learning 
+more on area and for 
+enjoyment 
+h) recognize use of 
+length in real life 
+situations.  
+ apply the formulas to 
+work out surface area 
+of given cubes, 
+cuboids and cylinders. 
+ use models to find the 
+surface area of 
+triangular prisms 
+ draw irregular shapes, 
+for example the palm 
+of hands, feet or 
+leaves and trace on 
+square grid to estimate 
+the area.  
+ watch videos on 
+models of cubes, 
+cuboid, cylinders and 
+prisms and how to 
+find the surface area.  
+ 
+Core Competencies to be developed 
+● Critical thinking and problem solving: as the learner uses cut outs of sectors of circles from locally available materials and 
+find the area of the sector. 
+ Learning to learn: as the learner uses models to find the surface area of cubes, cuboids and cylinders and derive the 
+formulas for each.  
+
+ 
+22 
+ 
+Values 
+Responsibility through excellence as the learner uses models to find the surface area of triangular prisms. 
+ 
+Pertinent and Contemporary Issues (PCIs):  
+ Safety: as the learner handles different instruments to make cut outs of sectors from locally available materials and finds 
+the area where they relate the angle of the sector to the area of the circle. 
+ Environmental education: as the learner uses locally available materials to draw irregular shapes, for example the palm of 
+hands, feet or leaves and trace on square grid to estimate the area.  
+Link to other learning areas 
+Creative Arts and Sports: promotes the learner’s drawing skills of irregular shapes, for example the palm of hands, feet or 
+leaves. 
+ 
+  
+
+ 
+23 
+ 
+Sub-Strand: Money 
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s) 
+3.0 Measurements 3.3 Money  
+(9 lessons) 
+ 
+ interest and 
+principal 
+ simple and 
+compound 
+interest 
+ appreciation and 
+depreciation 
+ hire purchase 
+By the end of the sub- 
+strand, the learner should 
+be able to: 
+a) identify interest and 
+principal in real life 
+situations 
+b) calculate simple 
+interest in real life 
+situations 
+c) calculate compound 
+interest per annum 
+step by step up to 
+three years in real 
+life situations 
+d) work out 
+appreciation and 
+depreciation per 
+annum step by step 
+up to three years in 
+different situations 
+The learner is guided to: 
+ visit or invite resource 
+persons from different 
+financial institutions in 
+the neighborhood of the 
+school or home and 
+gather information about 
+simple and compound 
+interests offered on 
+deposits (principal).  
+ enquire and discuss 
+meaning of terms such as 
+interest, deposits 
+(principal) as part of 
+consumer awareness and 
+protection 
+ discuss and work out 
+compound interest  
+ identify and discuss 
+objects or goods that 
+1. What is interest 
+in money? 
+2. How do we pay 
+for goods on 
+hire purchase? 
+ 
+
+ 
+24 
+ 
+e) work out hire 
+purchase in real life 
+situations 
+f) use calculators to 
+carry out operations 
+related to money. 
+g) spend money 
+responsibly on needs 
+and leisure 
+ 
+appreciate and depreciate 
+in value to inform 
+decision making on 
+goods that are worth 
+investing in or buying.  
+ determine Appreciation 
+and Depreciation using a 
+step by step method.  
+ visit shopping centres 
+where items or goods are 
+offered on hire purchase 
+and discuss different 
+terms of purchase. This 
+can be done either as 
+physical or online 
+searches. Relate different 
+pricing of the goods and 
+discuss the installments 
+periods and time to 
+inform purchasing 
+decisions that will protect 
+from products that highly 
+lose value with time.  
+ use IT tools to access 
+online shopping 
+
+ 
+25 
+ 
+platforms and identify 
+terms of sale.   
+Core Competencies to be developed 
+ Communication and collaboration: as the learner gathers information about simple and compound interests offered on 
+deposits (principal) in different financial institutions. 
+ Critical thinking and problem solving: as the learner determines Appreciation and Depreciation using step by step methods 
+and discuss what goods are worth investing in or buying.  
+ Digital literacy: as the learner do search on online shopping platforms or other sources on different types of goods for 
+consumer awareness.  
+Values 
+Responsibility: as the learner makes responsible choices on shopping goods that they appreciate in value. 
+Pertinent and Contemporary Issues (PCIs):  
+Citizenship: as the learner uses money (Kenya shillings) to buy goods. 
+Link to other learning areas 
+Pre-Technical Studies: as the learner identifies and discusses objects and goods that appreciate and depreciate in value.  
+ 
+ 
+  
+
+ 
+26 
+ 
+Suggested Assessment Rubric 
+                           Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below Expectations 
+Ability to work out  the 
+circumference of a 
+circle,  length of an Arc 
+of a circle and 
+Perimeter of a sector of 
+a circle 
+The learner works out the 
+circumference of a circle, 
+the length of an Arc of a 
+circle and Perimeter of a 
+sector of a circle correctly 
+and systematically.  
+The learner works out 
+the circumference of 
+a circle, the length of 
+an Arc of a circle and 
+Perimeter of a sector 
+of a circle correctly.  
+The learner works out 
+the circumference of 
+a circle or the length 
+of an Arc of a circle 
+or Perimeter of a 
+sector of a circle 
+correctly.  
+The learner works out 
+the circumference of a 
+circle or the length of 
+an Arc of a circle 
+correctly.  
+Ability to calculate the 
+Area of circle and 
+sector of a circle 
+The learner calculates the 
+Area of circle and sector of 
+a circle correctly and 
+systematically. 
+The learner calculates 
+the Area of circle and 
+sector of a circle 
+correctly. 
+The learner calculates 
+the Area of circle or 
+sector of a circle 
+correctly. 
+The learner calculates 
+the Area of circle 
+correctly. 
+Ability to work out the 
+Surface Area of Cubes, 
+Cuboids, Cylinders and 
+triangular Prisms 
+The learner works out the 
+Surface Area of Cubes, 
+Cuboids, Cylinders and 
+triangular Prisms correctly 
+and systematically. 
+The learner works out 
+the Surface Area of 
+Cubes, Cuboids, 
+Cylinders and 
+triangular Prisms 
+correctly. 
+The learner works out 
+the Surface Area of 
+any 3 of; Cubes, 
+Cuboids, Cylinders or 
+triangular Prisms 
+correctly. 
+The learner works out 
+the Surface Area of 
+any 2 of; Cubes, 
+Cuboids, Cylinders or 
+triangular Prisms 
+correctly. 
+
+ 
+27 
+ 
+                           Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below Expectations 
+Ability to work out the 
+area of irregular shapes 
+using square grids  
+The learner works out the 
+area of irregular of most of 
+the shapes using square 
+grids accurately  and 
+creatively 
+The learner works out 
+the area of irregular 
+shapes using square 
+grids accurately   
+The learner works out 
+the area of few of the 
+irregular shapes using 
+square grids 
+accurately.   
+The learner works out 
+the area very few of 
+the irregular shapes 
+using square grids 
+partially accurately. 
+Ability to calculate 
+Simple and Compound 
+Interest per annum step 
+by step up to three 
+years  
+The learner calculates 
+Simple and Compound 
+Interest per annum step by 
+step up to three years 
+systematically and 
+accurately 
+The learner calculates 
+Simple and 
+Compound Interest 
+per annum step by 
+step up to three years 
+accurately 
+The learner calculates 
+Simple or Compound 
+Interest per annum 
+step by step up to two 
+years accurately 
+The learner calculates 
+Simple Interest 
+accurately. 
+Ability to work out 
+Appreciation and 
+Depreciation per 
+annum step by step up 
+to three years, and Hire 
+Purchase 
+The learner works out 
+Appreciation and 
+Depreciation per annum 
+step by step up to three 
+years, and Hire Purchase 
+systematically and 
+accurately 
+The learner works out 
+Appreciation and 
+Depreciation per 
+annum step by step up 
+to three years, and 
+Hire Purchase 
+accurately 
+The learner works out 
+Appreciation or 
+Depreciation per 
+annum step by step up 
+to two years, or Hire 
+Purchase 
+systematically and 
+accurately 
+The learner works out 
+Appreciation or 
+Depreciation per 
+annum for 1 year, or 
+Hire Purchase 
+accurately 
+ 
+
+ 
+28 
+ 
+STRAND 4.0: GEOMETRY 
+Sub-Strand: Geometrical Constructions 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning Experiences Suggested 
+Key Inquiry 
+Question(s) 
+4.0 Geometry  4.1 Geometrical 
+Constructions  
+(12 lessons) 
+ 
+ parallel and 
+perpendicular 
+lines 
+ properties of 
+polygons 
+ irregular 
+polygon 
+ circles 
+ 
+ 
+By the end of the sub- strand, 
+the learner should be able to: 
+a) construct parallel and 
+perpendicular lines in 
+different situations 
+b) divide a line 
+proportionally in different 
+situations 
+c) identify angle properties 
+of polygons in different 
+situations 
+d) construct regular polygons 
+up to a hexagon in 
+different situations 
+e) construct irregular 
+polygons up to a hexagon 
+in different situations 
+f) construct circles passing 
+through the vertices of a 
+The learner is guided to: 
+ practice constructing parallel and 
+perpendicular lines.  
+ practice dividing a line 
+proportionally, for example, using 
+a set square and a ruler only or 
+pair of compasses.  
+ discuss angle properties of 
+polygons and relate the number of 
+right angles to the number of sides. 
+And determine the angles in a 
+given polygon.  
+ construct regular polygons using 
+pair of compasses, rulers and 
+protractors. 
+ construct irregular polygons using 
+pair of compasses, rulers and 
+protractors. 
+1. How do we 
+construct 
+polygons? 
+2. Where do 
+we use 
+polygons 
+in real life 
+situations? 
+ 
+
+ 
+29 
+ 
+triangle in different 
+situations 
+g) construct circles touching 
+the sides of the triangle in 
+different situations 
+h) admire geometric patterns 
+in objects and substances 
+in real life.  
+ practice constructing circles 
+passing through vertices of given 
+triangles. 
+ practice constructing circles 
+touching sides of given triangles.  
+ watch videos on how to construct 
+polygons, use different 
+construction software.  
+ use IT or other devices to create 
+patterns using circles touching 
+sides of triangles or polygons.  
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses angle properties of polygons and relate the number of right 
+angles to the number of sides.  
+ Digital literacy: as the learner uses IT or other devices to create patterns using circles touching sides of triangles or 
+polygons.  
+Values 
+Responsibility: as the learner constructs regular polygons using pair of compasses, rulers and protractors and take care of the 
+tools.  
+Pertinent and Contemporary Issues (PCIs):  
+Self-awareness: as the learner uses IT or other resources to create patterns using circles touching sides of triangles or 
+polygons.  
+Link to other learning areas 
+Pre-technical studies: as the learner constructs regular polygons using a pair of compasses, rulers and protractors. 
+
+ 
+30 
+ 
+Sub-Strand: Coordinates and Graphs  
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry Question(s) 
+4.0 Geometry  4.2 Coordinates and 
+graphs  
+(14 lessons) 
+ 
+ Cartesian plane 
+ points on the 
+Cartesian 
+ table of values for a 
+linear equation 
+ scale for a linear 
+equation 
+ linear graphs 
+ simultaneous linear 
+equations 
+By the end of the sub- 
+strand, the learner should be 
+able to: 
+a) draw a labelled 
+Cartesian plane on 
+different learning 
+materials 
+b) identify points on the 
+Cartesian plane in 
+different situations 
+c) plot points on the 
+Cartesian plane in 
+different situations 
+d) generate table of values 
+for a linear equation in 
+different situations 
+e) determine an 
+appropriate scale for a 
+linear equation on the 
+Cartesian plane in 
+different situations   
+f) draw a linear graph 
+from table of values on 
+The learner is guided to: 
+ draw and appropriately 
+label the axes on the 
+Cartesian plane 
+ practice locating and 
+plotting points on a 
+Cartesian plane 
+appropriately.   
+ discuss and read 
+coordinates of points on 
+the Cartesian plane. 
+And write the 
+coordinates in terms of 
+(horizontal value, 
+vertical value)   
+ discuss, choose and use 
+appropriate scale for a 
+given data. 
+ discuss and make an 
+appropriate table of 
+values for a given linear 
+equation and draw the 
+linear graphs 
+1. How do we plot 
+coordinates on a 
+Cartesian plane? 
+2. Where do we use 
+linear graphs in 
+real life? 
+
+ 
+31 
+ 
+Cartesian plane in 
+different situations 
+g) solve simultaneous 
+linear equations 
+graphically in different 
+situations 
+h) apply simultaneous 
+equations in real life 
+situations  
+i) use IT or other 
+resources to learn more 
+on coordinates and 
+graphs  
+j) reflect on the use of 
+graphs in real life.  
+ generate values in a 
+table of the 
+simultaneous linear 
+equations and draw the 
+graphs, read the point of 
+intersection as solution 
+for the equations.   
+ discuss and form 
+simultaneous equations 
+from statements and 
+solve the equations 
+using graphs.  
+ use IT graphing tools to 
+create linear graphs or 
+use other materials to 
+practice drawing linear 
+graphs. 
+ 
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses and reads coordinates of points on the Cartesian plane. 
+ Critical thinking and problem solving: as the learner generates values in a table of the simultaneous linear equations.  
+ Digital literacy: as the learner learns and uses IT graphing tools to create linear graphs. 
+Values 
+Respect: is enhanced as the learner discusses and appreciate others’ views to make an appropriate table of values for a given 
+linear equation and draws the linear graphs 
+ 
+
+ 
+32 
+ 
+Pertinent and Contemporary Issues (PCIs):  
+Citizenship: as the learner practices locating and plotting points on a Cartesian plane appropriately as a foundational skill for 
+reading maps. 
+Link to other learning areas 
+Integrated Science: contributes to learner’s drawing and graphing skills as they draw the graphs of different content areas. 
+ 
+  
+
+ 
+33 
+ 
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry Question(s) 
+4.0 Geometry  4.3 Scale Drawing  
+(14 lessons) 
+ 
+ Scale length 
+ Conversions in 
+scale 
+ linear scales 
+ making scale 
+drawings 
+ 
+ 
+ 
+ 
+By the end of the sub- 
+strand, the learner should 
+be able to: 
+a) represent length to a 
+given scale in different 
+situations.   
+b) convert actual length to 
+scale length in real life 
+situations 
+c) convert scale length to 
+actual length in real 
+life situations. 
+d) interpret linear scales 
+in statement form in 
+different situations.   
+e) write linear scales in 
+statement form in 
+different situations.   
+f) interpret linear scales 
+in ratio form in 
+different situations.   
+g) write linear scales in 
+ratio form in different 
+situations.   
+The learner is guided to: 
+ measure and represent 
+length of different objects 
+from immediate 
+environment in his/her 
+work book 
+ discuss and practice 
+converting scale from one 
+form to another 
+ read, discuss and interpret 
+given linear scales in 
+statement form.  
+ discuss and write given 
+linear scales in statement 
+form. 
+ read, discuss and interpret 
+given linear scales in ratio 
+form.  
+ discuss and carry out 
+conversions of scales 
+from one form to another.  
+ make scale drawings on 
+different learning 
+1. How do we 
+determine scales 
+in real life? 
+2. Where do we use 
+scale drawing in 
+real life 
+situations? 
+ 
+ 
+ 
+
+ 
+34 
+ 
+h) convert linear scale 
+from statement form to 
+ratio form and ratio 
+form to statement form 
+in different situations 
+i) make scale drawings in 
+different situations 
+j) apply scale drawing in 
+real life situations.  
+k) recognize the use of 
+scale drawing in maps.  
+materials using 
+appropriate scale. 
+ use ICT devices to 
+display the maps and use 
+the zoom functions to 
+demonstrate scale.  
+ Use maps to demonstrate 
+scale and locate places. 
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses and practices converting scale from one form to another 
+ Critical thinking and problem solving: as the learner discusses and writes given linear scales in statement form. 
+ Digital literacy: as the learner uses ICT devices to display the maps and use the zoom functions to demonstrate scale.  
+Values 
+ Responsibility: as the learner makes scale drawings on different learning materials using appropriate scale.  
+ Citizenship: as the learner uses maps to demonstrate scale and locate places. 
+Pertinent and Contemporary Issues (PCIs):  
+Environmental education: as the learner measures and represents the length of different objects from the immediate 
+environment in his/her work book. 
+Link to other learning areas 
+Pre-Technical Studies: as the learner reads and makes scale drawings learnt from technical drawing. 
+ 
+ 
+  
+
+ 
+35 
+ 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning Experiences Suggested Key 
+Inquiry Question(s) 
+4.0  
+Geometry  
+4.4 Common 
+Solids  
+(16 lessons) 
+ 
+ nets of cubes, 
+cuboids, 
+cylinders, 
+pyramids and 
+cones 
+ surface area of 
+the solids 
+ models of 
+hollow and 
+compact solids 
+ 
+ 
+ 
+ 
+By the end of the sub- strand, 
+the learner should be able to: 
+a) identify common solids 
+from the environment   
+b) sketch nets of cubes, 
+cuboids, cylinders, 
+pyramids and cones in 
+different situations 
+c) work out surface area of 
+the solids from nets of 
+solids in different 
+situations 
+d) determine the distance 
+between two points on the 
+surface of a solid in 
+different situations 
+e) make models of hollow 
+and compact solids for 
+skills development 
+f) use drawing materials to 
+draw models and nets of 
+solids in different 
+situations 
+The learner is guided to: 
+ identify and collect common 
+solids such as cubes, cuboids, 
+cylinders, pyramids and cones 
+from the immediate 
+environment. 
+ discuss, open and sketch the 
+nets of hollow solids.  
+ work out the surface area of 
+solids from nets. 
+ discuss and practice measuring 
+the distance between any two 
+points on the surface of the 
+solids.  
+ make models of hollow and 
+compact solids using locally 
+available materials such as clay. 
+Hollow solids (containers) may 
+be of cubes, cuboids, cylinders, 
+pyramids, cones or pots. 
+Compact solids (eg. bricks) may 
+1. What are 
+common solids? 
+2. How do we use 
+common solids 
+in real life? 
+ 
+
+ 
+36 
+ 
+g) promote the use of 
+common solids in real life 
+situations.  
+be of cubes, cuboids or 
+cylinders. 
+ use IT devices to watch videos 
+on common solids, nets and 
+draw the solids and nets.  
+ use other resources to trace or 
+draw nets of solids 
+ carry out a project in ethno 
+math; how pots were molded 
+and decorated in African 
+culture. 
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses and works with peers to collect solids from the environment. 
+ Creativity and imagination: as the learner makes the models of different solids.  
+Values 
+Responsibility, love and respect: as the learner works with peers to collect solids and make models. 
+Pertinent and Contemporary Issues (PCIs):  
+ ESD: as the learner collects solids from the environment and use locally available materials to make models. 
+ Self -esteem: as the learner engages to open nets of solids and makes models creatively.  
+Link to other learning areas 
+ Pre-technical studies: as the leaner enhances drawing skills as they sketch nets of different solids 
+ Creative Art and Sports: as the learner uses creative skills to make models of different solids. 
+ 
+ 
+
+ 
+37 
+ 
+Suggested Assessment Rubric 
+                             Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below 
+Expectations 
+Ability to construct 
+parallel and 
+perpendicular lines  
+The learner constructs 
+parallel and 
+perpendicular lines 
+accurately and 
+proficiently 
+The learner constructs 
+parallel and 
+perpendicular lines 
+accurately  
+The learner constructs 
+parallel or perpendicular 
+lines accurately  
+The learner 
+constructs parallel 
+lines accurately  
+Ability to divide a line 
+proportionally  
+The learner divides a 
+line proportionally 
+correctly and 
+systematically  
+The learner divides a 
+line proportionally 
+correctly  
+The learner divides a 
+line proportionally 
+partially correctly  
+The learner divides 
+a line 
+disproportionally  
+Ability to construct 
+regular and irregular 
+polygons up to a 
+hexagon  
+The learner constructs 
+regular and irregular 
+polygons up to a 
+hexagon accurately and 
+systematically  
+The learner constructs 
+regular and irregular 
+polygons up to a 
+hexagon accurately  
+The learner constructs 
+regular or irregular 
+polygons up to a 
+pentagon accurately  
+The learner 
+constructs regular 
+or irregular 
+quadrilaterals 
+accurately  
+Ability to construct 
+circles passing through 
+the vertices of a triangle 
+and touching the sides of 
+the triangle 
+The learner constructs 
+circles passing through 
+the vertices of a triangle 
+and touching the sides 
+of the triangle correctly 
+and concisely 
+The learner constructs 
+circles passing through 
+the vertices of a 
+triangle and touching 
+the sides of the 
+triangle correctly  
+The learner constructs 
+circles passing through 
+the vertices of a triangle 
+or touching the sides of 
+the triangle correctly  
+The learner 
+constructs circles 
+passing through the 
+vertices of a 
+triangle correctly  
+
+ 
+38 
+ 
+                             Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below 
+Expectations 
+Ability to plot Points on 
+the Cartesian Plane  
+The learner plots most 
+of the Points on the 
+Cartesian Plane 
+accurately and precisely 
+The learner plots 
+Points on the 
+Cartesian Plane 
+accurately 
+The learner plots few 
+Points on the Cartesian 
+Plane accurately 
+The learner plots 
+very few Points on 
+the Cartesian Plane 
+partially accurately 
+Ability to generate table 
+of values, determine an 
+appropriate Scale and 
+draw a linear graph for a 
+linear equation  
+The learner generates 
+table of values, 
+determines an 
+appropriate Scale and 
+draws a linear graph for 
+a linear equation 
+accurately and 
+creatively 
+The learner generates 
+table of values, 
+determines an 
+appropriate Scale and 
+draws a linear graph 
+for a linear equation 
+accurately  
+The learner generates 
+table of values, 
+determine an 
+appropriate Scale or 
+draws a linear graph for 
+a linear equation 
+accurately   
+The learner 
+generates table of 
+values or 
+determines an 
+appropriate Scale 
+for a linear 
+equation accurately  
+Ability to Solve 
+Simultaneous Linear 
+Equations Graphically  
+The learner solves all 
+Simultaneous Linear 
+Equations Graphically 
+accurately and 
+systematically 
+The learner solves all 
+Simultaneous Linear 
+Equations Graphically 
+accurately  
+The learner solves most 
+Simultaneous Linear 
+Equations Graphically 
+accurately 
+The learner solves 
+few Simultaneous 
+Linear Equations 
+Graphically 
+partially accurately 
+Ability to convert actual 
+length to scale length 
+and scale length to actual 
+length 
+The learner converts 
+actual length to scale 
+length and scale length 
+to actual length 
+accurately and 
+systematically 
+The learner converts 
+actual length to scale 
+length and scale length 
+to actual length 
+accurately  
+The learner converts 
+actual length to scale 
+length or scale length to 
+actual length accurately  
+The learner 
+converts actual 
+length to scale 
+length accurately  
+
+ 
+39 
+ 
+                             Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below 
+Expectations 
+Ability to Interpret and 
+write linear scales in 
+statement and ratio form  
+The learner interprets 
+and writes linear scales 
+in statement and ratio 
+form accurately and 
+concisely 
+The learner interprets 
+and writes linear 
+scales in statement and 
+ratio form accurately  
+The learner interprets or 
+writes linear scales in 
+statement or ratio form 
+accurately  
+The learner 
+interprets or writes 
+linear scales in 
+statement form 
+accurately  
+Ability to make Scale 
+drawings and sketch nets 
+of cubes, cuboids, 
+cylinders, pyramids and 
+cones 
+The learner makes Scale 
+drawings and sketches 
+nets of cubes, cuboids, 
+cylinders, pyramids and 
+cones correctly and 
+creatively 
+The learner makes 
+Scale drawings and 
+sketches nets of cubes, 
+cuboids, cylinders, 
+pyramids and cones 
+correctly  
+The learner makes Scale 
+drawings or sketches 
+nets of any 3 of; cubes, 
+cuboids, cylinders, 
+pyramids or cones 
+correctly  
+The learner makes 
+Scale drawings or 
+sketches nets of 
+any 2 of; cubes, 
+cuboids, cylinders, 
+pyramids or cones 
+correctly  
+Ability to work out 
+surface area of nets of 
+cubes, cuboids, 
+cylinders, pyramids and 
+cones  
+The learner works out 
+surface area of the 
+solids from nets of 
+cubes, cuboids, 
+cylinders, pyramids and 
+cones accurately and 
+systematically  
+The learner works out 
+surface area of the 
+solids from nets of 
+cubes, cuboids, 
+cylinders, pyramids 
+and cones accurately 
+The learner works out 
+surface area of the 
+solids from nets of any 
+3 of; cubes, cuboids, 
+cylinders, pyramids or 
+cones accurately 
+The learner works 
+out surface area of 
+the solids from nets 
+of any 2 of; cubes, 
+cuboids, cylinders 
+or pyramids 
+accurately 
+
+ 
+40 
+ 
+                             Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches 
+Expectations 
+Below 
+Expectations 
+Ability to determine the 
+distance between two 
+points on the surface of a 
+solid 
+The learner determines 
+the distance between 
+two points on the 
+surface of a solid 
+accurately and 
+systematically 
+The learner determines 
+the distance between 
+two points on the 
+surface of a solid 
+accurately  
+The learner determines 
+the distance between 
+two points on the 
+surface of a solid 
+partially accurately 
+The learner 
+determines the 
+distance between 
+two points on the 
+surface of a solid 
+inaccurately 
+ 
+ 
+  
+
+ 
+41 
+ 
+STRAND 5.0: DATA HANDLING AND PROBABILITY 
+Sub-Strand: Data Representation and Interpretation  
+Strand Sub-Strand Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested Key 
+Inquiry 
+Question(s) 
+5.0 Data 
+Handling and 
+Probability  
+5.1 Data 
+Representation 
+and 
+Interpretation 
+(10 lessons) 
+ 
+ Bar graphs and 
+line graphs 
+ Mode, mean 
+and median 
+ 
+By the end of the sub- 
+strand, the learner should be 
+able to: 
+a) draw bar graphs of data 
+from real life situations 
+b) interpret bar graphs of 
+data from real life 
+situations 
+c) draw line graphs of 
+given data from real life 
+situations 
+d) interpret line graphs of 
+data from real life 
+situations 
+e) identify the mode of a 
+set of discrete data from 
+real life situations 
+f) calculate the mean of a 
+set of discrete data from 
+real life situations 
+The learner is guided to: 
+ collect data from their own 
+experiences, for example size of 
+shoes, height or test scores. Use 
+a suitable scale to represent the 
+data in bar graphs.  
+ discuss and interpret Bar graphs  
+ discuss and represent data in 
+line graphs  
+ discuss and interpret line graphs  
+ recognize the mode from a 
+given set of discrete data  
+ discuss and work out the 
+average from different sets of 
+discrete data and relate it to the 
+mean. 
+ carry out different activities that 
+involve getting the median 
+position. For example, where 
+1. What are the 
+different ways 
+of representing 
+data? 
+2. How do we 
+determine the 
+mean of data? 
+ 
+
+ 
+42 
+ 
+g) determine the median of 
+a set of discrete data 
+from real life situations 
+h) recognize use of data 
+representation and 
+interpretation in real life 
+situations.  
+possible learners use the hand to 
+identify the middle finger in 
+reference to its position. 
+ arrange given data in ascending 
+order and identify the middle 
+value which is the median.  
+ use IT to create bar graphs and 
+line graphs to represent the 
+data, calculate the mean, the 
+mode and the median. 
+ use other resources to represent 
+data on real life cases such as 
+types and number of injuries 
+from roads. Draw bar and line 
+graphs to represent the data,  
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses and represents data in line graphs.  
+ Critical thinking and problem solving: as the learner discusses and interprets Bar graphs.  
+ Self-efficacy: as the learner collects data from their own experiences, for example size of shoes, height or test scores. 
+Values 
+Social cohesion: as the learner collects data from their own experiences, for example size of shoes, height or test scores. 
+Pertinent and Contemporary Issues (PCIs):  
+Self-awareness: as the learner collects data from their own experiences, for example size of shoes, height or test scores. 
+ 
+
+ 
+43 
+ 
+Link to other learning areas 
+Social Studies: as the learner discusses and works out the average from different sets of discrete data such as populations and 
+relate it to the mean. 
+ 
+ 
+  
+
+ 
+44 
+ 
+Sub-Strand: Probability 
+Strand Sub-Strand Specific Learning Outcomes Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s) 
+5.0 Data 
+Handling 
+and 
+Probability  
+5.2 Probability 
+(7 lessons) 
+ 
+ events 
+involving 
+chance 
+ experimental 
+probability 
+outcomes 
+ probability 
+outcomes in 
+fractions, 
+decimals or 
+percentages 
+ 
+By the end of the sub- strand, the 
+learner should be able to: 
+a) identify events involving chance 
+in real life situations  
+b) perform chance experiments in 
+different situations 
+c) write the experimental probability 
+outcomes in different situations 
+d) express the probability outcomes 
+in fractions in different situations 
+e) express the probability outcomes 
+in decimals or percentages in 
+different situations 
+f) use IT and other materials to play 
+games involving probability  
+g) recognize that there are events that 
+happen by chance in real life 
+situations.  
+The learner is guided to: 
+ discuss daily events that 
+are likely/unlikely to 
+happen/will not happen.  
+ discuss and carry out 
+different chance 
+experiments like flipping 
+the coins, tossing the 
+dice or drawing colored 
+balls from a bag one ball 
+at a time.   
+ record the probability of 
+the chance outcomes in 
+fractions, decimals and 
+percentages. 
+ use IT tools or other 
+resources to play games 
+involving probability  
+1. When do we 
+consider chances 
+that an event is 
+likely to 
+happen? 
+2. Why is 
+probability 
+important in real 
+life situations? 
+ 
+Core Competencies to be developed 
+ Communication and collaboration: as the learner discusses daily events that are likely/unlikely to happen/will not happen.  
+ Critical thinking and problem solving: as the learner discusses and carries out different chance experiments like flipping 
+the coins. 
+
+ 
+45 
+ 
+ Self-efficacy: as the learner discusses and carries out different chance experiments like flipping the coins and dice. 
+Values 
+ Responsibility: as the learner uses IT devices or other resources such as coins, balls in the study of probability.  
+Pertinent and Contemporary Issues (PCIs):  
+Environmental awareness: as the learners discusses daily events that are likely/unlikely to happen/will not happen that may 
+relate to the environment.  
+Link to other learning areas 
+Social Studies: as the learner discusses daily events that are likely/unlikely to happen/will not happen that may involve the 
+weather. 
+ 
+ 
+  
+
+ 
+46 
+ 
+Suggested Assessment Rubric 
+                        Level 
+Indicators 
+Exceeds Expectations Meets Expectations Approaches Expectations Below Expectations 
+Ability to draw and 
+Interpret bar and line 
+graphs of data  
+The learner draws and 
+Interprets bar and line 
+graphs of data correctly 
+and systematically 
+The learner draws 
+and Interprets bar 
+and line graphs of 
+data correctly  
+The learner draws or 
+Interprets bar or line 
+graphs of data correctly  
+The learner draws or 
+Interprets bar graphs 
+of data correctly  
+Ability to determine 
+mode, mean and the 
+median of a given set 
+of discrete data 
+The learner determines 
+mode, mean and the 
+median of a given set of 
+discrete data accurately 
+and systematically 
+The learner 
+determines mode, 
+mean and the median 
+of a given set of 
+discrete data 
+accurately  
+The learner determines 
+mode, mean or the median 
+of a given set of discrete 
+data accurately   
+The learner 
+determines mode or 
+mean or median of a 
+given set of discrete 
+data partially 
+accurately  
+Ability to Perform 
+chance experiments 
+and write the 
+experimental 
+probability outcomes 
+The learner performs 
+chance experiments and 
+writes the experimental 
+probability outcomes 
+accurately and fluently  
+The learner performs 
+chance experiments 
+and writes the 
+experimental 
+probability outcomes 
+accurately  
+The learner performs 
+chance experiments or 
+writes the experimental 
+probability outcomes 
+accurately  
+The learner performs 
+chance experiments 
+or writes the 
+experimental 
+probability outcomes 
+partially accurately  
+Ability to express the 
+probability outcomes 
+in fractions, decimals 
+and percentages 
+The learner expresses 
+the probability 
+outcomes in fractions, 
+decimals and 
+percentages correctly 
+and consistently 
+The learner expresses 
+the probability 
+outcomes in 
+fractions, decimals 
+and percentages 
+correctly  
+The learner expresses the 
+probability outcomes in 
+fractions or decimals or 
+percentages correctly  
+The learner 
+expresses the 
+probability outcomes 
+in fractions or 
+decimals partially 
+correctly  
+
+ 
+47 
+ 
+APPENDIX 1: GUIDELINES FOR INTEGRATING COMMUNITY SERVICE LEARNING (CSL) PROJECT  
+Introduction 
+In Grade 8, learners will undertake an integrated Community Service Learning (CSL) project of choice from a single or combined 
+subject. The CSL project will enable the learner to apply knowledge and skills from other learning areas to address a problem in 
+the community. The implementation of the integrated CSL project will take a Whole School Approach, where all members of the 
+school community including teachers, school administration, parents/guardians/ local community  and support staff.  It will be a 
+collaborative effort where the teacher of Social Studies coordinates and works with other subject teachers to design and implement 
+the integrated CSL projects.  The teachers will select a theme drawn from different Learning Areas and the broader categories of 
+Pertinent  and  Contemporary  Issues  (PCIs)  for  the  CSL  project. It  should  also  provide  an  opportunity  for  development  of  core 
+competencies  and nurturing  of  values. Learners  will  undertake one  common integrated  class  CSL  project  following  a  6-step 
+milestone approach as follows: 
+ 
+Milestone Description 
+Milestone 1 
+  
+Problem Identification 
+Learners study their community to understand the challenges faced and their effects on community members. 
+Some of the challenges in the community can be: 
+● Environmental degradation 
+● Lifestyle diseases, Communicable and non-communicable diseases 
+● Poverty 
+● Violence and conflicts in the community 
+● Food security issues 
+Milestone 2 
+Designing a solution 
+Learners create an intervention to address the challenge identified. 
+
+ 
+48 
+ 
+Milestone 3 
+Planning for the Project 
+Learners  share  roles,  create  a  list  of  activities  to  be  undertaken,  mobilise  resources  needed  to  create  their 
+intervention and set timelines for execution 
+Milestone 4 
+Implementation 
+The learners execute the project and keep evidence of work done. 
+Milestone 5 Showcasing /Exhibition and Report Writing 
+Exhibitions involve showcasing learners’ project items to the community and reflecting on the feedback 
+Learners write a report detailing their project activities and learnings from feedback 
+Milestone 6 Reflection 
+Learners review all project work to learn from the challenges faced. 
+They link project work with academic concepts, noting how the concepts enabled them to do their project 
+as well as how the project helped to deepen learning of the academic concepts.  
+ 
+NOTE: The milestones will be staggered across the 3 terms of the academic calendar.  
+Assessment of CSL integrated Project 
+Assessment  for  the  integrated CSL  project  will  be  conducted  formatively.  The assessment  will  consider  both  the  process  and 
+end product. This entails assessing each of the milestone stages of the integrated CSL class project. It will focus on 3 components 
+namely: skills from various learning areas applied in carrying out the project, core competencies developed and values nurtured.  
+ 
+
+ 
+49 
+ 
+APPENDIX 2: LIST OF ASSESSMENT METHODS, LEARNING RESOURCES AND NON-FORMAL ACTIVITIES 
+ 
+Strand Sub strand Suggested Assessment 
+Methods 
+ Resources Suggested 
+Learning 
+Suggested Non-Formal 
+Activities 
+Numbers 
+ 
+Integers Class activities 
+Class written tests 
+Out of school/home 
+assignments or activities 
+Number lines games on charts 
+Number cards, steps,  
+Prepare or improvise 
+number lines games on 
+charts 
+Fractions 
+ 
+Class activities 
+Class written tests 
+Out of school/home 
+assignments 
+Multiplication tables  
+Decimals Class activities 
+Class written tests 
+Out of school/home 
+assignments  
+Multiplication tables   
+
+ 
+50 
+ 
+Squares and 
+square roots 
+Class activities 
+Class written tests 
+Out of school/home 
+assignments or 
+Equivalent fraction board, 
+Circular and Rectangular cut 
+outs, Counters 
+ 
+Rates, ratios, 
+proportions and 
+percentages 
+Class activities 
+Class written tests 
+Place value charts, Number 
+cards 
+ 
+Algebra 
+ 
+ 
+ 
+Algebraic 
+Expressions 
+Class activities 
+Class written tests 
+Out of school/home 
+assignments or 
+Information from different 
+sources 
+Carry out activities 
+involving classifying 
+objects in their immediate 
+environment according to 
+given attributes such as 
+similarities or differences. 
+This can be done at home. 
+Take photos and share with 
+class or school. Use the 
+concept of classification of 
+objects to own things at 
+school and home.  
+Linear 
+Equations 
+Class activities Information from different 
+sources 
+ 
+
+ 
+51 
+ 
+ Class written tests 
+Out of school/home 
+assignments or 
+Measurement 
+ 
+Circles Class activities 
+Class written tests 
+Out of school/home 
+assignments or 
+ Cut outs of sectors, papers, 
+ruler 
+ 
+Area Class written tests 
+Out of school/home 
+assignments or activities 
+Square cut outs,  squares, 1m 
+squares 
+ 
+Money  
+ 
+Class activities 
+Out of school/home 
+assignments or activities 
+Price Lists for commodities, 
+model shop, Electronic money  
+Research, identify and 
+discuss different 
+products/goods that 
+appreciate or depreciate. 
+This can be done through 
+online or other forms of 
+searches. Create a table of 
+products and the two prices: 
+one for cash payment, the 
+other for hire purchase 
+payment. This is to inform 
+
+ 
+52 
+ 
+purchasing decisions that 
+will protect from products 
+that highly lose value with 
+time. 
+Geometry 
+ 
+Geometric 
+constructions 
+Class activities  
+Class written tests 
+Out of school/home 
+assignments or activities 
+Unit angles, Protractors, Pair 
+of compasses, Rulers, Straight 
+edges 
+ 
+Coordinates 
+and graphs 
+Class activities  
+Class written tests 
+Out of school/home 
+assignments or activities 
+rulers, plotting/graph paper  
+Scale drawing  Class activities  
+Class written tests 
+Out of school/home 
+assignments or activities 
+Unit angles, Protractors, Pair 
+of compasses, Rulers, Straight 
+edges 
+ 
+Common solids Class activities  
+Class written tests 
+Containers, compact solid 
+objects, water, soil, clay, waste 
+news/papers 
+Undertake the  project 
+
+ 
+53 
+ 
+ 
+Data handling 
+and probability  
+Data handling Class activities  
+Class written tests 
+ 
+Data from different sources  
+Probability Class activities  
+Class written tests 
+ 
+Data from different sources  
+ 
+ 
+  
+
+ 
+54 
+ 
+APPENDIX 3: USE OF ICT DEVICES  
+The following ICT devices may be used in the teaching/learning of mathematics at this level: Learner digital devices (LDD), 
+Teacher digital devices(TDD), Mobile phones, Digital clocks, Television sets, Videos, Cameras, Projectors, Radios, DVD 
+players, CD’s, Scanners, Internet among others. 
+ 

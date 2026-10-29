@@ -1,0 +1,1692 @@
+
+
+ 
+ 
+ 
+   
+ 
+KENYA INSTITUTE OF CURRICULUM DEVELOPMENT 
+A Skilled and Ethical Society  
+ 
+ 
+ 
+ 
+ 
+JUNIOR SCHOOL CURRICULUM DESIGN  
+ 
+INTEGRATED SCIENCE  
+GRADE 8
+
+ 
+ 
+ 
+First published 2023 
+ 
+Revised 2024 
+ 
+All rights reserved.  No part of this book may be reproduced, stored in a retrieval system or transcribed, in any form or by any 
+means, electronic, mechanical, photocopy, recording or otherwise, without the prior written permission of the publisher. 
+ 
+ 
+ 
+ 
+ 
+ISBN: 978-9914-52-947-0 
+ 
+ 
+ 
+Published and printed by Kenya Institute of Curriculum Development
+
+ 
+i 
+ 
+FOREWORD 
+The Government of Kenya is committed to ensuring that policy objectives for Education, Training and Research meet the aspirations of the 
+Constitution of Kenya 2010, the Kenya Vision 2030, National Curriculum Policy 2019, the United Nations Sustainable Development Goals 
+(SDGs)  and  the  regional  and  global  conventions  to  which  Kenya  is  a  signatory.  Towards  achieving  the  mission  of  basic  education,  the 
+Ministry of Education (MoE) has successfully and progressively rolled out the implementation of the Competency Based Curriculum (CBC) 
+at Pre-Primary, Primary and Junior School levels.  
+ 
+The  implementation  of  Competency  Based  Curriculum  involves  monitoring  and  evaluation  to  determine  its  success.  After  the  five-year 
+implementation  cycle, a  summative  evaluation  of  the  primary  education  cycle  was  undertaken  to  establish  the  achievement  of  learning 
+outcomes as envisaged in the Basic Education Curriculum Framework. The Government of Kenya constituted a Presidential working Party 
+on   Education   Reforms(PWPER)   in   2022   to   address   salient   issues   affecting   the   education   sector.   PWPER   made   far   reaching 
+recommendations  for  basic  education  that  necessitated  curriculum  review.  The  recommendations  of  the  PWPER,  monitoring  reports, 
+summative evaluation of the primary education cycle, feedback from curriculum implementers and other stakeholders led to rationalisation 
+and review of the basic education curriculum. 
+ 
+The  reviewed  Grade  8  curriculum  designs  build  on  competencies  attained  by  learners  at  the  end  of Grade  7.  Further,  they  provide 
+opportunities for learners to continue exploring and nurturing their potentials as they prepare to transit to Senior Secondary School. 
+The curriculum designs  present National Goals  of Education, essence statements, general and specific  expected learning outcomes for the 
+subjects  as  well  as  strands  and  sub  strands.  The  designs  also  outline  suggested  learning  experiences,  key  inquiry  questions, core 
+competencies, Pertinent and Contemporary Issues (PCIs), values and assessment rubric. 
+ 
+It  is  my  hope  that  all  Government  agencies  and  other  stakeholders  in  Education  will  use  the  designs  to  plan  for  effective  and efficient 
+implementation of the CBC. 
+ 
+ 
+HON. EZEKIEL OMBAKI MACHOGU, CBS 
+CABINET SECRETARY,  
+MINISTRY OF EDUCATION 
+
+ 
+ii 
+ 
+PREFACE 
+The Ministry of Education (MoE) nationally implemented Competency Based  Curriculum (CBC) in 2019. Grade 8 is the second  grade of 
+Junior School in the reformed education structure.  
+ 
+The reviewed Grade 8 curriculum furthers  implementation of the  CBC from Grade 7 in Junior School. The  main feature  of this  level is a 
+broad  curriculum  for the  learner to  explore  talents,  interests  and  abilities  before  selection of pathways  and tracks  at  the  Senior  Secondary 
+education  level.  This  is  very  critical  in  the  realisation  of  the  Vision  and  Mission  of  the  on-going  curriculum  reforms  as  enshrined  in  the 
+Sessional  Paper  No.  I  of  2019  whose  title  is: Towards  Realizing  Quality,  Relevant  and  Inclusive  Education  and  Training  for  Sustainable 
+Development in  Kenya.  The  Sessional  Paper  explains  the  shift  from  a  Content - Focused  Curriculum  to  a  focus  on Nurturing  every 
+Learner’s potential.  
+ 
+Therefore,  the  Grade 8 curriculum designs are intended to enhance the learners’ development in the CBC core competencies, namely: 
+Communication and  Collaboration,  Critical  Thinking  and  Problem  Solving,  Creativity  and  Imagination,  Citizenship,  Digital  Literacy, 
+Learning to Learn and Self-efficacy. 
+ 
+The curriculum designs provide suggestions for interactive and differentiated learning experiences linked to the various sub strands and the 
+other aspects of the CBC. They also offer several suggested learning resources and a variety of assessment techniques. It is expected that the 
+designs  will  guide  teachers  to  effectively  facilitate  learners  to  attain the  expected  learning  outcomes  for  Grade 8 and  prepare  them  for 
+smooth transition to 9.  Furthermore, it is my hope that teachers will use the designs to make learning interesting, exciting and enjoyable. 
+ 
+ 
+DR. BELIO KIPSANG’, CBS 
+PRINCIPAL SECRETARY 
+STATE DEPARTMENT FOR BASIC EDUCATION 
+MINISTRY OF EDUCATION 
+
+ 
+iii 
+ 
+ACKNOWLEDGEMENT 
+The  Kenya  Institute  of  Curriculum  Development  (KICD)  Act  Number  4  of  2013  (Revised  2019)  mandates  the  Institute  to  develop and 
+review (SNE adapt) curricula  and curriculum support materials  for basic and  tertiary education and training. The  curriculum development 
+process for any level of education involves thorough research,  international benchmarking and  robust stakeholder engagement. Through a 
+systematic and consultative process, the KICD conceptualised the Competency Based Curriculum (CBC) as captured in the Basic Education 
+Curriculum Framework  (BECF)2017,  that responds to the  demands of the  21
+st
+ Century and  the  aspirations  captured in the  Constitution of 
+Kenya  2010,  the  Kenya  Vision  2030,  East  African  Community  Protocol,  International  Bureau  of  Education  Guidelines and  the  United 
+Nations Sustainable Development Goals (SDGs).  
+ 
+KICD receives its funding from the Government of Kenya to facilitate successful achievement of the stipulated mandate and implementation 
+of the Government and Sector (Ministry of Education (MoE) plans. The Institute also receives support from development partners targeting 
+specific  programmes.  The  revised  Grade  8 curriculum  designs were developed  with  the  support of  the  World  Bank  through  the  Kenya 
+Primary Education Equity in Learning Programme (KPEELP); a project coordinated by MoE. Therefore, the Institute is very grateful for the 
+support  of  the  Government  of  Kenya,  through  the  MoE  and the  development  partners  for policy,  resource  and  logistical  support. 
+Specifically, special thanks to the Cabinet Secretary-MoE and the Principal Secretary-State Department of Basic Education, 
+ 
+We also wish to acknowledge the KICD curriculum developers and other staff, all teachers, educators who took part as panelists; the Semi-
+Autonomous Government Agencies (SAGAs) and representatives of various stakeholders for their roles in the development of the Grade 8 
+curriculum  designs.  In  relation to  this,  we acknowledge  the  support  of  the Chief  Executive  Officers  of  the  Teachers  Service  Commission 
+(TSC) and the Kenya National Examinations Council (KNEC) for their support in the process of developing these designs. Finally, we are 
+very grateful to the KICD Council Chairperson and other members of the Council for very consistent guidance in the process.  
+ 
+We assure all teachers, parents and other stakeholders that this curriculum design will effectively guide the implementation of the CBC at 
+Grade 8 and preparation of learners for transition to 9.   
+  
+ 
+PROF. CHARLES O. ONG’ONDO, PhD, MBS 
+DIRECTOR/CHIEF EXECUTIVE OFFICER 
+KENYA INSTITUTE OF CURRICULUM DEVELOPMENT 
+
+ 
+iv 
+ 
+ 
+TABLE OF CONTENTS  
+ 
+FOREWORD ........................................................................................................................................................................................................ i 
+PREFACE ............................................................................................................................................................................................................ ii 
+ACKNOWLEDGEMENT .................................................................................................................................................................................. iii 
+TABLE OF CONTENTS .................................................................................................................................................................................... iv 
+NATIONAL GOALS OF EDUCATION ............................................................................................................................................................ v 
+LESSON ALLOCATION .................................................................................................................................................................................. vii 
+LEARNING OUTCOMES FOR JUNIOR SCHOOL ...................................................................................................................................... viii 
+ESSENCE STATEMENT ................................................................................................................................................................................ viii 
+SUMMARY OF STRANDS AND SUB STRANDS .......................................................................................................................................... x 
+STRAND 1.0: MIXTURES, ELEMENTS AND COMPOUNDS ....................................................................................................................... 1 
+STRAND 2.0: LIVING THINGS AND THEIR ENVIRONMENT.................................................................................................................... 9 
+STRAND 3.0: FORCE AND ENERGY .............................................................................................................................................................. 6 
+APPENDIX 1: GUIDELINES FOR INTEGRATING COMMUNITY SERVICE LEARNING (CSL) PROJECT ........................................ 12 
+APPENDIX 2: LIST OF ASSESSMENT METHODS, LEARNING RESOURCES AND NON-FORMAL ACTIVITIES ........................... 14 
+
+ 
+v 
+ 
+NATIONAL GOALS OF EDUCATION 
+Education in Kenya should: 
+1. Foster nationalism and patriotism and promote national unity. 
+Kenya’s people belong to different communities, races and religions, but these differences need not divide them. They must be 
+able to live and interact as Kenyans. It is a paramount duty of education to help young people acquire this sense of nationhood 
+by removing conflicts and promoting positive attitudes of mutual respect which enable them to live together in harmony and 
+foster patriotism in order to make a positive contribution to the life of the nation. 
+ 
+2. Promote the social, economic, technological and industrial needs for national development. 
+  Education should prepare the youth of the country to play an effective and productive role in the life of the nation. 
+a) Social Needs 
+Education  in  Kenya  must  prepare  children  for  changes  in  attitudes  and  relationships  which  are  necessary  for  the 
+smooth  progress  of  a  rapidly  developing  modern  economy.  There  is bound  to  be  a  silent  social  revolution  following 
+the wake of rapid modernisation. Education should assist our youth to adapt to this change. 
+b) Economic Needs  
+Education  in  Kenya  should  produce  citizens  with  the  skills,  knowledge,  expertise  and  personal  qualities  that  are 
+required to support a growing economy. Kenya is building up a modern and independent economy which is in need of 
+an adequate and relevant domestic workforce. 
+c) Technological and Industrial Needs  
+Education in Kenya should provide learners with the necessary skills and attitudes for industrial development. Kenya 
+recognises the rapid industrial and technological changes taking place, especially in the developed world. We can only 
+be part of this development if our education system is deliberately focused on the knowledge, skills and attitudes that 
+will prepare our young people for these changing global trends. 
+ 
+3. Promote individual development and self-fulfilment 
+Education  should  provide  opportunities  for  the  fullest  development  of  individual  talents  and  personality.  It  should  help 
+children to develop their potential interests and abilities. A vital aspect of individual development is the building of character. 
+ 
+
+ 
+vi 
+ 
+4. Promote sound moral and religious values. 
+Education  should  provide  for  the  development  of knowledge,  skills  and  attitudes  that  will  enhance  the  acquisition  of  sound 
+moral values and help children to grow up into self-disciplined, self-reliant and integrated citizens. 
+ 
+5.  Promote social equity and responsibility.  
+Education  should  promote  social equality  and  foster  a  sense  of  social  responsibility  within  an  education  system  which 
+provides equal educational opportunities for all. It should give all children varied and challenging opportunities for collective 
+activities and corporate social service irrespective of gender, ability or geographical environment.  
+ 
+6. Promote respect for and development of Kenya’s rich and varied cultures. 
+Education  should  instil  in  the  youth  of  Kenya  an  understanding  of  past  and  present  cultures  and  their  valid  place  in 
+contemporary society. Children should be able to blend the best of traditional values with the changing requirements that must 
+follow rapid development in order to build a stable and modern society.  
+ 
+7. Promote international consciousness and foster positive attitudes towards other nations.  
+Kenya is part of the international community. It is part of the complicated and interdependent network of peoples and nations. 
+Education  should therefore  lead the  youth  of  the  country  to  accept  membership  of  this  international  community  with  all  the 
+obligations and responsibilities, rights and benefits that this membership entails. 
+ 
+8 Promote positive attitudes towards good health and environmental protection. 
+Education should inculcate in young people the value of good health in order for them to avoid indulging in activities that will 
+lead to physical or mental ill health. It should foster positive attitudes towards environmental development and conservation. It 
+should lead the youth of Kenya to appreciate the need for a healthy environment. 
+ 
+
+ 
+vii 
+ 
+LESSON ALLOCATION  
+  
+S/No Learning Area  Number of Lessons Per Week 
+(40 Minutes Per Lesson) 
+1.  English   5 
+2.  Kiswahili / Kenya Sign Language  4 
+3.  Mathematics  5 
+4.  Religious Education  4 
+5.  Social Studies  4 
+6.  Integrated Science 5 
+7.  Pre-Technical Studies  4 
+8.  Agriculture  4 
+9.  Creative Arts and Sports  5 
+ Pastoral /Religious Instructional Program 1* 
+Total  40 + 1* 
+ 
+
+ 
+viii 
+ 
+LEARNING OUTCOMES FOR JUNIOR SCHOOL 
+By end of Junior School, the learner should be able to: 
+1. Apply literacy, numeracy and logical thinking skills for appropriate self-expression.  
+2. Communicate effectively, verbally and non-verbally, in diverse contexts.  
+3. Demonstrate social skills, spiritual and moral values for peaceful co-existence.  
+4. Explore, manipulate, manage and conserve the environment effectively for learning and sustainable development.  
+5. Practise relevant hygiene, sanitation and nutrition skills to promote health.  
+6. Demonstrate ethical behaviour and exhibit good citizenship as a civic responsibility.  
+7. Appreciate the country's rich and diverse cultural heritage for harmonious co-existence.  
+8. Manage pertinent and contemporary issues in society effectively.  
+9. Apply digital literacy skills for communication and learning.  
+ 
+ESSENCE STATEMENT 
+Science  is  a  dynamic,  collaborative  human  endeavour  that  enables  use  of  distinctive  ways  of  logistical  valuing,  thinking  and 
+working  to  understand  natural  phenomena  in  the  biological,  physical  and  technological  world.  The  emphasis  of  science 
+education  at Junior School level is to enhance learners’ scientific thinking through learning activities that involve planning, 
+designing, measuring, observing, evaluating procedures, examining evidence, and analysing data. This is envisaged in the Kenya 
+Vision 2030, which states in part that; “The achievement of the vision greatly depends on Science, Technology and Innovation.”  
+Equally, Sessional Paper No.1 of 2005 highlights the fact that “for a breakthrough towards industrialisation, achievement of the 
+desired economic growth targets and social development, a high priority needs to be placed on the development of human capital 
+through education and training by promoting the teaching of sciences and information technology.” Both Sessional Paper No. 14 
+of 2012 and Sessional Paper 1 of 2019 equally underscore the need for sustainable basic and higher education, with an emphasis 
+on Science, Technology and Innovation. 
+ 
+Integrated Science, as a learning area, is therefore expected to inculcate a scientific culture and enhance scientific literacy among 
+learners to enable them to make informed choices in their personal lives and approach their life challenges in a systematic and 
+
+ 
+ix 
+ 
+logical  manner.  This  learning  area  intends  to  enable  learners  to  practically  explore  and  discover knowledge  within  their 
+environment and in the laboratory to allow them understand themselves and relate with their environment through application of 
+scientific  principles  and  ideas.  It  will  equip  learners  with  the  relevant  basic  integrated  scientific  knowledge,  skills,  values  and 
+attitudes needed for their own survival and/or career development. Concepts in Integrated Science are presented as units within 
+which  there  are  specific  strands  that  build  on  the  competencies  acquired  in  Science  and  Technology  at Upper  Primary  School 
+level.  This  provides  the  learner  with  the  basic  requisite  knowledge,  skills,  values  and  attitudes  necessary  for  specialisation  in 
+pure sciences (Physics,  Chemistry, and  Biology), Applied Sciences, Careers and Technology Studies (CTS) and Technical and 
+Engineering  offered  in  the  STEM  pathway  at  Senior  School.  Integrated  Science  is  taught  through  inquiry-based  learning 
+approaches with an emphasis on the 5Es: engagement, exploration, explanation, elaboration and evaluation. 
+ 
+SUBJECT GENERAL LEARNING OUTCOMES  
+By the end of Junior School, the learner should be able to: 
+1. Acquire scientific knowledge, skills, values and attitudes to make informed choices on career pathways at Senior School.  
+2. Select, improvise and safely use basic scientific tools, apparatus, materials and chemicals effectively in everyday life.   
+3. Explore, manipulate, manage and conserve the environment for learning and sustainable development. 
+4. Practise relevant hygiene, sanitation and nutrition skills to promote good health. 
+5. Apply the understanding of body systems with a view to promote and maintain good health. 
+6. Develop capacity for scientific inquiry and problem solving in different situations. 
+7. Appreciate the use of scientific knowledge, skills, principles and practices in everyday life.  
+8. Apply acquired scientific knowledge, skills, principles and practices in everyday life. 
+ 
+ 
+  
+
+ 
+x 
+ 
+SUMMARY OF STRANDS AND SUB STRANDS  
+ 
+Strands   Sub Strands Suggested Number of Lessons 
+1.0 Mixtures, Elements and Compounds 
+ 
+1.1 Elements and Compounds 18 
+1.2 Physical and chemical changes 
+22 
+1.3 Classes of fire 
+20 
+2.0 Living Things and the Environment 
+2.1 The Cell 20 
+2.2 Movement of materials in and out of 
+the cell 
+16 
+2.3 Reproduction in human beings 
+18 
+ 3.0 Force and Energy 3.1. Transformation of Energy 20 
+ 
+3.2. Pressure 16 
+Total Number of Lessons  
+150 
+ 
+Note: The suggested number of lessons per sub strand may be less or more depending on the context. 
+
+ 
+1 
+ 
+STRAND 1.0: MIXTURES, ELEMENTS AND COMPOUNDS 
+ 
+Strand  
+ 
+Sub Strand 
+ 
+Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested Key 
+Inquiry 
+Question(s) 
+1.0 Mixtures, 
+Elements and 
+Compounds 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1.1 Elements and 
+Compounds 
+(18 lessons) 
+ Atoms, elements, 
+molecules and 
+compounds, 
+ Symbols of common 
+elements (oxygen, 
+carbon, hydrogen, 
+nitrogen, iron, 
+aluminium, copper, 
+silver, gold, chlorine, 
+sodium, mercury, 
+lead), 
+ Word equations for 
+reactions of elements 
+to form compounds 
+(sodium chloride, 
+water, carbon dioxide, 
+copper oxide, 
+aluminium oxide),  
+By the end of the sub 
+strand, the learner 
+should be able to:  
+a) explain the 
+relationship 
+between an atom, 
+an element, a 
+molecule and a 
+compound, 
+b) assign symbols to 
+selected elements, 
+c) write word 
+equations to 
+represent reactions 
+of selected 
+elements to form 
+compounds, 
+d) outline the 
+applications of 
+common elements 
+The learner is guided to:  
+● discuss the meaning of atoms, 
+elements, molecules and 
+compounds, 
+● collaboratively sample labelled 
+containers of different 
+substances, identify and record 
+the elements or compounds on 
+the containers, 
+● collaboratively represent 
+selected elements using 
+symbols, 
+● use word equations to represent 
+reactions of elements to form 
+compounds, 
+● identify elements in selected 
+compounds (compounds with 
+only two elements), 
+● explore the importance and 
+value of common elements and 
+Why is it important 
+to use symbols for 
+representing 
+elements in day to 
+day life?  
+
+ 
+2 
+ 
+ Uses of some common 
+elements in the society 
+(jewellery, 
+construction, 
+electricity, food 
+nutrients, minerals 
+elements, medals.  
+in the society, 
+e) appreciate the 
+information on 
+packaging labels of 
+commonly 
+consumed 
+substances.  
+compounds in day-to-day life, 
+● use digital or print media to 
+search for information on 
+atoms, elements, molecules and 
+compounds or observe 
+simulations of atoms, elements, 
+molecules and compounds. 
+Core competencies to be developed: 
+● Learning to learn: The learner reflects on their own experiences as they identify elements and compounds on labels of 
+containers. 
+● Communication and collaboration: The learner writes clearly the symbols of elements, compounds, word equations. 
+Pertinent and Contemporary Issues (PCIs) 
+Financial literacy: The learner explores the value of common elements and compounds in society as they learn about importance 
+and value of common elements and compounds in day-to-day life. 
+Values: 
+Unity: The learner cooperates and harmoniously works with others while identifying elements and compounds from sample 
+labelled containers of different substances. 
+Links to other learning areas: 
+The learner is able to relate the use of ingredients and items made from the common elements and compounds learnt in 
+Agriculture . 
+  
+
+ 
+3 
+ 
+ 
+Strand  
+ 
+Sub Strand Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested Key 
+Inquiry 
+Question(s) 
+1.0.  Mixtures, 
+Elements and 
+Compounds 
+ 
+1.2 Physical and 
+chemical changes 
+ 
+(22 lessons) 
+ 
+● Kinetic theory of 
+matter, 
+● Heating curve,  
+● Effects of 
+impurities on 
+boiling point and 
+melting point, 
+● Physical and 
+chemical changes 
+(both temporary 
+and permanent 
+changes), 
+● Applications of 
+physical and 
+chemical changes 
+in day to day life. 
+ 
+ 
+By the end of the sub 
+strand, the learner should 
+be able to: 
+a) describe the 
+characteristics of 
+particles in the three 
+states of matter, 
+b) explain the effects of 
+impurities on boiling 
+point and melting 
+point of a substance, 
+c) distinguish between 
+physical and chemical 
+changes in substances, 
+d) outline applications of 
+change of state of 
+matter in day-to-day 
+life, 
+e) appreciate the 
+applications of change 
+The learner is guided to: 
+● Carry out activities to 
+demonstrate the characteristics 
+of particles in the three states 
+of matter,  
+● perform experiments to 
+demonstrate diffusion in 
+liquids and gases, for example 
+use of water and ink to 
+illustrate kinetic theory of 
+matter, 
+● carry out experiments to 
+determine the boiling and 
+melting points of pure and 
+impure substances, 
+● draw the heating curve and 
+discuss the trends, 
+● discuss the effects of 
+impurities on boiling point and 
+melting point of a substance, 
+● carry out experiments to 
+How does the 
+movement of 
+particles in matter 
+affect its properties? 
+
+ 
+4 
+ 
+ 
+ 
+ 
+ 
+of state of matter in 
+day-to-day life. 
+demonstrate physical and 
+chemical changes in 
+substances, 
+● discuss the applications of 
+physical and chemical changes 
+in day-to-day life.  
+● use digital or print media to 
+search for the information on  
+movement of particles in the 
+different states of matter. 
+Core competencies to be developed: 
+● Critical thinking and Problem Solving: The learner uses logical reasoning during the discussion of the characteristics of 
+particles in the three states of matter. 
+● Digital literacy: The learner gains digital literacy as they use digital media search for the information on movement of 
+particles in the different states of matter. 
+Pertinent and Contemporary Issues (PCIs): 
+Safety and security: The learner observes safety to avoid burns while carrying out simple experiments to determine the boiling 
+and melting points of pure and impure substances with peers.  
+Values: 
+Unity: The learner cooperates and harmoniously works with peers as they carry out simple experiments to determine the boiling 
+and melting points of pure and impure substances. 
+Link to other Learning areas: 
+The learner relates concept of change of state of matter to preserves food in Agriculture .  
+ 
+
+ 
+5 
+ 
+ 
+Strand Sub Strand 
+ 
+Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested Key 
+Inquiry Question(s) 
+1.0 Mixtures, 
+Elements and 
+Compounds 
+ 
+1.3 Classes of fire  
+ 
+(20 Lessons) 
+ 
+● Causes of fire 
+(classes of fire), 
+● Fire triangle and 
+Fire control             
+(breaking the fire 
+triangle and use 
+of fire 
+extinguishers), 
+● Dangers of fires. 
+ 
+ 
+ 
+ 
+ 
+ 
+By the end of the sub 
+strand, the learner 
+should be able to: 
+a) identify causes of 
+fire in nature, 
+b) explain the role of 
+the components of 
+fire triangle in the 
+spread of fire, 
+c) describe ways of 
+controlling different 
+classes of fires, 
+d) acknowledge the 
+dangers of fires in 
+nature. 
+ 
+The learner is guided to: 
+● discuss the possible causes of fire 
+in nature,  
+●  discuss the role of the 
+components of fire triangle in the 
+spread of fire,  
+● brainstorm on the different 
+classes of fire, 
+● discuss the dangers of fires in the 
+environment, 
+●  collaboratively practice fire 
+control measures, 
+● discuss rights to safety 
+information on flammable 
+substances, 
+● use digital devices or print media 
+to search for information on fire 
+control measures. 
+ 
+project: 
+Learner is guided to prepare posters 
+on classes of fires and their control 
+What are the dangers 
+of fire in nature? 
+ 
+
+ 
+6 
+ 
+measures and hang them in places 
+where they can be seen. 
+Core competencies to be developed: 
+● Citizenship: The learner enhances active community life skills by making posters on classes of fires and their control 
+measures and hanging them at the places where they can be seen. 
+● Communication and collaboration: The learner acquires listening, speaking and recording skills as they discusses the causes 
+of fire, dangers of fire and rights to safety 
+Pertinent and Contemporary Issues (PCIs): 
+Safety and security: The learner learns how to take care of self and others when handling fire as the learner discusses the dangers 
+of fires in the environment. 
+Values: 
+● Respect: The learner observes rules of engagement while working with peers to classify fire according to the cause and 
+suggest control measures.  
+● Responsibility: The learner accommodates each other’s views and opinions as they discuss rights to safety information on 
+flammable substances. 
+Link to other Learning areas: 
+The learner practices safety measures to prevent fire accidents in nature as a life skill in Social studies. 
+ 
+ 
+
+ 
+7 
+ 
+Suggested Assessment Rubric  
+ 
+                  Levels 
+Indicator 
+Exceeds expectations  Meets expectations  Approaches 
+expectations  
+Below expectations  
+Ability to assign 
+symbol to elements.  
+The learner assigns 
+symbols to all elements 
+provided correctly and 
+systematically. 
+The learner assigns 
+symbols to all elements 
+provided correctly. 
+The learner assigns 
+symbols to most of the 
+elements provided 
+correctly. 
+The learner assigns 
+symbols to a few 
+elements provided 
+correctly. 
+Ability to write word 
+equation for 
+reactions of elements 
+to form compounds. 
+The learner writes word 
+equation for all given 
+reactions correctly giving 
+illustrations. 
+ 
+The learner writes word 
+equation for all given 
+reactions correctly.  
+ 
+The learner writes word 
+equation for most of the 
+reactions correctly. 
+ 
+The learner writes 
+word equation for a 
+few reactions 
+correctly. 
+Ability to describing 
+the characteristics of 
+particles in the three 
+states of matter. 
+The learner describes the 
+characteristics of particles 
+in all the three states 
+comprehensively. 
+The learner describes 
+the characteristics of 
+particles in all the three 
+states of matter 
+correctly. 
+The learner describes 
+the characteristics of 
+particles in the two 
+states of matter 
+correctly. 
+The learner describes 
+the characteristics of 
+particles in one state of 
+matter correctly. 
+Ability to distinguish 
+between physical 
+and chemical 
+changes. 
+The learner distinguishes 
+between physical and 
+chemical changes 
+elaborately 
+comprehensively. 
+The learner 
+distinguishes between 
+physical and chemical 
+changes correctly. 
+The learner 
+distinguishes between 
+physical and chemical 
+changes partially. 
+The learner partially 
+distinguishes between 
+physical and chemical 
+changes leaving some 
+points. 
+Ability to outline 
+applications of 
+The learner outlines 
+applications of physical 
+The learner outlines 
+applications of physical 
+The learner partially 
+outlines most of the 
+The learner outlines a 
+few applications of 
+
+ 
+8 
+ 
+                  Levels 
+Indicator 
+Exceeds expectations  Meets expectations  Approaches 
+expectations  
+Below expectations  
+physical and 
+chemical changes. 
+and chemical changes 
+exhaustively.  
+and chemical changes 
+correctly 
+applications of physical 
+and chemical changes 
+correctly. 
+physical and chemical 
+changes correctly. 
+Ability to identify 
+classes of fires in 
+nature. 
+The learner identifies all 
+classes of fires in nature 
+exhaustively.  
+The learner identifies 
+all the classes of fire in 
+nature correctly. 
+The learner identifies 
+most of the classes of 
+fire in nature correctly. 
+The learner identifies a 
+few classes of fire in 
+nature correctly 
+Ability to describe 
+ways of controlling 
+fires.  
+The learner describes 
+ways of controlling all 
+classes comprehensively.  
+ 
+The learner describes 
+ways of controlling all 
+classes of fires 
+correctly. 
+The learner describes 
+ways of controlling 
+most of the classes of 
+fires correctly. 
+The learner describes 
+ways of controlling a 
+few class of fires 
+correctly. 
+ 
+ 
+
+ 
+9 
+ 
+ 
+STRAND 2.0: LIVING THINGS AND THEIR ENVIRONMENT 
+Strand  
+ 
+Sub Strand 
+ 
+Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry Question(s) 
+2.0 Living 
+Things and 
+their 
+Environment 
+2.1 The Cell 
+(20 lessons) 
+ 
+● Definition of the 
+term ‘cell’, 
+● Cell structure as 
+seen under a light 
+microscope (plant 
+and animal cells), 
+● Preparation of 
+temporary slides 
+of plant cells, 
+● magnification of 
+cells seen under 
+the light 
+microscope. 
+ 
+ 
+By the end of the sub strand 
+the learner should be able to: 
+a) describe the structure of 
+plant and animal cells as 
+observed under a light 
+microscope, 
+b) describe the functions of 
+components of cells seen 
+under the light 
+microscope, 
+c) compare plant and 
+animal cells as observed 
+under a light 
+microscope, 
+d) determine the 
+magnification of cells 
+under the light 
+microscope, 
+e) appreciate the role of 
+cells in living things. 
+The learner is guided to: 
+● collaboratively prepare, 
+mount, observe and draw 
+plant cells as seen under a 
+light microscope, (include 
+a reminder on how to use 
+and care for a light 
+microscope) 
+● observe, draw and label the 
+parts of an animal cells 
+seen from permanent slides 
+under the light microscope, 
+● use print and non-print 
+material to search for 
+information on functions of 
+components of plant and 
+animal cells as seen under 
+the light microscope, 
+● discuss the similarities and 
+differences between plant 
+and animal cells as seen 
+What makes up 
+plant and animal 
+cells? 
+
+ 
+10 
+ 
+under a light microscope, 
+● calculate magnification 
+of specimens at various 
+objective lenses of the 
+light microscope. 
+Core competencies to be developed: 
+● Learning to learn: The learner learns how to prepare, mount, observe and draws plant cells as seen under a light microscope. 
+● Self-efficacy: The learner successfully prepares and observes specimens under the light microscope. 
+Pertinent and Contemporary Issues (PCIs) 
+Environmental conservation: The learner safely disposes off waste materials generated from experiments on the study of cells. 
+Values 
+● Unity: The learner displays team spirit as they prepare, mount, observe and draw plant cells as seen under a light microscope. 
+● Responsibility: The learner performs assigned roles as they observe, draw and label animal cells on permanent slides as seen 
+under the light microscope. 
+Link to other learning areas: 
+As the learner carries out multiplication of objective lens and eye piece lens to get the magnification, concept of multiplication is 
+learnt in Mathematics. 
+ 
+
+ 
+1 
+ 
+ 
+Strand  
+ 
+Sub Strand 
+ 
+Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested 
+Key Inquiry 
+Question(s) 
+2.0 Living 
+Things and 
+their 
+Environment 
+2.2 Movement of 
+Materials in and 
+out of the cell 
+ 
+(16 lessons) 
+ 
+ Diffusion and 
+Osmosis, 
+ Demonstration of 
+diffusion and 
+osmosis, 
+ Role of diffusion 
+and osmosis in 
+living things 
+(Absorption of 
+water, nutrients in 
+the intestines, 
+gases in the lungs).   
+By the end of the sub strand 
+the learner should be able 
+to; 
+a) outline the process of 
+diffusion and osmosis 
+in cells, 
+b) demonstrate diffusion 
+and osmosis in living 
+things, 
+c) explain the role of 
+diffusion and osmosis 
+in living things, 
+d) appreciate the 
+importance of diffusion 
+and osmosis in living 
+things. 
+The learner is guided to: 
+ use print and non-print material to 
+search for information on the 
+processes involved in movement of 
+materials in and out of a cell, discuss 
+with peers (cover diffusion and 
+osmosis), 
+ carry out experiments to 
+demonstrate diffusion of materials in 
+plant materials and share the 
+findings with peers,  
+ carry out experiments to 
+demonstrate osmosis using visking 
+tubing and plant materials and share 
+their findings with peers, 
+ search for information from print 
+and non-print media on the roles of 
+diffusion and osmosis in living 
+things and discuss with peers.  
+How do 
+materials 
+move in and 
+out of a cell? 
+ 
+
+ 
+2 
+ 
+Core competencies to be developed: 
+ Communication  and  collaboration:  The  learner acquires  writing  skills  as while  recording  findings  from  experiments  to 
+demonstrate diffusion and osmosis. 
+ Self-efficacy: The learner executes assigned tasks successfully while carrying out experiments to demonstrate diffusion and 
+osmosis. 
+Values: 
+ Respect: The learner appreciates the opinions of peers when discussing the roles of diffusion and osmosis in living 
+things. 
+ Responsibility: The learner executes assigned roles while carrying out experiments to demonstrate diffusion and 
+osmosis. 
+Pertinent and Contemporary Issues (PCIs): 
+Environmental Conservation: The learner learns how to disposes of waste materials from experiments to demonstrate 
+diffusion and osmosis appropriately. 
+Link to other learning areas: 
+The learner is able to link the information on diffusion and osmosis to absorption of water and mineral salts from the soil by 
+crops in Agriculture . 
+
+ 
+3 
+ 
+ 
+Strand Sub Strand Specific Learning 
+Outcomes 
+Suggested Learning 
+Experiences 
+Suggested Key 
+Inquiry 
+Question(s)   
+2.0 Living 
+Things 
+and their 
+Environment 
+2.3 Reproduction in 
+human beings  
+ 
+(18 lessons) 
+   
+ The menstrual cycle in 
+human beings (omit 
+details of hormonal 
+control), 
+ Challenges related to 
+the menstrual cycle 
+(include irregular 
+periods, irregular 
+bleeding, and pain), 
+ Process of fertilisation 
+and implantation (cover 
+fusion of sperm with the 
+egg and implantation of 
+blastocyst in the uterus), 
+ Note: -details on 
+formation of blastocyst 
+not necessary 
+ Symptoms and 
+By the end of the sub strand 
+the   learner should be able 
+to:  
+a) outline the menstrual 
+cycle and its related 
+challenges in human 
+beings,  
+b) develop a plan to 
+manage challenges 
+related to menstrual 
+cycle in human beings, 
+c) describe fertilisation and 
+implantation in human 
+beings, 
+d) outline symptoms STIs 
+of in human beings, 
+e) Explain prevention 
+measures for common 
+STIs in human beings, 
+f) appreciate the need for a 
+healthy reproductive 
+system. 
+The learner is guided to: 
+ search for information from 
+print or non-print media on 
+the menstrual cycle, 
+ search for information from 
+print or non-print media on 
+challenges related to the 
+menstrual cycle, 
+ discuss management of 
+challenges related to the 
+menstrual cycle, 
+ study illustrations/charts on 
+the process of fertilisation 
+and implantation, 
+ search for information from 
+print and non-print materials 
+on symptoms of common 
+STIs and their prevention, 
+discuss. 
+How best can 
+challenges 
+related to the 
+menstrual cycle 
+be managed? 
+
+ 
+4 
+ 
+prevention of common 
+STIs (HIV& Aids, 
+Gonorrhea, Syphilis, 
+Herpes - Avoid details of 
+causative agent) 
+Core competencies to be developed: 
+● Learning to learn: The learner organises own learning while searching for information from print and non-print materials on 
+symptoms of common STIs and their prevention. 
+● Self-efficacy: The learner appreciates and successfully manages challenges related to the menstrual cycle. 
+Values:     
+● Love: The learner shows empathy and embraces those with menstrual challenges. 
+● Respect: The learner shows open mindedness while discussing symptoms of common STIs and their prevention. 
+Pertinent and Contemporary Issues (PCIs): 
+Health promotion issues: The learner discusses challenges related to the menstrual cycle and prevention of common STIs. 
+Link to other learning areas: 
+The information on common STIs is linked to communicable diseases in Agriculture . 
+ 
+
+ 
+5 
+ 
+ 
+ 
+ 
+Suggested Assessment Rubric 
+                       Levels 
+Indicator 
+Exceeds expectations  Meets expectations  Approaches 
+expectations  
+Below expectations  
+Ability to compare 
+plant and animal cells 
+as observed under a 
+light microscope. 
+The learner compares 
+plant and animal cells as 
+observed under a light 
+microscope 
+comprehensively. 
+The learner compares 
+plant and animal cells 
+as observed under a 
+light microscope. 
+The learner partially 
+compares plant and 
+animal cells as 
+observed under a light 
+microscope.  
+The learner partially 
+compares plant and 
+animal cells as observed 
+under a light microscope 
+leaving out some points.   
+Ability to explain the 
+role of diffusion and 
+osmosis in living 
+things. 
+The learner explains the 
+role of diffusion and 
+osmosis in living things 
+comprehensively. 
+The learner explains 
+the role of diffusion 
+and osmosis in living 
+things. 
+The learner explains 
+the role of diffusion 
+and osmosis in living 
+things partially. 
+The learner explains the 
+role of diffusion or 
+osmosis in living things 
+partially leaving out 
+some key points. 
+Ability to demonstrate 
+diffusion and osmosis 
+in living things. 
+The learner demonstrates 
+diffusion and osmosis in 
+living things 
+systematically.  
+The learner 
+demonstrates 
+diffusion and osmosis 
+in living things. 
+The learner partially 
+demonstrates 
+diffusion and osmosis 
+in living things.  
+The learner partially 
+demonstrates diffusion 
+or osmosis in living 
+things. 
+Ability to outline the 
+menstrual cycle and its 
+related challenges in 
+human beings. 
+The learner outlines the 
+menstrual cycle and its 
+related challenges in 
+human beings 
+comprehensively. 
+The learner outlines 
+the menstrual cycle 
+and its related 
+challenges in human 
+beings. 
+The learner partially 
+outlines the menstrual 
+cycle and its related 
+challenges in human 
+beings. 
+The learner partially 
+outlines the menstrual 
+cycle or its related 
+challenges in human 
+beings. 
+
+ 
+6 
+ 
+STRAND 3.0: FORCE AND ENERGY 
+Strand  
+ 
+Sub Strand 
+ 
+Specific Learning 
+Outcomes 
+Suggested Learning Experiences Suggested Key 
+Inquiry 
+Question(s) 
+3.0 Force 
+and Energy 
+3.1 Transformation 
+of Energy 
+ 
+(20 lessons) 
+ 
+ Forms of energy in 
+nature, 
+ Renewable and non-
+renewable energy 
+sources, 
+ Energy 
+transformations in 
+nature, 
+ Safety measures 
+associated with 
+energy 
+transformation, 
+ Applications of 
+energy 
+transformation in 
+day-to- day life. 
+ 
+By the end of the sub 
+strand, the learner should 
+be able to: 
+a) identify forms of 
+energy in nature, 
+b) classify energy 
+sources into 
+renewable or non-
+renewable, 
+c) demonstrate simple 
+energy 
+transformations in 
+nature, 
+d) describe safety 
+measures associated 
+with energy 
+transformation, 
+e) appreciate the 
+applications of 
+energy 
+transformation in 
+day-to- day life. 
+The learner is guided to: 
+ discuss and identify forms of 
+energy found in nature (light, heat, 
+potential, kinetic, gravitational, 
+electrical, sound energy, chemical, 
+nuclear or atomic energy), 
+ discuss and classify energy sources 
+in nature (renewable and non-
+renewable sources), 
+ use digital or print media to search 
+for information on classification of 
+energy sources in nature, 
+ carry out activities to show energy 
+transformation in day-to-day life 
+(electrical to heat, chemical to 
+electrical, mechanical to electrical, 
+electrical to light, electrical to 
+sound and potential to kinetic),  
+ discuss the applications of energy 
+transformations in day to day life 
+(use of a falling object, rubbing 
+both hands, burning of wood, 
+1. What are the 
+sources of 
+energy in the 
+environment? 
+2. How is energy 
+transformation 
+applied in 
+day-to-day 
+life? 
+
+ 
+7 
+ 
+electric bulbs, Light Emitting 
+Diodes (LED), electric heater, 
+steam engine, piezoelectricity, 
+microphone, windmills, electric 
+generator/dynamo, hydroelectric 
+dams, thermocouple, geothermal 
+power plant, solar panel, electric 
+motor), 
+ use digital or print media to search 
+for information on the applications 
+of energy transformations in day to 
+day life, 
+ discuss safety measures on energy 
+transformation and mitigation 
+strategies, (relate to road accidents; 
+K.E to P.E; action and reaction, 
+accidents caused by fire, electricity, 
+health hazard from bright light, 
+loud sound), 
+ relate safety measures during energy 
+transformations to road accidents; 
+K.E to P.E; action and reaction, 
+accidents caused by fire, electricity, 
+health hazard from bright light, loud 
+sound, 
+ use digital or print media to search 
+
+ 
+8 
+ 
+for information on safety measures 
+on energy transformation and 
+mitigation strategies. 
+Core competencies to be developed: 
+ Critical thinking and problem solving: The learner reflects on how to solve energy shortage by transforming energy 
+from one form to another as they discuss examples and applications of energy transformation processes in day to day 
+life. 
+ Creativity and imagination: The learner experiments with ideas to test workability of energy transformation in day-to-day 
+life. 
+Pertinent and Contemporary Issues (PCIs): 
+Safety: The learner learns how to stay safe as they discuss safety measures on energy transformation and mitigation strategies 
+Values: 
+ Social justice: The learner play leadership role and delegate duties as carry out activities to show energy transformation 
+in day-to-day life.  
+ Love: The learner cares for self and others as they demonstrate the processes of energy transformation in day-to-day 
+life. 
+Link to other Learning Areas: 
+The learner relates the concept of energy transformation to cooking processes in Agriculture . 
+ 
+
+ 
+9 
+ 
+ 
+Strand  
+ 
+Sub Strand 
+ 
+Specific Learning 
+Outcomes 
+Suggested Learning Experiences Key Inquiry 
+Question(s) 
+3.0 Force 
+and Energy 
+3.2 Pressure  
+ 
+ (16 lessons) 
+ 
+ Pressure in 
+solids and 
+liquids, 
+ Applications 
+of pressure in 
+solids and 
+liquids. 
+By the end of the sub 
+strand, the learner 
+should be able to: 
+a) demonstrate 
+pressure in solids 
+and liquids, 
+b) identify 
+applications of 
+pressure in solids 
+and liquids, 
+c) appreciate the 
+applications of 
+pressure in solids 
+and liquids. 
+The learner is guided to: 
+ brainstorm on the meaning of pressure as 
+used in science, 
+ carry out activities to demonstrate pressure 
+exerted by solids,  
+ carry out activities to demonstrate pressure 
+in liquids,  
+  discuss the relationship between pressure, 
+area of contact and weight of solids,  
+ describe the relationship between pressure 
+and height of liquids (qualitative treatment 
+only), 
+ discuss the applications of pressure in 
+solids and liquids (syringe, high heeled 
+shoes, cutting tools, car brakes, siphons, 
+bicycle pumps, drinking straw), 
+ use digital or print media to search for 
+information on the applications of pressure 
+in solids and liquids. 
+What are the 
+applications of 
+pressure in solids 
+and liquids? 
+Core competencies to be developed: 
+● Communatication and collaboration: The learner acquires listening and speaking skills as they discuss the applications of 
+pressure in solids and liquids. 
+● Learning to Learn: The learner uses digital or print media to search for information on the applications of pressure in solids 
+
+ 
+10 
+ 
+and liquids. 
+Pertinent and Contemporary Issues (PCIs): 
+Socio-economic issues: The learner learns how to reduce destructive effects of pressure on surfaces or objects as they 
+carry out activities to demonstrate pressure exerted by solids.  
+Values: 
+Unity: The learner collaboratively and harmoniously comes together while discussing the applications of pressure in solids and 
+liquids. 
+Link to other Learning Areas: 
+The learner relates concepts of pressure in construction Pre-technical Studies. 
+ 
+ 
+Suggested Assessment Rubric 
+ 
+                     Levels 
+Indicator 
+Exceeds expectations  Meets expectations  Approaches 
+expectations  
+Below expectations  
+Ability to classify 
+energy sources into 
+renewable or 
+nonrenewable. 
+ The learner classifies 
+energy sources into 
+renewable or 
+nonrenewable 
+exhaustively. 
+The learner classifies 
+energy sources into 
+renewable or 
+nonrenewable.  
+The learner classifies 
+most energy sources 
+into renewable or 
+nonrenewable.  
+The learner classifies a 
+few energy sources 
+into renewable or 
+nonrenewable.  
+Ability to 
+demonstrate simple 
+energy 
+transformations.  
+The learner 
+demonstrates simple 
+energy transformations 
+in details 
+comprehensively.   
+The learner demonstrates 
+simple energy 
+transformations.  
+The learner partially 
+demonstrates simple 
+energy transformations.  
+The learner partially 
+demonstrates simple 
+energy transformations 
+leaving some key 
+points.  
+
+ 
+11 
+ 
+                     Levels 
+Indicator 
+Exceeds expectations  Meets expectations  Approaches 
+expectations  
+Below expectations  
+Ability to describe 
+safety measures 
+associated with 
+energy 
+transformation. 
+The learner describes 
+safety measures 
+associated with 
+energy transformation 
+comprehensively.   
+The learner describes all 
+safety measures 
+associated with energy 
+transformation correctly.  
+The learner describes 
+most of the safety 
+measures associated 
+with energy 
+transformation 
+correctly.  
+The learner describes 
+a few safety measures 
+associated with 
+energy transformation 
+correctly.  
+Ability to 
+demonstrate pressure 
+in solids and liquids. 
+The learner 
+demonstrates pressure 
+in solids and liquids 
+consistently. 
+The learner demonstrates 
+pressure in solids and 
+liquids.  
+The learner partially 
+demonstrates pressure in 
+solids and liquids.  
+The learner partially 
+demonstrates pressure in 
+solids or liquids.  
+Ability to identify 
+applications of 
+pressure in solids and 
+liquids. 
+The learner 
+identifies 
+applications of 
+pressure in solids 
+and liquids 
+exhaustively.  
+The learner identifies 
+applications of 
+pressure in solids and 
+liquids sufficiently.   
+The learner identifies 
+most of the 
+applications of 
+pressure in solids and 
+liquids. 
+The learner 
+identifies few 
+applications of 
+pressure in solids or 
+liquids.  
+ 
+ 
+ 
+ 
+ 
+
+ 
+12 
+ 
+APPENDIX 1: GUIDELINES FOR INTEGRATING COMMUNITY SERVICE LEARNING (CSL) PROJECT  
+Introduction 
+Community  Service  Learning  (CSL)  is an  experiential  learning  strategy  that  integrates  classroom  learning  and  community 
+service  to  enable  learners  reflect,  experience  and  learn  from  the  community.  The CSL  activity is  hosted  as  a  strand  in  Social 
+Studies. The Social Studies teacher will be expected to coordinate teachers from other learning areas to carry out the integrated 
+CSL class activity. Learners will be expected to apply knowledge, skills, attitudes and values from the different Learning Areas 
+to undertake the integrated CSL class activity. Learners will undertake one common integrated class CSL activity following a 6-
+step milestone approach that is: 
+ 
+Milestone Description 
+Milestone 1 
+  
+Problem Identification 
+Learners study their community to understand the challenges faced and their effects on community members. 
+Milestone 2 
+Designing a solution 
+Learners create an intervention to address the challenge identified. 
+Milestone 3 
+Planning for the Project 
+Learners  share  roles,  create  a  list  of  activities  to  be  undertaken,  mobilise  resources  needed  to  create  their 
+intervention and set timelines for execution 
+Milestone 4 
+Implementation 
+The learners execute the project and keep evidence of work done. 
+
+ 
+13 
+ 
+Milestone 5 Showcasing /Exhibition and Report Writing 
+Exhibitions involve showcasing  learners’ project items to the community and reflecting on the feedback 
+Learners write a report detailing their project activities and learnings from feedback 
+Milestone 6 
+Reflection 
+Learners review all project work to learn from the challenges faced. 
+They  link  project  work  with  academic  concepts,  noting  how  the  concepts  enabled  them  to  do  their 
+project as well as how the project helped to deepen learning of the academic concepts.  
+ 
+Assessment of CSL integrated Activity 
+Assessment  for  the  integrated CSL  activity  will  be  conducted  formatively.  The  assessment  will  consider  both  the  process  and 
+end product.  This  entails assessing  each  of  the  milestone  stages  of the  integrated CSL  class  activity.  It  will  focus  on  3 
+components  namely:  skills from  various  learning  areas  applied  in  carrying  out  the  activity,  core  competencies  developed  and 
+values nurtured.  
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+14 
+ 
+APPENDIX 2: LIST OF ASSESSMENT METHODS, LEARNING RESOURCES AND NON-FORMAL ACTIVITIES 
+ 
+Assessment Methods in Science Learning Resources Non-Formal Activities 
+● Reflections 
+● Game Playing 
+● Pre-Post Testing 
+● Model Making 
+● Explorations 
+● Experiments 
+● Investigations 
+● Conventions, Conferences, 
+and Debates 
+● Applications 
+● Teacher Observations 
+● Project 
+● Journals 
+● Portfolio 
+● Oral or Aural Question(s) 
+● Learner’s Profile 
+● Written Tests 
+● Anecdotal Records 
+● Laboratory 
+Apparatus and 
+Equipment 
+● Textbooks 
+● Software 
+● Relevant reading materials 
+● Digital Devices 
+● Recordings 
+● Visit the science historical sites. 
+● Use digital devices to conduct 
+scientific research. 
+● Organizing walks to have live 
+learning experiences. 
+● Developing simple guidelines on 
+how to identify and solve some 
+community problems. 
+● Conducting science document 
+analysis. 
+● Participating in talks by resource 
+persons on science concepts. 
+● Participating in science clubs and 
+societies 
+● Attending and participating science 
+and engineering fairs 
+● Organizing and participating in 
+exchange programmes. 
+● Making oral presentations and 
+demonstrations on science issues. 
+ 

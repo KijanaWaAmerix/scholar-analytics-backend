@@ -60,7 +60,7 @@ const lineify = (items, tol = 3) => {
 /* ── Reading the PDF ──────────────────────────────────────── */
 
 /** Pages as lists of { s, x, y, w } (needs the pdf-parse package) */
-const extractPages = async (buffer) => {
+const extractPages = async (buffer, { max = 0 } = {}) => {
   let pdf;
   try { pdf = require('pdf-parse'); } catch { throw new Error('Run "npm install" first (the pdf reader is missing).'); }
   const pages = [];
@@ -70,7 +70,7 @@ const extractPages = async (buffer) => {
     })));
     return '';
   });
-  await pdf(buffer, { pagerender: render });
+  await pdf(buffer, { pagerender: render, max });
   return pages;
 };
 
@@ -381,6 +381,16 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
   return { design, problems, notes };
 };
 
+/** The learning area and grade on a design's cover page (reads only the first page) */
+const coverOf = async (buffer) => {
+  const pages = await extractPages(buffer, { max: 1 });
+  const cover = lineify(pages[0] || []).map((l) => l.text);
+  const at = cover.findIndex((t) => /JUNIOR SCHOOL CURRICULUM DESIGN/i.test(t));
+  const area = at >= 0 ? cover[at + 1] : '';
+  const grade = Number(((cover.find((t) => /^GRADE\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+  return { area: String(area || '').trim(), grade: Number.isInteger(grade) ? grade : null };
+};
+
 /**
  * The whole job for one PDF file: pages, cover page (learning area and grade),
  * tables. Returns { design, problems, notes }.
@@ -396,4 +406,4 @@ const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinute
   return readDesign(pages, { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade });
 };
 
-module.exports = { extractPages, readDesign, designFromPdf, readSkeleton, readTables, lineify, cleanItem };
+module.exports = { extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };

@@ -5,10 +5,14 @@
      node importGradeDesigns.js grade8 --only english       (one subject)
      node importGradeDesigns.js grade8 --force              (read again, even if a design exists)
      node importGradeDesigns.js grade8 --upload             (also send good designs to storage)
+     node importGradeDesigns.js grade8 --from "C:\\Users\\you\\Downloads"
+                                                            (look in a folder for the PDFs you downloaded;
+                                                             each is recognised by the subject on its cover)
 
    For each subject it uses, in this order:
      1. a PDF you saved as design-pdfs/<grade>-<subject>.pdf   (for example design-pdfs/grade8-english.pdf)
-     2. the links listed in data/design-catalog/<grade>.json (first one that works)
+     2. a PDF found in the folder given with --from (matched by the cover page, any file name)
+     3. the links listed in data/design-catalog/<grade>.json (first one that works)
 
    A design that passes every check is written to data/curriculum/ and the app picks it up.
    A design with problems is written to data/curriculum-review/ instead, so a broken one is
@@ -17,7 +21,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const { designFromPdf } = require('./utils/designReader');
+const { designFromPdf, coverOf } = require('./utils/designReader');
 const { validateDesign } = require('./utils/designImporter');
 const { getObjectStore } = require('./utils/objectStore');
 
@@ -59,6 +63,36 @@ const fetchPdf = async (url) => {
   const pdfDir = path.join(__dirname, 'design-pdfs');
   fs.mkdirSync(reviewDir, { recursive: true });
 
+  /* PDFs in a folder: read each cover page and keep the newest one for each subject */
+  const fromAt = args.indexOf('--from');
+  const fromDir = fromAt >= 0 ? args[fromAt + 1] : null;
+  const gradeNumber = Number(String(catalog.grade).replace(/\D/g, ''));
+  const fromFolder = new Map();
+  if (fromDir) {
+    if (!fs.existsSync(fromDir)) { console.error(`Folder not found: ${fromDir}`); process.exit(1); }
+    const files = fs.readdirSync(fromDir).filter((f) => /\.pdf$/i.test(f))
+      .map((f) => ({ f, full: path.join(fromDir, f), time: fs.statSync(path.join(fromDir, f)).mtimeMs }))
+      .sort((a, b) => b.time - a.time);
+    console.log(`\nLooking at ${files.length} PDF file(s) in ${fromDir}`);
+    for (const file of files) {
+      try {
+        const buffer = fs.readFileSync(file.full);
+        if (buffer.slice(0, 4).toString() !== '%PDF') continue;
+        const cover = await coverOf(buffer);
+        if (cover.grade !== gradeNumber) continue;
+        const area = cover.area.toLowerCase().replace(/[^a-z]/g, '');
+        const match = catalog.subjects.find((sub) => area.includes(sub.name.toLowerCase().replace(/[^a-z ]/g, '').split(' ')[0].slice(0, 5)));
+        if (!match) { console.log(`  skipped ${file.f}: cover says "${cover.area}", no subject in the list`); continue; }
+        const key = `${catalog.grade}-${match.slug}`;
+        if (fromFolder.has(key)) { console.log(`  skipped ${file.f}: a newer file for ${match.name} is already chosen`); continue; }
+        fromFolder.set(key, { buffer, name: file.f });
+        console.log(`  ${file.f} -> ${match.name}`);
+      } catch (err) {
+        /* not a design (a scheme of work, a form...) */
+      }
+    }
+  }
+
   const exists = (key) =>
     fs.existsSync(path.join(curriculumDir, `${key}.json`)) ||
     (key === 'grade8-integrated-science' && fs.existsSync(path.join(curriculumDir, 'grade8-integrated-science-design-2024.json')));
@@ -82,6 +116,7 @@ const fetchPdf = async (url) => {
     let where = '';
     const saved = path.join(pdfDir, `${key}.pdf`);
     if (fs.existsSync(saved)) { pdf = fs.readFileSync(saved); where = saved; console.log('  using your saved file'); }
+    else if (fromFolder.has(key)) { pdf = fromFolder.get(key).buffer; where = fromFolder.get(key).name; console.log(`  using ${where} from your folder`); }
     for (const url of pdf ? [] : subject.urls) {
       try {
         pdf = await fetchPdf(url);
@@ -94,7 +129,7 @@ const fetchPdf = async (url) => {
       await sleep(2500);
     }
     if (!pdf) {
-      console.log(`  no PDF found. Open ${catalog.page}, save the ${subject.name} design as design-pdfs/${key}.pdf and run again.`);
+      console.log(`  no PDF found. Download the ${subject.name} design from ${catalog.page} and run again with --from <the folder it is in> (or save it as design-pdfs/${key}.pdf).`);
       summary.push([subject.name, 'no PDF', 'save it as design-pdfs/' + key + '.pdf']);
       continue;
     }

@@ -9,6 +9,7 @@
 
 const designs = {
   'grade8-integrated-science': require('./grade8-integrated-science-design-2024.json'),
+  'grade8-mathematics': require('./grade8-mathematics.json'),
 };
 
 module.exports = designs;

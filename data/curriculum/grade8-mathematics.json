@@ -1,0 +1,789 @@
+{
+  "source": "KICD Junior School Curriculum Design, Mathematics, Grade 8 (first published 2023, revised 2024)",
+  "learning_area": "Mathematics",
+  "grade": 8,
+  "lessons_per_week": 5,
+  "lesson_minutes": 40,
+  "total_suggested_lessons": 150,
+  "note": "The suggested number of lessons per sub strand may be less or more depending on the context.",
+  "strands": [
+    {
+      "id": "1.0",
+      "name": "Numbers",
+      "rubric_indicators": [],
+      "sub_strands": [
+        {
+          "id": "1.1",
+          "name": "Integers",
+          "lessons": 6,
+          "scope": [
+            "represent integers on a number line",
+            "operations of addition and subtraction integers on the number line"
+          ],
+          "outcomes": [
+            "identify integers in different situations",
+            "represent integers on a number line in different situations",
+            "carry out operations of addition and subtraction integers on the number line in real life situations",
+            "use IT or print resources for learning more on integers and for skills development",
+            "reflect on use of integers in real life situations"
+          ],
+          "experiences": [
+            "identify integers by carrying out activities involving positive and negative numbers and zero. For example, climbing upstairs (positive), going down stairs (negative). Others may include standing at a point (the zero point) and count the number of steps moved either forward or backward",
+            "draw and represent integers on number lines on learning materials",
+            "perform operations, including combined operations of integers on a number line",
+            "play creative games that involve number lines, for example jumping steps",
+            "use IT tools or other resources to learn more on operations of integers on number lines"
+          ],
+          "key_inquiry_questions": [
+            "Where do we use integers in real life situations?",
+            "How do we carry out operations of integers?"
+          ],
+          "core_competencies": [
+            "Creativity and imagination- creating games: as the learner plays creative games that involve number lines, for example jumping steps",
+            "Learning to learn: as the learner represents integers on the number line",
+            "Digital literacy- interacting with technologies: as the learner uses IT devices to learn and play games on integers"
+          ],
+          "pcis": [
+            "Environmental education: as the learner uses available resources and spaces to jump steps"
+          ],
+          "values": [
+            "Respect: as the learner works with peers to play games that involve integers",
+            "Unity: as the learner works together in creating games on integers"
+          ],
+          "links": [
+            "Integrated Science: as the learner works out different arithmetic’s in Science that involve integers"
+          ]
+        },
+        {
+          "id": "1.2",
+          "name": "Fractions",
+          "lessons": 6,
+          "scope": [
+            "Reciprocal of fractions",
+            "combined operations on fractions"
+          ],
+          "outcomes": [
+            "work out reciprocal of fractions in different Situations",
+            "carry out combined operations on fractions in different situations",
+            "promote use of fractions in real life situations"
+          ],
+          "experiences": [
+            "discuss and use the correct order of operations in fractions",
+            "discuss and carry out operations on fractions from activities such as model shopping and other real life cases",
+            "play games on operations of fractions using IT devices or other resources"
+          ],
+          "key_inquiry_questions": [
+            "How do we use fractions in real life situations?"
+          ],
+          "core_competencies": [
+            "Citizenship: as the learner discusses and uses the correct order of operations in fractions in some aspects such as populations",
+            "Critical thinking and problem solving: as the learner works out operations on fractions from model shopping activities"
+          ],
+          "pcis": [
+            "Self-esteem: as the learner plays games of operations on fractions using IT devices or other resources"
+          ],
+          "values": [
+            "Responsibility: as the learner plays games of operations on fractions using IT devices or other resources",
+            "Respect: as the learner works together to work out operations on fractions from shopping activities"
+          ],
+          "links": [
+            "Languages: as the learner discusses and uses the correct order of operations in fractions",
+            "Agriculture: as the learner estimates different quantities in fractions such in harvests, seeds or fertilizer"
+          ]
+        },
+        {
+          "id": "1.3",
+          "name": "Decimals",
+          "lessons": 8,
+          "scope": [
+            "Conversions in decimals",
+            "Recurring decimals",
+            "Rounding off decimals",
+            "significant figures",
+            "numbers in standard form",
+            "combined operations on decimals"
+          ],
+          "outcomes": [
+            "convert fractions to decimals in different situations",
+            "identify recurring decimals in different situations",
+            "convert recurring decimals into fractions in different situations",
+            "round off a decimal number to a required number of decimal places in different situations",
+            "express numbers to a required significant figures in real life situations",
+            "express numbers in standard form in different situations",
+            "carry out combined operations on decimals in different situations",
+            "apply decimals to real life situations",
+            "use IT tools or other resources for learning more on decimals and for enjoyment",
+            "promote use of decimals in real life situations"
+          ],
+          "experiences": [
+            "practice converting fractions to decimals",
+            "discuss and classify non- recurring and recurring decimals. Indicate the recurring digits",
+            "practice converting recurring decimals to fractions",
+            "discuss and round off decimal numbers to a required number of decimal places",
+            "write decimal and whole numbers to a given significant figures",
+            "write numbers in standard form in learning materials such as cards or charts",
+            "work out combined operations on decimals in the correct order",
+            "discuss and apply decimals to real life cases",
+            "play games of operations on decimals using IT tools or other materials"
+          ],
+          "key_inquiry_questions": [
+            "How do we work out operations on decimals?",
+            "How do we use decimals in real life situations?"
+          ],
+          "core_competencies": [
+            "Citizenship: as the learner works together with others, discusses and classifies non- recurring and recurring decimals",
+            "Critical thinking and problem solving: as the learner practices converting recurring decimals to fractions"
+          ],
+          "pcis": [
+            "Self-esteem: as the learner works out combined operations on decimals in the correct order",
+            "ESD: as the learner plays games of operations on decimals using IT or other materials"
+          ],
+          "values": [
+            "Responsibility: as the learner discusses and classifies non- recurring and recurring decimals",
+            "Respect: as the learner works with peers to discuss and classify non- recurring and recurring decimals"
+          ],
+          "links": [
+            "Integrated Science: as the learner expresses different quantities of measurement in Science in decimals"
+          ]
+        },
+        {
+          "id": "1.4",
+          "name": "Squares and Square Roots",
+          "lessons": 6,
+          "scope": [
+            "Squares and square roots of numbers from tables and calculators"
+          ],
+          "outcomes": [
+            "work out the squares of numbers from tables in different situations",
+            "work out the square roots of numbers from tables in different situations",
+            "work out squares and square roots of numbers using a calculator in different situations",
+            "enjoy using squares and square roots in real life situations"
+          ],
+          "experiences": [
+            "read and write the squares of numbers from tables",
+            "read and write the square roots of numbers from tables",
+            "practice working out squares and square roots using a calculator",
+            "use IT devices or other materials to play square and square root games",
+            "create games that involve squares and square roots of numbers"
+          ],
+          "key_inquiry_questions": [
+            "What are squares and square roots of numbers?",
+            "Where do we apply squares and square roots in real life situations?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner works with peers to read and write the square roots of numbers from tables",
+            "Imagination and creativity: as the learner reads and writes the square roots of numbers from tables"
+          ],
+          "pcis": [
+            "Life skills: as the learner uses IT devices or other materials to play games on squares and square root games"
+          ],
+          "values": [
+            "Respect: as the learner appreciates each other’s contribution in creating games that involve squares and square roots of numbers",
+            "Unity: as the learner works in teams to play games involving squares and square roots of numbers"
+          ],
+          "links": [
+            "Pre-Technical Studies: as the learner applies skills of working out squares and square roots in designing items to make"
+          ]
+        },
+        {
+          "id": "1.5",
+          "name": "Rates, Ratio, Proportions and Percentages",
+          "lessons": 14,
+          "scope": [
+            "Rates and fractions",
+            "Comparing ratios",
+            "Increase and decrease of quantities",
+            "percentage change of given quantities",
+            "direct and indirect proportions"
+          ],
+          "outcomes": [
+            "identify rates in different situations",
+            "work out rates in real life situations",
+            "express fractions as ratios in real life situations",
+            "compare two or more ratios in different situations",
+            "divide quantities in given ratios in real life situations",
+            "work out ratios in different situations",
+            "work out increase and decrease of quantities using ratios in real life situations",
+            "work out percentage change of given quantities in real life situations",
+            "identify direct and indirect proportions in real life situations",
+            "work out direct and indirect proportions in real life situations",
+            "promote use of ratios and proportions in real life"
+          ],
+          "experiences": [
+            "time while doing different activities such as calling using for example different mobile service providers",
+            "role play this activity and note time taken to call, Record on a table and compare",
+            "use cut outs from whole objects or substances to relate fractions to ratios",
+            "discuss and compare ratios from the cut outs",
+            "discuss and share quantities of concrete objects in different ratios",
+            "discuss and determine percentage increase and decrease of different quantities",
+            "use IT devices or other materials to explore percentage change",
+            "role play shopping activities to show and determine direct relationships and can use any other activities",
+            "use hourglass to show and determine indirect relationships and can use any other activities",
+            "watch videos on ratios and proportions as used in daily activities"
+          ],
+          "key_inquiry_questions": [
+            "How do we use rates in real life situations?",
+            "How do we use ratios in daily activities?"
+          ],
+          "core_competencies": [
+            "Critical thinking and problem solving: as the learner carries out different activities such as calling using different service providers to determine calling rates",
+            "Imagination and creativity: as the learner uses hourglass to show indirect relationships"
+          ],
+          "pcis": [
+            "Social cohesion: is enhanced as the learner role plays calling for a specified time and also charges from different telecom service providers",
+            "Decision making: as the learner uses ratios to divide quantities such as money on different items to buy as part of consumer awareness"
+          ],
+          "values": [
+            "Respect: as the learner shares out different quantities of items in given ratios",
+            "Fairness: as the learner shares out quantities in different proportions or percentages"
+          ],
+          "links": [
+            "Agriculture: as the learner works out ratios of ingredients in various aspects of home care e.g. baking",
+            "Pre-technical studies: as the learner works out ratios or proportions of different building materials"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2.0",
+      "name": "Algebra",
+      "rubric_indicators": [],
+      "sub_strands": [
+        {
+          "id": "2.1",
+          "name": "Algebraic Expressions",
+          "lessons": 6,
+          "scope": [
+            "Factorizing, simplifying and evaluating algebraic expressions"
+          ],
+          "outcomes": [
+            "factorize algebraic expressions in different situations",
+            "simplify algebraic fractions in different situations",
+            "evaluate algebraic expressions by substituting numerical values in different situations",
+            "enjoy using algebraic expressions in real life situations"
+          ],
+          "experiences": [
+            "discuss and identify like and unlike terms and factorize algebraic expressions",
+            "discuss like and unlike terms and simplify the algebraic fractions",
+            "discuss how to substitute the given numerical values to work out a given algebraic expression",
+            "use IT to work out exercises and activities in algebra or drag and drop activities of grouping similar terms to simplify algebraic expressions",
+            "use other resources to work out exercises involving algebra"
+          ],
+          "key_inquiry_questions": [
+            "How do we factorize algebraic expressions?",
+            "How do we simplify algebraic expressions?"
+          ],
+          "core_competencies": [
+            "Critical thinking and problem solving: as the learner discusses like and unlike terms to factorize and simplify algebra"
+          ],
+          "pcis": [
+            "Environmental education: as the learner uses varied local resources for like and unlike terms in algebra"
+          ],
+          "values": [
+            "Responsibility: as the learner discusses and substitute values in algebraic expressions"
+          ],
+          "links": [
+            "Integrated Science: as the learner uses symbols to represent quantities for substances"
+          ]
+        },
+        {
+          "id": "2.2",
+          "name": "Linear Equations",
+          "lessons": 7,
+          "scope": [
+            "linear equations in two unknowns",
+            "solving linear equations by elimination method"
+          ],
+          "outcomes": [
+            "form linear equations in two unknowns in real life situations",
+            "solve linear equations in two unknowns by Substitution method in real life situations",
+            "solve linear equations in two unknowns by elimination method in real life situations",
+            "apply linear equations in two unknowns in real life situations",
+            "recognize use of linear equations in real life"
+          ],
+          "experiences": [
+            "role play activities such as shopping on two different items in the shop to form linear equations in two unknowns",
+            "discuss with others and use activities involving two unknowns",
+            "discuss and use substitution method to find the solutions of simultaneous equations in two unknowns",
+            "discuss and use elimination method to find the solutions of simultaneous equations in two unknowns",
+            "practice forming and solving simultaneous equations in two unknowns of real-life cases using any method",
+            "watch videos or use other materials involving linear equations in two unknowns"
+          ],
+          "key_inquiry_questions": [
+            "How do we solve linear equations in two unknowns?",
+            "Where do we use linear equations in two unknowns in real life situations?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses and uses substitution methods to find the solutions of simultaneous equations in two unknowns"
+          ],
+          "pcis": [
+            "Citizenship: as the learner role plays shopping activities on two different items in the shop to form linear equations in two unknowns"
+          ],
+          "values": [
+            "Responsibility: as the learner practices forming and solving simultaneous equations in two unknowns of real life cases"
+          ],
+          "links": [
+            "Language: as the learner discusses and uses substitution methods to find the solutions of simultaneous equations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3.0",
+      "name": "Measurements",
+      "rubric_indicators": [],
+      "sub_strands": [
+        {
+          "id": "3.1",
+          "name": "Circles",
+          "lessons": 5,
+          "scope": [
+            "circumference of a circle",
+            "length of an Arc of a circle",
+            "perimeter of a sector of a circle"
+          ],
+          "outcomes": [
+            "work out the circumference of a circle in real life situations",
+            "work out the length of an Arc of a circle in different situations",
+            "calculate the perimeter of a sector of a circle in different situations",
+            "promote use of circles in real life situations"
+          ],
+          "experiences": [
+            "discuss with others and find the circumference of different circular objects in the environment",
+            "use cut outs to relate arc length to the circumference of a circle, starting with semicircle, then quarter of a circle etc",
+            "draw circles and work out the circumference of a circle, and arc length of a circle",
+            "use cut outs of sectors of circles from locally available materials and work out the perimeter of the sectors. Discuss and make any object with the sector that can be used in real life situations",
+            "use IT tools or other resources to explore use of sectors of circles in daily life"
+          ],
+          "key_inquiry_questions": [
+            "How do we determine the circumference of a circle?",
+            "How do we use sectors of a circle in real life situations?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses and finds the circumference of different circular objects in the environment",
+            "Creativity and imagination: as the learner uses cut outs to relate arc length to the circumference of a circle"
+          ],
+          "pcis": [
+            "Environmental education: as the learner uses locally available materials to cut out sectors responsibly"
+          ],
+          "values": [
+            "Integrity: as the learner draws circles of given dimensions and work out the circumference of a circle",
+            "Responsibility: as the learner makes any objects with the sector that can be used in real life situations"
+          ],
+          "links": [
+            "Language: as the learner discusses with others and finds the circumference of different circular objects in the environment"
+          ]
+        },
+        {
+          "id": "3.2",
+          "name": "Area",
+          "lessons": 10,
+          "scope": [
+            "area of circles",
+            "area of a sector of a circle",
+            "Surface Area of Cubes, Cuboids, cylinders, and triangular Prism",
+            "Area of irregular shapes"
+          ],
+          "outcomes": [
+            "calculate the area of circles in different situations",
+            "work out the area of a sector of a circle in different situations",
+            "work out the Surface Area of Cubes and Cuboids in real life situations",
+            "work out the Surface area of a cylinders in real life situations",
+            "determine the Surface Area of a triangular Prism in different situations",
+            "work out the Area of irregular shapes using square grids in real life situations",
+            "use IT tools and other materials for learning more on area and for enjoyment",
+            "recognize use of length in real life situations"
+          ],
+          "experiences": [
+            "discuss and work out areas of different circles",
+            "use cut outs of sectors of circles from locally available materials and find the area of the sectors and relate the angle of the sector to the area of the circle. Determine the area of a sector of a circle",
+            "use models to find the surface area of cubes, cuboids and cylinders and derive the formulas for each",
+            "apply the formulas to work out surface area of given cubes, cuboids and cylinders",
+            "use models to find the surface area of triangular prisms",
+            "draw irregular shapes, for example the palm of hands, feet or leaves and trace on square grid to estimate the area",
+            "watch videos on models of cubes, cuboid, cylinders and prisms and how to find the surface area"
+          ],
+          "key_inquiry_questions": [
+            "How do we use area in real life situations?"
+          ],
+          "core_competencies": [
+            "Critical thinking and problem solving: as the learner uses cut outs of sectors of circles from locally available materials and find the area of the sector",
+            "Learning to learn: as the learner uses models to find the surface area of cubes, cuboids and cylinders and derive the formulas for each"
+          ],
+          "pcis": [
+            "Safety: as the learner handles different instruments to make cut outs of sectors from locally available materials and finds the area where they relate the angle of the sector to the area of the circle",
+            "Environmental education: as the learner uses locally available materials to draw irregular shapes, for example the palm of hands, feet or leaves and trace on square grid to estimate the area"
+          ],
+          "values": [
+            "Responsibility through excellence as the learner uses models to find the surface area of triangular prisms"
+          ],
+          "links": [
+            "Creative Arts and Sports: promotes the learner’s drawing skills of irregular shapes, for example the palm of hands, feet or leaves"
+          ]
+        },
+        {
+          "id": "3.3",
+          "name": "Money",
+          "lessons": 9,
+          "scope": [
+            "interest and principal",
+            "simple and compound interest",
+            "appreciation and depreciation",
+            "hire purchase"
+          ],
+          "outcomes": [
+            "identify interest and principal in real life situations",
+            "calculate simple interest in real life situations",
+            "calculate compound interest per annum step by step up to three years in real life situations",
+            "work out appreciation and depreciation per annum step by step up to three years in different situations",
+            "work out hire purchase in real life situations",
+            "use calculators to carry out operations related to money",
+            "spend money responsibly on needs and leisure"
+          ],
+          "experiences": [
+            "visit or invite resource persons from different financial institutions in the neighborhood of the school or home and gather information about simple and compound interests offered on deposits (principal)",
+            "enquire and discuss meaning of terms such as interest, deposits (principal) as part of consumer awareness and protection",
+            "discuss and work out compound interest",
+            "identify and discuss objects or goods that appreciate and depreciate in value to inform decision making on goods that are worth investing in or buying",
+            "determine Appreciation and Depreciation using a step by step method",
+            "visit shopping centres where items or goods are offered on hire purchase and discuss different terms of purchase. This can be done either as physical or online searches. Relate different pricing of the goods and discuss the installments periods and time to inform purchasing decisions that will protect from products that highly lose value with time",
+            "use IT tools to access online shopping platforms and identify terms of sale"
+          ],
+          "key_inquiry_questions": [
+            "What is interest in money?",
+            "How do we pay for goods on hire purchase?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner gathers information about simple and compound interests offered on deposits (principal) in different financial institutions",
+            "Critical thinking and problem solving: as the learner determines Appreciation and Depreciation using step by step methods and discuss what goods are worth investing in or buying",
+            "Digital literacy: as the learner do search on online shopping platforms or other sources on different types of goods for consumer awareness"
+          ],
+          "pcis": [
+            "Citizenship: as the learner uses money (Kenya shillings) to buy goods"
+          ],
+          "values": [
+            "Responsibility: as the learner makes responsible choices on shopping goods that they appreciate in value"
+          ],
+          "links": [
+            "Pre-Technical Studies: as the learner identifies and discusses objects and goods that appreciate and depreciate in value"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4.0",
+      "name": "Geometry",
+      "rubric_indicators": [],
+      "sub_strands": [
+        {
+          "id": "4.1",
+          "name": "Geometrical Constructions",
+          "lessons": 12,
+          "scope": [
+            "parallel and perpendicular lines",
+            "properties of polygons",
+            "irregular polygon",
+            "circles"
+          ],
+          "outcomes": [
+            "construct parallel and perpendicular lines in different situations",
+            "divide a line proportionally in different situations",
+            "identify angle properties of polygons in different situations",
+            "construct regular polygons up to a hexagon in different situations",
+            "construct irregular polygons up to a hexagon in different situations",
+            "construct circles passing through the vertices of a triangle in different situations",
+            "construct circles touching the sides of the triangle in different situations",
+            "admire geometric patterns in objects and substances in real life"
+          ],
+          "experiences": [
+            "practice constructing parallel and perpendicular lines",
+            "practice dividing a line proportionally, for example, using a set square and a ruler only or pair of compasses",
+            "discuss angle properties of polygons and relate the number of right angles to the number of sides. And determine the angles in a given polygon",
+            "construct regular polygons using pair of compasses, rulers and protractors",
+            "construct irregular polygons using pair of compasses, rulers and protractors",
+            "practice constructing circles passing through vertices of given triangles",
+            "practice constructing circles touching sides of given triangles",
+            "watch videos on how to construct polygons, use different construction software",
+            "use IT or other devices to create patterns using circles touching sides of triangles or polygons"
+          ],
+          "key_inquiry_questions": [
+            "How do we construct polygons?",
+            "Where do we use polygons in real life situations?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses angle properties of polygons and relate the number of right angles to the number of sides",
+            "Digital literacy: as the learner uses IT or other devices to create patterns using circles touching sides of triangles or polygons"
+          ],
+          "pcis": [
+            "Self-awareness: as the learner uses IT or other resources to create patterns using circles touching sides of triangles or polygons"
+          ],
+          "values": [
+            "Responsibility: as the learner constructs regular polygons using pair of compasses, rulers and protractors and take care of the tools"
+          ],
+          "links": [
+            "Pre-technical studies: as the learner constructs regular polygons using a pair of compasses, rulers and protractors"
+          ]
+        },
+        {
+          "id": "4.2",
+          "name": "Coordinates and graphs",
+          "lessons": 14,
+          "scope": [
+            "Cartesian plane",
+            "points on the Cartesian",
+            "table of values for a linear equation",
+            "scale for a linear equation",
+            "linear graphs",
+            "simultaneous linear equations"
+          ],
+          "outcomes": [
+            "draw a labelled Cartesian plane on different learning materials",
+            "identify points on the Cartesian plane in different situations",
+            "plot points on the Cartesian plane in different situations",
+            "generate table of values for a linear equation in different situations",
+            "determine an appropriate scale for a linear equation on the Cartesian plane in different situations",
+            "draw a linear graph from table of values on Cartesian plane in different situations",
+            "solve simultaneous linear equations graphically in different situations",
+            "apply simultaneous equations in real life situations",
+            "use IT or other resources to learn more on coordinates and graphs",
+            "reflect on the use of graphs in real life"
+          ],
+          "experiences": [
+            "draw and appropriately label the axes on the Cartesian plane",
+            "practice locating and plotting points on a Cartesian plane appropriately",
+            "discuss and read coordinates of points on the Cartesian plane. And write the coordinates in terms of (horizontal value, vertical value)",
+            "discuss, choose and use appropriate scale for a given data",
+            "discuss and make an appropriate table of values for a given linear equation and draw the linear graphs",
+            "generate values in a table of the simultaneous linear equations and draw the graphs, read the point of intersection as solution for the equations",
+            "discuss and form simultaneous equations from statements and solve the equations using graphs",
+            "use IT graphing tools to create linear graphs or use other materials to practice drawing linear graphs"
+          ],
+          "key_inquiry_questions": [
+            "How do we plot coordinates on a Cartesian plane?",
+            "Where do we use linear graphs in real life?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses and reads coordinates of points on the Cartesian plane",
+            "Critical thinking and problem solving: as the learner generates values in a table of the simultaneous linear equations",
+            "Digital literacy: as the learner learns and uses IT graphing tools to create linear graphs"
+          ],
+          "pcis": [
+            "Citizenship: as the learner practices locating and plotting points on a Cartesian plane appropriately as a foundational skill for reading maps"
+          ],
+          "values": [
+            "Respect: is enhanced as the learner discusses and appreciate others’ views to make an appropriate table of values for a given linear equation and draws the linear graphs"
+          ],
+          "links": [
+            "Integrated Science: contributes to learner’s drawing and graphing skills as they draw the graphs of different content areas"
+          ]
+        },
+        {
+          "id": "4.3",
+          "name": "Scale Drawing",
+          "lessons": 14,
+          "scope": [
+            "Scale length",
+            "Conversions in scale",
+            "linear scales",
+            "making scale drawings"
+          ],
+          "outcomes": [
+            "represent length to a given scale in different situations",
+            "convert actual length to scale length in real life situations",
+            "convert scale length to actual length in real life situations",
+            "interpret linear scales in statement form in different situations",
+            "write linear scales in statement form in different situations",
+            "interpret linear scales in ratio form in different situations",
+            "write linear scales in ratio form in different situations",
+            "convert linear scale from statement form to ratio form and ratio form to statement form in different situations",
+            "make scale drawings in different situations",
+            "apply scale drawing in real life situations",
+            "recognize the use of scale drawing in maps"
+          ],
+          "experiences": [
+            "measure and represent length of different objects from immediate environment in his/her work book",
+            "discuss and practice converting scale from one form to another",
+            "read, discuss and interpret given linear scales in statement form",
+            "discuss and write given linear scales in statement form",
+            "read, discuss and interpret given linear scales in ratio form",
+            "discuss and carry out conversions of scales from one form to another",
+            "make scale drawings on different learning materials using appropriate scale",
+            "use ICT devices to display the maps and use the zoom functions to demonstrate scale",
+            "Use maps to demonstrate scale and locate places"
+          ],
+          "key_inquiry_questions": [
+            "How do we determine scales in real life?",
+            "Where do we use scale drawing in real life situations?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses and practices converting scale from one form to another",
+            "Critical thinking and problem solving: as the learner discusses and writes given linear scales in statement form",
+            "Digital literacy: as the learner uses ICT devices to display the maps and use the zoom functions to demonstrate scale"
+          ],
+          "pcis": [
+            "Environmental education: as the learner measures and represents the length of different objects from the immediate environment in his/her work book"
+          ],
+          "values": [
+            "Responsibility: as the learner makes scale drawings on different learning materials using appropriate scale",
+            "Citizenship: as the learner uses maps to demonstrate scale and locate places"
+          ],
+          "links": [
+            "Pre-Technical Studies: as the learner reads and makes scale drawings learnt from technical drawing"
+          ]
+        },
+        {
+          "id": "4.4",
+          "name": "Common Solids",
+          "lessons": 16,
+          "scope": [
+            "nets of cubes, cuboids, cylinders, pyramids and cones",
+            "surface area of the solids",
+            "models of hollow and compact solids"
+          ],
+          "outcomes": [
+            "identify common solids from the environment",
+            "sketch nets of cubes, cuboids, cylinders, pyramids and cones in different situations",
+            "work out surface area of the solids from nets of solids in different situations",
+            "determine the distance between two points on the surface of a solid in different situations",
+            "make models of hollow and compact solids for skills development",
+            "use drawing materials to draw models and nets of solids in different situations",
+            "promote the use of common solids in real life situations"
+          ],
+          "experiences": [
+            "identify and collect common solids such as cubes, cuboids, cylinders, pyramids and cones from the immediate environment",
+            "discuss, open and sketch the nets of hollow solids",
+            "work out the surface area of solids from nets",
+            "discuss and practice measuring the distance between any two points on the surface of the solids",
+            "make models of hollow and compact solids using locally available materials such as clay. Hollow solids (containers) may be of cubes, cuboids, cylinders, pyramids, cones or pots. Compact solids (eg. bricks) may be of cubes, cuboids or cylinders",
+            "use IT devices to watch videos on common solids, nets and draw the solids and nets",
+            "use other resources to trace or draw nets of solids",
+            "carry out a project in ethno math; how pots were molded and decorated in African culture"
+          ],
+          "key_inquiry_questions": [
+            "What are common solids?",
+            "How do we use common solids in real life?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses and works with peers to collect solids from the environment",
+            "Creativity and imagination: as the learner makes the models of different solids"
+          ],
+          "pcis": [
+            "ESD: as the learner collects solids from the environment and use locally available materials to make models",
+            "Self -esteem: as the learner engages to open nets of solids and makes models creatively"
+          ],
+          "values": [
+            "Responsibility, love and respect: as the learner works with peers to collect solids and make models"
+          ],
+          "links": [
+            "Pre-technical studies: as the leaner enhances drawing skills as they sketch nets of different solids",
+            "Creative Art and Sports: as the learner uses creative skills to make models of different solids"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5.0",
+      "name": "Data Handling and Probability",
+      "rubric_indicators": [],
+      "sub_strands": [
+        {
+          "id": "5.1",
+          "name": "Data Representation and Interpretation",
+          "lessons": 10,
+          "scope": [
+            "Bar graphs and line graphs",
+            "Mode, mean and median"
+          ],
+          "outcomes": [
+            "draw bar graphs of data from real life situations",
+            "interpret bar graphs of data from real life situations",
+            "draw line graphs of given data from real life situations",
+            "interpret line graphs of data from real life situations",
+            "identify the mode of a set of discrete data from real life situations",
+            "calculate the mean of a set of discrete data from real life situations",
+            "determine the median of a set of discrete data from real life situations",
+            "recognize use of data representation and interpretation in real life situations"
+          ],
+          "experiences": [
+            "collect data from their own experiences, for example size of shoes, height or test scores. Use a suitable scale to represent the data in bar graphs",
+            "discuss and interpret Bar graphs",
+            "discuss and represent data in line graphs",
+            "discuss and interpret line graphs",
+            "recognize the mode from a given set of discrete data",
+            "discuss and work out the average from different sets of discrete data and relate it to the mean",
+            "carry out different activities that involve getting the median position. For example, where possible learners use the hand to identify the middle finger in reference to its position",
+            "arrange given data in ascending order and identify the middle value which is the median",
+            "use IT to create bar graphs and line graphs to represent the data, calculate the mean, the mode and the median",
+            "use other resources to represent data on real life cases such as types and number of injuries from roads. Draw bar and line graphs to represent the data"
+          ],
+          "key_inquiry_questions": [
+            "What are the different ways of representing data?",
+            "How do we determine the mean of data?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses and represents data in line graphs",
+            "Critical thinking and problem solving: as the learner discusses and interprets Bar graphs",
+            "Self-efficacy: as the learner collects data from their own experiences, for example size of shoes, height or test scores"
+          ],
+          "pcis": [
+            "Self-awareness: as the learner collects data from their own experiences, for example size of shoes, height or test scores"
+          ],
+          "values": [
+            "Social cohesion: as the learner collects data from their own experiences, for example size of shoes, height or test scores"
+          ],
+          "links": [
+            "Social Studies: as the learner discusses and works out the average from different sets of discrete data such as populations and relate it to the mean"
+          ]
+        },
+        {
+          "id": "5.2",
+          "name": "Probability",
+          "lessons": 7,
+          "scope": [
+            "events involving chance",
+            "experimental probability outcomes",
+            "probability outcomes in fractions, decimals or percentages"
+          ],
+          "outcomes": [
+            "identify events involving chance in real life situations",
+            "perform chance experiments in different situations",
+            "write the experimental probability outcomes in different situations",
+            "express the probability outcomes in fractions in different situations",
+            "express the probability outcomes in decimals or percentages in different situations",
+            "use IT and other materials to play games involving probability",
+            "recognize that there are events that happen by chance in real life situations"
+          ],
+          "experiences": [
+            "discuss daily events that are likely/unlikely to happen/will not happen",
+            "discuss and carry out different chance experiments like flipping the coins, tossing the dice or drawing colored balls from a bag one ball at a time",
+            "record the probability of the chance outcomes in fractions, decimals and percentages",
+            "use IT tools or other resources to play games involving probability"
+          ],
+          "key_inquiry_questions": [
+            "When do we consider chances that an event is likely to happen?",
+            "Why is probability important in real life situations?"
+          ],
+          "core_competencies": [
+            "Communication and collaboration: as the learner discusses daily events that are likely/unlikely to happen/will not happen",
+            "Critical thinking and problem solving: as the learner discusses and carries out different chance experiments like flipping the coins",
+            "Self-efficacy: as the learner discusses and carries out different chance experiments like flipping the coins and dice"
+          ],
+          "pcis": [
+            "Environmental awareness: as the learners discusses daily events that are likely/unlikely to happen/will not happen that may relate to the environment"
+          ],
+          "values": [
+            "Responsibility: as the learner uses IT devices or other resources such as coins, balls in the study of probability"
+          ],
+          "links": [
+            "Social Studies: as the learner discusses daily events that are likely/unlikely to happen/will not happen that may involve the weather"
+          ]
+        }
+      ]
+    }
+  ],
+  "appendix": {
+    "assessment_methods": [],
+    "learning_resources": [],
+    "non_formal_activities": []
+  }
+}

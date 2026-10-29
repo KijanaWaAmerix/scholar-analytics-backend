@@ -1,7 +1,9 @@
 /* Turn a KICD curriculum design PDF into the app's design file.
-   Run on your own computer (needs GEMINI_API_KEY in .env):
+   Run on your own computer. It reads the PDF with plain code: no AI, no quota, no cost.
 
      node importDesign.js <pdf file or https link> <designKey> <lessonsPerWeek> [--upload]
+     node importDesign.js <pdf file or https link> <designKey> <lessonsPerWeek> --ai
+                                   (--ai asks Gemini to read the PDF instead; needs GEMINI_API_KEY)
 
    Example:
      node importDesign.js Integrated-Science-Grade-8-Design-Formatted-April-2024.pdf grade8-integrated-science 5
@@ -15,7 +17,8 @@ const fs = require('fs');
 const path = require('path');
 const { getGemini } = require('./utils/gemini');
 const { getObjectStore } = require('./utils/objectStore');
-const { importDesign } = require('./utils/designImporter');
+const { importDesign, validateDesign } = require('./utils/designImporter');
+const { extractPages, readDesign, lineify } = require('./utils/designReader');
 const { DESIGN_KEY } = require('./utils/contentStore');
 
 (async () => {
@@ -25,11 +28,12 @@ const { DESIGN_KEY } = require('./utils/contentStore');
   const perWeek = Number(perWeekText);
 
   if (!input || !DESIGN_KEY.test(key || '') || !Number.isInteger(perWeek)) {
-    console.error('Usage: node importDesign.js <pdf file or https link> <designKey> <lessonsPerWeek> [--upload]');
+    console.error('Usage: node importDesign.js <pdf file or https link> <designKey> <lessonsPerWeek> [--upload] [--ai]');
     process.exit(1);
   }
-  const ai = getGemini();
-  if (!ai) { console.error('GEMINI_API_KEY is not set.'); process.exit(1); }
+  const useAi = process.argv.includes('--ai');
+  const ai = useAi ? getGemini() : null;
+  if (useAi && !ai) { console.error('GEMINI_API_KEY is not set.'); process.exit(1); }
 
   let pdf;
   if (/^https:\/\//i.test(input)) {
@@ -48,17 +52,42 @@ const { DESIGN_KEY } = require('./utils/contentStore');
     pdf = fs.readFileSync(input);
   }
 
-  const { design, problems } = await importDesign({
-    ai, pdf, lessonsPerWeek: perWeek,
-    source: `KICD Junior School Curriculum Design (${path.basename(input)})`,
-    onProgress: (m) => console.log(m),
-  });
+  let design;
+  let problems;
+  let notes = [];
+  const source = `KICD Junior School Curriculum Design (${path.basename(input)})`;
+
+  if (useAi) {
+    ({ design, problems } = await importDesign({
+      ai, pdf, lessonsPerWeek: perWeek, source, onProgress: (m) => console.log(m),
+    }));
+  } else {
+    console.log('Reading the PDF with code (no AI)...');
+    const pages = await extractPages(pdf);
+    /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
+    const cover = lineify(pages[0] || []).map((l) => l.text);
+    const at = cover.findIndex((t) => /JUNIOR SCHOOL CURRICULUM DESIGN/i.test(t));
+    const area = at >= 0 ? cover[at + 1] : '';
+    const grade = Number(((cover.find((t) => /^GRADE\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+    const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\bAnd\b/g, 'and');
+    const read = readDesign(pages, { source, lessonsPerWeek: perWeek, learningArea: titled(area), grade });
+    design = read.design;
+    problems = [...read.problems, ...validateDesign(design)];
+    notes = [
+      ...read.notes,
+      'The appendix (assessment methods, learning resources, non-formal activities) is not copied by this reader. Add it by hand if you want it in the lessons.',
+    ];
+  }
 
   const out = path.join(__dirname, 'data', 'curriculum', `${key}.json`);
   fs.writeFileSync(out, JSON.stringify(design, null, 2) + '\n');
   console.log(`\nWritten: ${out}`);
   console.log(`${design.learning_area}, Grade ${design.grade}: ${design.strands.length} strands, ${design.total_suggested_lessons} lessons`);
 
+  if (notes.length) {
+    console.log('\nGood to know:');
+    notes.forEach((n) => console.log(' - ' + n));
+  }
   if (problems.length) {
     console.log('\nPlease check these before using the file:');
     problems.forEach((p) => console.log(' - ' + p));

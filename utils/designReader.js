@@ -381,4 +381,19 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
   return { design, problems, notes };
 };
 
-module.exports = { extractPages, readDesign, readSkeleton, readTables, lineify, cleanItem };
+/**
+ * The whole job for one PDF file: pages, cover page (learning area and grade),
+ * tables. Returns { design, problems, notes }.
+ */
+const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinutes = 40 } = {}) => {
+  const pages = await extractPages(buffer);
+  /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
+  const cover = lineify(pages[0] || []).map((l) => l.text);
+  const at = cover.findIndex((t) => /JUNIOR SCHOOL CURRICULUM DESIGN/i.test(t));
+  const area = at >= 0 ? cover[at + 1] : '';
+  const grade = Number(((cover.find((t) => /^GRADE\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+  const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\b(And|Of)\b/g, (w) => w.toLowerCase());
+  return readDesign(pages, { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade });
+};
+
+module.exports = { extractPages, readDesign, designFromPdf, readSkeleton, readTables, lineify, cleanItem };

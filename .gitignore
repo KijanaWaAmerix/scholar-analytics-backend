@@ -4,3 +4,7 @@ fixIndex.js
 imported-notes/
 downloaded-notes/
 links.txt
+
+# Design PDFs saved by hand and designs waiting for review
+design-pdfs/
+data/curriculum-review/

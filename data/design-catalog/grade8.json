@@ -1,0 +1,105 @@
+{
+  "grade": "grade8",
+  "label": "Grade 8",
+  "page": "https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-eight-designs/",
+  "note": "Each subject lists links to try, best first. The first four were confirmed by search (Mathematics, CRE, Social Studies, Pre-Technical, Agriculture, Creative Arts); the others are guesses from the same naming pattern. If none works, save the PDF into design-pdfs/ as <grade>-<subject>.pdf. lessonsPerWeek comes from the 2026 Ministry timetable guideline.",
+  "subjects": [
+    {
+      "slug": "integrated-science",
+      "name": "Integrated Science",
+      "lessonsPerWeek": 5,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Integrated-Science-Grade-8-Design-Formatted-April-2024.pdf"
+      ]
+    },
+    {
+      "slug": "mathematics",
+      "name": "Mathematics",
+      "lessonsPerWeek": 5,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Mathematics-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/02/GRADE.8.MATHEMATICS.pdf"
+      ]
+    },
+    {
+      "slug": "english",
+      "name": "English",
+      "lessonsPerWeek": 5,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/English-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/English-Grade-8-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/02/GRADE.8.ENGLISH.pdf"
+      ]
+    },
+    {
+      "slug": "kiswahili",
+      "name": "Kiswahili",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Kiswahili-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Kiswahili-Grade-8-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/02/GRADE.8.KISWAHILI.pdf"
+      ]
+    },
+    {
+      "slug": "cre",
+      "name": "Christian Religious Education",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/CRE-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/02/GRADE.8.CRE_.pdf"
+      ]
+    },
+    {
+      "slug": "social-studies",
+      "name": "Social Studies",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Social-Studies-Grade-8-Formatted-April-2024.pdf"
+      ]
+    },
+    {
+      "slug": "pre-technical-studies",
+      "name": "Pre-Technical Studies",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Pre-Technical-Studies-Grade-8-Design-Formatted-April-2024.pdf"
+      ]
+    },
+    {
+      "slug": "agriculture-and-nutrition",
+      "name": "Agriculture and Nutrition",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Agriculture-Grade-8-Design-Formatted-April-2024.pdf"
+      ]
+    },
+    {
+      "slug": "creative-arts-and-sports",
+      "name": "Creative Arts and Sports",
+      "lessonsPerWeek": 5,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/Creative-Arts-Sports-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/03/Creative-Arts-Sports-Grade-8-Formatted-6.3.2024.pdf"
+      ]
+    },
+    {
+      "slug": "ire",
+      "name": "Islamic Religious Education",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/IRE-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/02/GRADE.8.IRE_.pdf"
+      ]
+    },
+    {
+      "slug": "hre",
+      "name": "Hindu Religious Education",
+      "lessonsPerWeek": 4,
+      "urls": [
+        "https://kicd.ac.ke/wp-content/uploads/2024/06/HRE-Grade-8-Design-Formatted-April-2024.pdf",
+        "https://kicd.ac.ke/wp-content/uploads/2024/02/GRADE.8.HRE_.pdf"
+      ]
+    }
+  ]
+}

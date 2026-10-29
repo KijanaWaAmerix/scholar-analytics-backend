@@ -18,7 +18,7 @@ const path = require('path');
 const { getGemini } = require('./utils/gemini');
 const { getObjectStore } = require('./utils/objectStore');
 const { importDesign, validateDesign } = require('./utils/designImporter');
-const { extractPages, readDesign, lineify } = require('./utils/designReader');
+const { designFromPdf } = require('./utils/designReader');
 const { DESIGN_KEY } = require('./utils/contentStore');
 
 (async () => {
@@ -63,14 +63,7 @@ const { DESIGN_KEY } = require('./utils/contentStore');
     }));
   } else {
     console.log('Reading the PDF with code (no AI)...');
-    const pages = await extractPages(pdf);
-    /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
-    const cover = lineify(pages[0] || []).map((l) => l.text);
-    const at = cover.findIndex((t) => /JUNIOR SCHOOL CURRICULUM DESIGN/i.test(t));
-    const area = at >= 0 ? cover[at + 1] : '';
-    const grade = Number(((cover.find((t) => /^GRADE\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
-    const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\bAnd\b/g, 'and');
-    const read = readDesign(pages, { source, lessonsPerWeek: perWeek, learningArea: titled(area), grade });
+    const read = await designFromPdf(pdf, { source, lessonsPerWeek: perWeek });
     design = read.design;
     problems = [...read.problems, ...validateDesign(design)];
     notes = [

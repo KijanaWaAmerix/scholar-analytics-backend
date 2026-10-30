@@ -124,7 +124,9 @@ const previewScheme = async (req, res, next) => {
       return fail('Please choose the sub-strand where the scheme starts and where it ends.');
     }
 
-    const dateFields = { termStart, termEnd, halfTermStart, halfTermEnd };
+    /* Half term is optional, but if one half-term date is given the other is needed too */
+    const noHalfTerm = !halfTermStart && !halfTermEnd;
+    const dateFields = noHalfTerm ? { termStart, termEnd } : { termStart, termEnd, halfTermStart, halfTermEnd };
     for (const [name, value] of Object.entries(dateFields)) {
       if (!isRealDate(value)) return fail(`${name} must be a real date in YYYY-MM-DD format.`);
     }

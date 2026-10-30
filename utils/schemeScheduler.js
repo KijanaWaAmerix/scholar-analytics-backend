@@ -76,11 +76,13 @@ function buildCalendar(opts) {
 
   const start = parseDate(termStart);
   const end = parseDate(termEnd);
-  const htStart = parseDate(halfTermStart);
-  const htEnd = parseDate(halfTermEnd);
+  /* Half term is optional */
+  const hasBreak = Boolean(halfTermStart && halfTermEnd);
+  const htStart = hasBreak ? parseDate(halfTermStart) : null;
+  const htEnd = hasBreak ? parseDate(halfTermEnd) : null;
   if (end < start) throw new Error('Term end is before term start');
-  if (htEnd < htStart) throw new Error('Half-term end is before half-term start');
-  if (htStart < start || htEnd > end) throw new Error('Half-term must fall inside the term');
+  if (hasBreak && htEnd < htStart) throw new Error('Half-term end is before half-term start');
+  if (hasBreak && (htStart < start || htEnd > end)) throw new Error('Half-term must fall inside the term');
 
   const holidaySet = new Set(holidays);
   const weeks = [];
@@ -95,7 +97,7 @@ function buildCalendar(opts) {
       if (day < start || day > end) continue;
       weekdaysInTerm++;
       const iso = toISO(day);
-      if (day >= htStart && day <= htEnd) { weekdaysOnBreak++; continue; }
+      if (hasBreak && day >= htStart && day <= htEnd) { weekdaysOnBreak++; continue; }
       if (holidaySet.has(iso)) continue;
       const count = lessonsPerDay[dow] || 0;
       for (let k = 1; k <= count; k++) {
@@ -134,7 +136,7 @@ function generateScheme(opts) {
       // The HALF TERM row goes at the exact point where the break falls: after the last
       // lesson before the break and before the first lesson after it. It is only shown
       // when lessons continue after the break.
-      if (!halfTermShown && slot.date > opts.halfTermEnd) {
+      if (opts.halfTermStart && opts.halfTermEnd && !halfTermShown && slot.date > opts.halfTermEnd) {
         rows.push({
           type: 'HALF_TERM',
           week: null,

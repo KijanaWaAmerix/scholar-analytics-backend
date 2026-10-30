@@ -151,7 +151,9 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   const outcomes    = pickItems(sub.outcomes || [], lessonNo, total);
   const experiences = pickItems(sub.experiences || [], lessonNo, total);
   const focusItem   = pickItems(scope, lessonNo, total)[0] || sub.name;
-  const resources   = (design.appendix?.learning_resources || []).slice(0, 4);
+  /* The sub-strand's own resources and assessment methods (from the design's appendix) come first */
+  const resources   = (sub.resources && sub.resources.length ? sub.resources : (design.appendix?.learning_resources || [])).slice(0, 6);
+  const ownAssess   = sub.assessment || [];
   const kiqs        = sub.key_inquiry_questions || [];
   const sw = lang === 'sw';
 
@@ -161,7 +163,7 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
     experiences,
     kiqs        : kiqs.slice(0, 2),
     resources,
-    assessment  : [ROTATING_ASSESSMENT[(lessonNo - 1) % ROTATING_ASSESSMENT.length]],
+    assessment  : [ownAssess.length ? ownAssess[(lessonNo - 1) % ownAssess.length] : ROTATING_ASSESSMENT[(lessonNo - 1) % ROTATING_ASSESSMENT.length]],
     organisation: sw
       ? 'Wanafunzi wanakaa katika vikundi vidogo.'
       : 'Learners are organised in small groups.',

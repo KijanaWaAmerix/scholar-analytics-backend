@@ -133,7 +133,9 @@ const readSkeleton = (pages) => {
 
 /* ── 2 and 3. The sub-strand tables ───────────────────────── */
 
-const findHeader = (items) => {
+const ENGLISH_HEADER = { endRe: /Question|Questio|Inquiry|n\(s\)/i };
+
+const findHeader = (items, pats = ENGLISH_HEADER) => {
   /* Header cells arrive in odd pieces ("Spe"+"cific Learning", "Sugges"+"ted Learning"), so each row
      is joined into one string and the column starts are found in that string */
   const rows = [];
@@ -151,6 +153,12 @@ const findHeader = (items) => {
       text += t;
     }
     const at = (re) => { const m = re.exec(text); return m ? owner[m.index].x : null; };
+    if (pats.columns) {
+      const x = pats.columns(text, owner);
+      if (!x) continue;
+      const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));
+      return { x, bottom: below.length ? Math.min(...below.map((it) => it.y)) : row.y - 26 };
+    }
     const x = {
       sub: at(/Sub\s*-?\s*S\s*trand/i) ?? at(/Sub(?![a-z])/),
       /* One design heads the outcomes column "Suggested Learning Outcomes" */
@@ -170,7 +178,7 @@ const findHeader = (items) => {
     }
     if (Object.values(x).some((v) => v === null)) continue;
     /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
-    const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && /Question|Questio|Inquiry|n\(s\)/i.test(it.s));
+    const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));
     const bottom = below.length ? Math.min(...below.map((it) => it.y)) : row.y - 26;
     return { x, bottom };
   }
@@ -480,13 +488,19 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
   return { design, problems, notes };
 };
 
+/* Cover: "JUNIOR [SECONDARY] SCHOOL CURRICULUM DESIGN" / AREA / "GRADE n" (Kiswahili: "MTAALA ... SHULE ZA UPILI" / AREA / "GREDI YA n") */
+const coverFrom = (cover) => {
+  const at = cover.findIndex((t) => /JUNIOR\s+(SECONDARY\s+)?SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+DARAJA/i.test(t));
+  const area = at >= 0 ? cover[at + 1] : '';
+  const grade = Number(((cover.find((t) => /^(GRADE|GREDI\s+YA)\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+  return { area, grade };
+};
+
 /** The learning area and grade on a design's cover page (reads only the first page) */
 const coverOf = async (buffer) => {
   const pages = await extractPages(buffer, { max: 1 });
   const cover = lineify(pages[0] || []).map((l) => l.text);
-  const at = cover.findIndex((t) => /JUNIOR SCHOOL CURRICULUM DESIGN/i.test(t));
-  const area = at >= 0 ? cover[at + 1] : '';
-  const grade = Number(((cover.find((t) => /^GRADE\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+  const { area, grade } = coverFrom(cover);
   return { area: String(area || '').trim(), grade: Number.isInteger(grade) ? grade : null };
 };
 
@@ -498,11 +512,14 @@ const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinute
   const pages = await extractPages(buffer);
   /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
   const cover = lineify(pages[0] || []).map((l) => l.text);
-  const at = cover.findIndex((t) => /JUNIOR SCHOOL CURRICULUM DESIGN/i.test(t));
-  const area = at >= 0 ? cover[at + 1] : '';
-  const grade = Number(((cover.find((t) => /^GRADE\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+  const { area, grade } = coverFrom(cover);
   const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\b(And|Of)\b/g, (w) => w.toLowerCase());
-  return readDesign(pages, { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade });
+  const opts = { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade };
+  /* English and Kiswahili are written in themes, with one table per skill and no numbered sub-strands */
+  if (/^(english|kiswahili)$/i.test(String(area).trim())) {
+    return require('./languageReader').readLanguageDesign(pages, { ...opts, language: /kiswahili/i.test(area) ? 'sw' : 'en' });
+  }
+  return readDesign(pages, opts);
 };
 
-module.exports = { findHeader, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };
+module.exports = { findHeader, coverFrom, columnOf, tailOf, TAIL, STOP, byBullet, outcomesOf, experiencesOf, questionsOf, titleCase, tidy, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };

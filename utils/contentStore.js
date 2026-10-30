@@ -73,6 +73,12 @@ const createContentStore = (objects) => ({
     return { mcq: next.mcq.length, structured: next.structured.length };
   },
 
+  /* Keys of every design uploaded to storage */
+  async listDesignKeys() {
+    const keys = await objects.list('designs/', 300);
+    return keys.map((k) => (k.match(/^designs\/([a-z0-9-]{1,60})\.json$/) || [])[1]).filter(Boolean);
+  },
+
   async getDesign(designKey) {
     check(designKey);
     return objects.getJson(`designs/${designKey}.json`);

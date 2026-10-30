@@ -139,7 +139,8 @@ const validateDesign = (design) => {
       need(Array.isArray(sub.outcomes) && sub.outcomes.length > 0, `${at}: no specific learning outcomes.`);
       need(Array.isArray(sub.experiences) && sub.experiences.length > 0, `${at}: no learning experiences.`);
       need(Array.isArray(sub.key_inquiry_questions) && sub.key_inquiry_questions.length > 0, `${at}: no key inquiry questions.`);
-      need(Array.isArray(sub.scope) && sub.scope.length > 0, `${at}: no scope (content).`);
+      /* Some designs list no content (scope) for a sub-strand; the lesson tools cope with an empty list */
+      need(Array.isArray(sub.scope), `${at}: scope must be a list.`);
       total += Number.isInteger(sub.lessons) ? sub.lessons : 0;
     }
   }

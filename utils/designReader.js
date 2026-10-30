@@ -133,38 +133,56 @@ const readSkeleton = (pages) => {
 
 /* ── 2 and 3. The sub-strand tables ───────────────────────── */
 
-const HEADERS = {
-  sub: /^Sub([\s-]?Strand)?$/i,
-  out: /^Specific\b/i,
-  exp: /^Suggested Learning/i,
-  kiq: /^(Suggested\s+)?Key\b/i,
-};
-
 const findHeader = (items) => {
-  const text = (it) => String(it.s).trim();
-  /* The "Specific Learning Outcomes" cell fixes the header row; the other cells sit on the same row */
-  const anchor = items.find((it) => HEADERS.out.test(text(it)));
-  if (!anchor) return null;
-  const x = { out: anchor.x };
-  for (const k of ['sub', 'exp', 'kiq']) {
-    /* "Suggested Key Inquiry Question(s)" can wrap onto two or three rows */
-    const reach = k === 'kiq' ? 18 : 3;
-    const hit = items.find((it) => (HEADERS[k].test(text(it)) || (k === 'kiq' && /^Suggested$/i.test(text(it))))
-      && it.y <= anchor.y + 3 && it.y >= anchor.y - reach);
-    if (!hit) return null;
-    x[k] = hit.x;
+  /* Header cells arrive in odd pieces ("Spe"+"cific Learning", "Sugges"+"ted Learning"), so each row
+     is joined into one string and the column starts are found in that string */
+  const rows = [];
+  for (const it of [...items].sort((a, b) => b.y - a.y || a.x - b.x)) {
+    const row = rows.find((r) => Math.abs(r.y - it.y) <= 3);
+    if (row) row.items.push(it); else rows.push({ y: it.y, items: [it] });
   }
-  /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
-  const below = items.filter((it) => it.y < anchor.y && it.y > anchor.y - 45 && /^(Question|Inquiry)/i.test(text(it)));
-  const bottom = below.length ? Math.min(...below.map((it) => it.y)) : anchor.y - 26;
-  return { x, bottom };
+  for (const row of rows) {
+    const parts = row.items.sort((a, b) => a.x - b.x).filter((it) => String(it.s).trim() !== '');
+    let text = '';
+    const owner = [];
+    for (const it of parts) {
+      const t = String(it.s).replace(/\s+/g, ' ');
+      for (let i = 0; i < t.length; i += 1) owner.push(it);
+      text += t;
+    }
+    const at = (re) => { const m = re.exec(text); return m ? owner[m.index].x : null; };
+    const x = {
+      sub: at(/Sub\s*-?\s*S\s*trand/i) ?? at(/Sub(?![a-z])/),
+      /* One design heads the outcomes column "Suggested Learning Outcomes" */
+      out: at(/Spe\s*cific/i) ?? at(/Sugg?\s*ested\s*Learning\s*Outcomes?/i) ?? at(/Sugg?\s*ested\s*Learning(?!\s*Exp)/i),
+      exp: at(/Sugg?\s*ested\s*Learning\s*Exp/i) ?? at(/Learning\s*Experiences/i),
+      kiq: at(/Sugg?\s*ested\s*Key|Key\s*Inquiry/i),
+    };
+    /* "Experiences" can sit on the next row, leaving only "Suggested Learning" on the header row */
+    if (x.exp === null && x.out !== null) {
+      const hit = [...text.matchAll(/Sugg?\s*ested\s*Learning/gi)].map((m) => owner[m.index].x).find((v) => v > x.out + 50);
+      if (hit !== undefined) x.exp = hit;
+    }
+    /* "Suggested" alone on the header row, "Key Inquiry Question(s)" on the next rows */
+    if (x.kiq === null && x.exp !== null) {
+      const last = [...text.matchAll(/Sugg?\s*ested/gi)].pop();
+      if (last && owner[last.index].x > x.exp + 50) x.kiq = owner[last.index].x;
+    }
+    if (Object.values(x).some((v) => v === null)) continue;
+    /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
+    const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && /Question|Questio|Inquiry|n\(s\)/i.test(it.s));
+    const bottom = below.length ? Math.min(...below.map((it) => it.y)) : row.y - 26;
+    return { x, bottom };
+  }
+  return null;
 };
 
 const columnOf = (x, b) => {
   /* Text can start a few points to the left of its column heading */
   const room = 10;
   if (x < b.sub - room) return 'strand';
-  if (x < b.out - room) return 'sub';
+  /* the "a)" marks of the outcomes stick out further to the left */
+  if (x < b.out - 18) return 'sub';
   if (x < b.exp - room) return 'out';
   if (x < b.kiq - room) return 'exp';
   return 'kiq';
@@ -182,6 +200,9 @@ const emptyAcc = () => ({ sub: [], out: [], exp: [], kiq: [], tail: [], header: 
 
 const readTables = (pages) => {
   const acc = {};
+  const order = [];
+  const strandTitles = {};
+  const strandCol = {};
   let current = null;
   let inHeader = false;
   let mode = 'none';
@@ -192,6 +213,11 @@ const readTables = (pages) => {
     const isFooter = (t) => t.y < 90 && /^\s*(\d{1,3}|[ivxl]+)\s*$/i.test(t.s);
     const items = page.filter((t) => t.y >= 30 && !isFooter(t) && String(t.s).trim() !== '');
     const header = findHeader(items);
+    /* "STRAND 1.0: NAME" above the first table of a strand */
+    for (const ln of lineify(items)) {
+      const t = ln.text.match(/^STRAND\s+(\d{1,2})\.0\s*[:.\-]?\s*(.+)$/i);
+      if (t && ln.x <= 90 && !/\.{4,}/.test(ln.text) && !strandTitles[`${t[1]}.0`]) strandTitles[`${t[1]}.0`] = cleanItem(t[2]);
+    }
     let tableItems = items;
     let tailLines = [];
 
@@ -208,7 +234,8 @@ const readTables = (pages) => {
       tableItems = [];
     } else {
       const lines = lineify(tableItems);
-      const core = lines.find((l) => l.x <= 90 && TAIL.competencies.test(l.text));
+      /* The notes under a table begin at the first of their headings (some sub-strands skip "Core competencies") */
+      const core = lines.find((l) => l.x <= 90 && Object.values(TAIL).some((re) => re.test(l.text)));
       if (core) {
         tailLines = lines.filter((l) => l.y <= core.y + 1);
         tableItems = tableItems.filter((t) => t.y > core.y + 2);
@@ -219,23 +246,50 @@ const readTables = (pages) => {
     /* Table part: sort the pieces into their columns */
     if (bounds && tableItems.length) {
       const cols = { strand: [], sub: [], out: [], exp: [], kiq: [] };
-      tableItems.forEach((t) => cols[columnOf(t.x, bounds)].push(t));
+      /* A sub-strand number can start well left of its heading ("5.3" at 200, "Sub Strand" at 218) */
+      const idx = tableItems.filter((t) => /^\d{1,2}\.[1-9]\d?\s*$/.test(t.s) && t.x < bounds.sub - 10 && t.x > bounds.sub - 60 && t.x > 110).map((t) => t.x);
+      const pageBounds = idx.length ? { ...bounds, sub: Math.min(...idx) } : { ...bounds };
+      /* Some tables sit a little left of their headings; the first row's opening words show where the columns really start */
+      const top = [...tableItems].sort((a, b) => b.y - a.y);
+      const near = (re, want) => (top.find((t) => re.test(String(t.s).trim()) && Math.abs(t.x - want) <= 40) || {}).x;
+      const outX = near(/^By the end of/i, pageBounds.out);
+      const expX = near(/^The learner( is guided)?/i, pageBounds.exp);
+      if (outX !== undefined && outX < pageBounds.out) pageBounds.out = outX;
+      if (expX !== undefined && expX < pageBounds.exp) pageBounds.exp = expX;
+      tableItems.forEach((t) => cols[columnOf(t.x, pageBounds)].push(t));
 
       for (const ln of lineify(cols.sub)) {
-        const id = ln.text.match(/^(\d{1,2})\.(\d{1,2})\.?(?:\s|$)/);
+        const id = ln.text.match(/^(\d{1,2})\.(\d{1,2})\.?(?=\s|$|[A-Z])/);
         if (id && !ln.bullet) {
           current = `${id[1]}.${id[2]}`;
-          if (!acc[current]) acc[current] = emptyAcc();
+          if (!acc[current]) { acc[current] = emptyAcc(); order.push(current); }
           inHeader = true;
         }
         if (!current) continue;
+        const count = ln.text.match(/\(\s*(\d+)\s*lessons?\s*\)/i);
+        const rest = tidy(ln.text.replace(/\(\s*\d+\s*lessons?\s*\)/i, ''));
+        if (count && acc[current].lessons === undefined) acc[current].lessons = Number(count[1]);
         if (inHeader) {
-          if (/\(\s*\d+\s*lessons?\s*\)/i.test(ln.text)) inHeader = false;
-          else if (!acc[current].headerDone) acc[current].header.push(ln.text);
-          if (!inHeader) acc[current].headerDone = true;
+          /* A bulleted line under the name is content (scope), not part of the name */
+          if (ln.bullet) {
+            inHeader = false;
+            acc[current].headerDone = true;
+          } else {
+            if (rest && !acc[current].headerDone) acc[current].header.push(rest);
+            if (count) { inHeader = false; acc[current].headerDone = true; }
+            continue;
+          }
+        } else if (count) {
+          if (rest) acc[current].sub.push({ ...ln, text: rest });
           continue;
         }
         acc[current].sub.push(ln);
+      }
+      /* Strand names are also written in the first table row of each strand (wrapped, left column) */
+      if (current) {
+        const major = current.split('.')[0];
+        if (!strandCol[major]) strandCol[major] = { lines: [], sub: current };
+        if (strandCol[major].sub === current) lineify(cols.strand).forEach((l) => strandCol[major].lines.push(l.text));
       }
       if (current) {
         lineify(cols.out).forEach((l) => acc[current].out.push(l));
@@ -252,7 +306,11 @@ const readTables = (pages) => {
       }
     }
   });
-  return acc;
+  for (const [major, v] of Object.entries(strandCol)) {
+    const name = tidy(v.lines.join(' ').replace(/^\s*\d{1,2}\.0\s*/, ''));
+    if (name && !strandTitles[`${major}.0`]) strandTitles[`${major}.0`] = name;
+  }
+  return { acc, order, strandTitles };
 };
 
 /* ── Turning lines into list items ────────────────────────── */
@@ -324,45 +382,86 @@ const tailOf = (lines) => {
  * problems = something is missing (blocks upload); notes = worth a look.
  * options: { source, lessonsPerWeek, lessonMinutes, learningArea, grade }
  */
+const titleCase = (v) => String(v || '').toLowerCase()
+  .replace(/(^|[\s(\-/])([a-z])/g, (m, pre, c) => pre + c.toUpperCase())
+  .replace(/\b(And|Of|In|The|To|For|On|At|By|A|An)\b(?!$)/g, (w, x, i) => (i === 0 ? w : w.toLowerCase()));
+
 const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, learningArea = '', grade } = {}) => {
   const problems = [];
   const notes = [];
+  /* The summary page is only used for strand names and the total: layouts differ too much
+     (some have no numbers, some no lesson counts). The tables themselves carry the structure. */
   const skeleton = readSkeleton(pages);
-  if (!skeleton.strands.length) problems.push('Could not read the summary table of strands.');
-  const tables = readTables(pages);
+  const { acc, order, strandTitles } = readTables(pages);
+  if (!order.length) problems.push('No sub-strand tables were found in this PDF.');
 
-  const strands = skeleton.strands.map((st) => ({
-    id: st.id,
-    name: cleanItem(st.name),
-    rubric_indicators: [],
-    sub_strands: st.sub_strands.map((sub) => {
-      const a = tables[sub.id];
-      if (!a) { problems.push(`Sub-strand ${sub.id} ${sub.name}: its table was not found.`); }
-      const tail = a ? tailOf(a.tail) : { core_competencies: [], pcis: [], values: [], links: [] };
-      /* The name above the table is the one teachers see; the summary page can have typos */
-      const tableName = a ? cleanItem(a.header.join(' ').replace(/^\d{1,2}\.\d{1,2}\.?\s*/, '')) : '';
-      const norm = (v) => String(v).toLowerCase().replace(/[^a-z0-9]+/g, '');
-      let name = cleanItem(sub.name);
-      if (tableName && norm(tableName) !== norm(name)) {
-        notes.push(`Sub-strand ${sub.id}: the summary page says "${sub.name}" but the table says "${tableName}". The table name was used.`);
-        name = tableName;
-      }
-      const out = {
-        id: sub.id,
-        name,
-        lessons: sub.lessons,
-        scope: a ? byBullet(a.sub) : [],
-        outcomes: a ? outcomesOf(a.out) : [],
-        experiences: a ? experiencesOf(a.exp) : [],
-        key_inquiry_questions: a ? questionsOf(a.kiq) : [],
-        ...tail,
-      };
-      for (const f of ['scope', 'outcomes', 'experiences', 'key_inquiry_questions', 'core_competencies']) {
-        if (a && !out[f].length) problems.push(`Sub-strand ${sub.id} ${sub.name}: nothing found for ${f}.`);
-      }
-      return out;
-    }),
-  }));
+  const norm = (v) => String(v).toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const summarySub = {};
+  const summaryStrand = {};
+  for (const st of skeleton.strands || []) {
+    summaryStrand[st.id] = st.name;
+    for (const sub of st.sub_strands) summarySub[sub.id] = sub;
+  }
+
+  /* Some subjects (e.g. CRE) have no content column; that is only a problem when other sub-strands have one */
+  const withScope = order.filter((id) => byBullet(acc[id].sub).length > 0).length;
+  const scopeExpected = order.length > 0 && withScope / order.length >= 0.8;
+  if (!scopeExpected && order.length) {
+    notes.push(withScope ? `Only ${withScope} of ${order.length} sub-strands list content (scope); that is how this design is written.` : 'This design has no content (scope) column, so scope is empty for every sub-strand.');
+  }
+
+  for (const id of Object.keys(summarySub)) {
+    if (!acc[id]) problems.push(`Sub-strand ${id} ${summarySub[id].name || ''} is on the summary page but its table was not found.`.replace('  ', ' '));
+  }
+
+  const byStrand = new Map();
+  for (const id of order) {
+    const major = id.split('.')[0];
+    if (!byStrand.has(major)) byStrand.set(major, []);
+    byStrand.get(major).push(id);
+  }
+
+  const strands = [...byStrand.entries()].sort((x, y) => Number(x[0]) - Number(y[0])).map(([major, ids]) => {
+    const strandId = `${major}.0`;
+    const strandName = titleCase(strandTitles[strandId] || '') || cleanItem(summaryStrand[strandId] || '');
+    if (!strandName) problems.push(`Strand ${strandId}: its name was not found.`);
+    return {
+      id: strandId,
+      name: strandName,
+      rubric_indicators: [],
+      sub_strands: ids.sort((x, y) => Number(x.split('.')[1]) - Number(y.split('.')[1])).map((id) => {
+        const a = acc[id];
+        const tail = tailOf(a.tail);
+        const name = cleanItem(a.header.join(' ').replace(/^\d{1,2}\.\d{1,2}\.?\s*/, ''));
+        const fromSummary = summarySub[id];
+        if (fromSummary && fromSummary.name && norm(fromSummary.name) !== norm(name)) {
+          notes.push(`Sub-strand ${id}: the summary page says "${fromSummary.name}" but the table says "${name}". The table name was used.`);
+        }
+        let lessons = a.lessons;
+        if (!Number.isInteger(lessons) && fromSummary && Number.isInteger(fromSummary.lessons)) lessons = fromSummary.lessons;
+        if (Number.isInteger(a.lessons) && fromSummary && Number.isInteger(fromSummary.lessons) && a.lessons !== fromSummary.lessons) {
+          notes.push(`Sub-strand ${id}: the table says ${a.lessons} lessons but the summary page says ${fromSummary.lessons}. The table was used.`);
+        }
+        const out = {
+          id,
+          name,
+          lessons,
+          scope: byBullet(a.sub),
+          outcomes: outcomesOf(a.out),
+          experiences: experiencesOf(a.exp),
+          key_inquiry_questions: questionsOf(a.kiq),
+          ...tail,
+        };
+        if (!name) problems.push(`Sub-strand ${id}: its name was not found.`);
+        if (!Number.isInteger(lessons)) problems.push(`Sub-strand ${id} ${name}: the number of lessons was not found.`);
+        for (const f of ['scope', 'outcomes', 'experiences', 'key_inquiry_questions', 'core_competencies']) {
+          if (f === 'scope' && !scopeExpected) continue;
+          if (!out[f].length) (['core_competencies', 'scope'].includes(f) ? notes : problems).push(`Sub-strand ${id} ${name}: nothing found for ${f}.`);
+        }
+        return out;
+      }),
+    };
+  });
 
   const total = strands.reduce((n, s) => n + s.sub_strands.reduce((m, x) => m + (Number.isInteger(x.lessons) ? x.lessons : 0), 0), 0);
   if (skeleton.total && skeleton.total !== total) problems.push(`Lessons add up to ${total}, but the design says ${skeleton.total}.`);
@@ -406,4 +505,4 @@ const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinute
   return readDesign(pages, { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade });
 };
 
-module.exports = { extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };
+module.exports = { findHeader, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };

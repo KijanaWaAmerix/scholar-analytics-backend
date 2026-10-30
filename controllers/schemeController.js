@@ -74,9 +74,12 @@ const getDesigns = async (req, res, next) => {
     /* Designs shipped in the code plus every design uploaded to storage */
     const keys = new Set(Object.keys(designs));
     const store = getContentStore();
+    let storageProblem = '';
     if (store) {
       try { (await store.listDesignKeys()).forEach((k) => keys.add(k)); }
-      catch (err) { console.error('Design list failed:', err.message); }
+      catch (err) { console.error('Design list failed:', err.message); storageProblem = err.message; }
+    } else {
+      storageProblem = 'Storage is not set up on the server (the STORAGE_* settings are missing).';
     }
 
     const list = [];
@@ -102,7 +105,7 @@ const getDesigns = async (req, res, next) => {
       });
     }
 
-    res.status(200).json({ success: true, count: list.length, designs: list });
+    res.status(200).json({ success: true, count: list.length, designs: list, storageProblem });
   } catch (error) {
     next(error);
   }

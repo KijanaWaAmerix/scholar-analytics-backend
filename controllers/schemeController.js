@@ -69,25 +69,38 @@ const isRealDate = (value) => {
             scheme starts and ends
    @access  Admin, Teacher
 ══════════════════════════════════════════════════════════ */
-const getDesigns = (req, res, next) => {
+const getDesigns = async (req, res, next) => {
   try {
-    const list = Object.entries(designs).map(([key, design]) => ({
-      key,
-      grade           : design.grade,
-      learningArea    : design.learning_area,
-      lessonsPerWeek  : design.lessons_per_week,
-      lessonMinutes   : design.lesson_minutes,
-      source          : design.source,
-      subStrands      : design.strands.flatMap((strand) =>
-        strand.sub_strands.map((sub) => ({
-          id         : sub.id,
-          name       : sub.name,
-          strandId   : strand.id,
-          strand     : strand.name,
-          lessons    : sub.lessons,
-        }))
-      ),
-    }));
+    /* Designs shipped in the code plus every design uploaded to storage */
+    const keys = new Set(Object.keys(designs));
+    const store = getContentStore();
+    if (store) {
+      try { (await store.listDesignKeys()).forEach((k) => keys.add(k)); }
+      catch (err) { console.error('Design list failed:', err.message); }
+    }
+
+    const list = [];
+    for (const key of [...keys].sort()) {
+      const design = await loadDesign(key);
+      if (!design || !Array.isArray(design.strands)) continue;
+      list.push({
+        key,
+        grade           : design.grade,
+        learningArea    : design.learning_area,
+        lessonsPerWeek  : design.lessons_per_week,
+        lessonMinutes   : design.lesson_minutes,
+        source          : design.source,
+        subStrands      : design.strands.flatMap((strand) =>
+          strand.sub_strands.map((sub) => ({
+            id         : sub.id,
+            name       : sub.name,
+            strandId   : strand.id,
+            strand     : strand.name,
+            lessons    : sub.lessons,
+          }))
+        ),
+      });
+    }
 
     res.status(200).json({ success: true, count: list.length, designs: list });
   } catch (error) {

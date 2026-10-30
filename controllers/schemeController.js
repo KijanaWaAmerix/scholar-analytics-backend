@@ -13,7 +13,7 @@ const { getAi }          = require('../utils/ai');
 const { getGemini }      = require('../utils/gemini');
 const { getBackupAi }    = require('../utils/backupAi');
 const { createContentStore, DESIGN_KEY, SUB_ID } = require('../utils/contentStore');
-const { createLessonEngine } = require('../utils/lessonContent');
+const { createLessonEngine, buildFallback } = require('../utils/lessonContent');
 const { runChecks }          = require('../utils/setupCheck');
 
 /* Content store and engine are built on first use, so a missing setting
@@ -168,7 +168,11 @@ const previewScheme = async (req, res, next) => {
       success : true,
       design  : { key: designKey, grade: design.grade, learningArea: design.learning_area },
       summary : result.summary,
-      rows    : result.rows,
+      /* Each lesson row carries what the curriculum design already says for it (outcomes, experiences,
+         inquiry questions, resources, assessment), so the scheme is complete without writing lessons. */
+      rows    : result.rows.map((r) => (r.type === 'LESSON'
+        ? { ...r, fromDesign: buildFallback({ design, subStrandId: r.subStrandId, lessonNo: r.lessonInSubStrand }) }
+        : r)),
     });
 
   } catch (error) {

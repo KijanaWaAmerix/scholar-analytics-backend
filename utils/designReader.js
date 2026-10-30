@@ -383,6 +383,125 @@ const tailOf = (lines) => {
   };
 };
 
+/* ── The appendix table: assessment methods, learning resources and activities for each sub-strand ── */
+
+const appendixHeader = (items) => {
+  const rows = [];
+  for (const it of [...items].sort((a, b) => b.y - a.y || a.x - b.x)) {
+    const row = rows.find((r) => Math.abs(r.y - it.y) <= 3);
+    if (row) row.items.push(it); else rows.push({ y: it.y, items: [it] });
+  }
+  /* The header row is the one that names the non-formal activities column */
+  const row = rows.find((r) => r.items.length >= 4 && /Assess|Resourc|Sugg/i.test(r.items.map((i) => i.s).join('')) && /Strand|Sub/i.test(r.items.map((i) => i.s).join('')));
+  if (!row) return null;
+  /* Columns start where the gaps between header pieces are wide */
+  const xs = row.items.filter((i) => String(i.s).trim()).sort((a, b) => a.x - b.x);
+  const starts = [];
+  let edge = -Infinity;
+  for (const it of xs) {
+    if (it.x - edge > 22) starts.push(it.x);
+    edge = Math.max(edge, it.x + String(it.s).trimEnd().length * 5);
+  }
+  if (starts.length < 4) return null;
+  const cols = starts.slice(-3);
+  const area = items.filter((i) => i.y <= row.y + 1 && i.y > row.y - 40);
+  const label = (from, to) => {
+    const text = area.filter((i) => i.x >= from - 6 && i.x < to - 6).map((i) => i.s).join(' ');
+    if (/Resourc/i.test(text)) return 'resources';
+    if (/Assess/i.test(text)) return 'assessment';
+    if (/Non|Activit/i.test(text)) return 'activities';
+    return null;
+  };
+  const x = {};
+  cols.forEach((from, i) => { x[label(from, cols[i + 1] || Infinity)] = from; });
+  if (!x.assessment || !x.resources || !x.activities) return null;
+  x.sub = starts[starts.length - 4];
+  const low = area.filter((i) => i.y > row.y - 30 && /Methods|Resources|Activities|methods|activities|Formal|Learning/.test(i.s));
+  return { x, bottom: Math.min(row.y, ...low.map((i) => i.y)) - 4 };
+};
+
+/* Lines of one cell become separate entries: a bullet or a capital letter after a finished line starts a new one */
+const cellEntries = (lines) => {
+  const out = [];
+  for (const ln of lines) {
+    const t = tidy(ln.text.replace(/^[●◦•\u2022\uf0b7\uf0a7\s]+/, ''));
+    if (!t) continue;
+    const prev = out[out.length - 1];
+    const continues = prev && !ln.bullet
+      && (/^[a-z(@]/.test(t) || /[\/,&@-]$/.test(prev) || /\b(and|of|by|on|in|for|to|the|a|an|with|from)$/i.test(prev) || /^(Question\(s\)|ac\.ke|[a-z]{1,3}\.[a-z]{2,3})/i.test(t));
+    if (continues) out[out.length - 1] = `${prev} ${t}`.replace(/\s*([\/-])\s*/g, '$1 ').replace(/\s+/g, ' ').trim();
+    else out.push(t);
+  }
+  const split = out.flatMap((v) => v.split(/\s+(?=[b-z]\)\s)/).map((x) => x.replace(/^[a-z]\)\s*/, '')));
+  return [...new Set(split.map((v) => v.replace(/\s*([\/-])\s+/g, '$1').replace(/[;,.]+$/, '').trim()).filter((v) => v.length > 2 && !/^(Page\b|Property of|Not for Sale)/i.test(v)))];
+};
+
+const readAppendix = (pages) => {
+  const found = {};
+  let on = false;
+  let bounds = null;
+  let current = null;
+  let unnumbered = 0;
+  for (const page of pages) {
+    const items = page.filter((t) => t.y >= 60 && String(t.s).trim() !== '');
+    const lines = lineify(items);
+    if (lines.some((l) => l.x <= 90 && /^APPENDIX\s*2?\s*:?\s*(2\b)?.*(ASSESSMENT|LEARNING RESOURCES)/i.test(l.text) && !/\.{4,}/.test(l.text))) on = true;
+    if (!on) continue;
+    const header = appendixHeader(items);
+    if (header) bounds = header;
+    if (!bounds) continue;
+    const top = header ? header.bottom : Infinity;
+    const b = bounds.x;
+    const cols = { sub: [], assessment: [], resources: [], activities: [] };
+    items.filter((t) => t.y < top).forEach((t) => {
+      /* columns by position: the three content columns can come in any order */
+      const starts = [['assessment', b.assessment], ['resources', b.resources], ['activities', b.activities]].sort((p, q) => p[1] - q[1]);
+      let c = t.x < starts[0][1] - 12 ? 'sub' : null;
+      starts.forEach(([name, from], i) => { if (t.x >= from - 12 && t.x < (starts[i + 1] ? starts[i + 1][1] - 12 : Infinity)) c = name; });
+      if (t.x < b.sub - 12) c = null;
+      if (c) cols[c].push(t);
+    });
+    /* rows start where a sub-strand number appears; the strand column is ignored */
+    const subLines = lineify(cols.sub);
+    const marks = subLines.map((l) => ({ y: l.y, m: l.text.match(/^(\d{1,2})\s*\.\s*(\d{1,2})\b\s*(.*)$/), text: l.text }))
+      .filter((v) => v.m).map((v) => ({ y: v.y, id: `${v.m[1]}.${v.m[2]}` }));
+    /* Some appendices give no numbers: every sub-strand name in the column starts a row (wrapped names are joined) */
+    if (!marks.length && subLines.length) {
+      let last = null;
+      for (const l of subLines) {
+        if (last === null || last - l.y > 17) marks.push({ y: l.y, id: `n${++unnumbered}` });
+        last = l.y;
+      }
+    }
+    const rowOf = (y) => {
+      const hit = marks.filter((v) => v.y >= y - 1).pop();
+      return hit ? hit.id : current;
+    };
+    /* the sub-strand's name, as written in the appendix (the numbers there are not always right) */
+    for (const ln of subLines) {
+      const id = rowOf(ln.y);
+      if (!id) continue;
+      if (!found[id]) found[id] = { assessment: [], resources: [], activities: [], name: [] };
+      found[id].name.push(ln.text.replace(/^\d{1,2}\s*\.\s*\d{1,2}\s*\.?\s*/, '').replace(/\d+\s*lessons?/i, ''));
+    }
+    for (const k of ['assessment', 'resources', 'activities']) {
+      for (const ln of lineify(cols[k])) {
+        const id = rowOf(ln.y);
+        if (!id) continue;
+        current = id;
+        if (!found[id]) found[id] = { assessment: [], resources: [], activities: [], name: [] };
+        found[id][k].push(ln);
+      }
+    }
+    if (marks.length) current = marks[marks.length - 1].id;
+  }
+  const out = {};
+  for (const [id, v] of Object.entries(found)) {
+    out[id] = { name: tidy(v.name.join(' ')), assessment: cellEntries(v.assessment), resources: cellEntries(v.resources), activities: cellEntries(v.activities) };
+  }
+  return out;
+};
+
 /* ── Putting it together ──────────────────────────────────── */
 
 /**
@@ -401,6 +520,49 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
      (some have no numbers, some no lesson counts). The tables themselves carry the structure. */
   const skeleton = readSkeleton(pages);
   const { acc, order, strandTitles } = readTables(pages);
+  const appendix = readAppendix(pages);
+  /* Match an appendix row to a sub-strand by name first (its numbers can be wrong), then by number */
+  const wordsOf = (v) => String(v).toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter((w) => w.length > 3);
+  const overlap = (name, rowName) => {
+    const mine = wordsOf(name);
+    const theirs = wordsOf(rowName);
+    if (!mine.length) return 0;
+    return mine.filter((w) => theirs.some((t) => t === w || t.startsWith(w) || w.startsWith(t))).length / mine.length;
+  };
+  let assigned = null;
+  const assignAppendix = () => {
+    assigned = {};
+    const subs = order.map((id) => ({ id, name: cleanItem(acc[id].header.join(' ').replace(/^\d{1,2}\.\d{1,2}\.?\s*/, '')) }));
+    const rows = Object.entries(appendix);
+    const taken = new Set();
+    /* pass 1: a clear name match; pass 2: a partial match among the rows nobody else took */
+    for (const [min, strict] of [[0.5, true], [0.01, false]]) {
+      for (const sub of subs) {
+        if (assigned[sub.id]) continue;
+        let best = null;
+        let bestScore = 0;
+        for (const [rid, row] of rows) {
+          if (!strict && taken.has(rid)) continue;
+          const score = overlap(sub.name, row.name);
+          if (score > bestScore) { best = rid; bestScore = score; }
+        }
+        if (best && bestScore >= min) { assigned[sub.id] = best; taken.add(best); }
+        else if (!strict) continue;
+      }
+    }
+    /* rows written for a whole strand (numbered x.0) apply to every sub-strand of it that has none */
+    for (const sub of subs) {
+      const whole = appendix[`${sub.id.split('.')[0]}.0`];
+      if (!assigned[sub.id] && whole) assigned[sub.id] = `${sub.id.split('.')[0]}.0`;
+    }
+  };
+  const appendixFor = (id) => {
+    if (!assigned) assignAppendix();
+    const row = appendix[assigned[id]];
+    return row ? { assessment: row.assessment, resources: row.resources, activities: row.activities } : null;
+  };
+
+  /* The tables themselves carry the structure; this check is for the notes below */
   if (!order.length) problems.push('No sub-strand tables were found in this PDF.');
 
   const norm = (v) => String(v).toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -459,6 +621,7 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
           experiences: experiencesOf(a.exp),
           key_inquiry_questions: questionsOf(a.kiq),
           ...tail,
+          ...(appendixFor(id) || {}),
         };
         if (!name) problems.push(`Sub-strand ${id}: its name was not found.`);
         if (!Number.isInteger(lessons)) problems.push(`Sub-strand ${id} ${name}: the number of lessons was not found.`);
@@ -522,4 +685,4 @@ const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinute
   return readDesign(pages, opts);
 };
 
-module.exports = { findHeader, coverFrom, columnOf, tailOf, TAIL, STOP, byBullet, outcomesOf, experiencesOf, questionsOf, titleCase, tidy, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };
+module.exports = { appendixHeader, readAppendix, findHeader, coverFrom, columnOf, tailOf, TAIL, STOP, byBullet, outcomesOf, experiencesOf, questionsOf, titleCase, tidy, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };

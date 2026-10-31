@@ -16,7 +16,7 @@ const contentLimiter = rateLimit({
   message        : { success: false, message: 'Too many requests. Please try again in a few minutes.' },
 });
 
-const { getDesigns, previewScheme, getContent, resetContent, getStatus } = require('../controllers/schemeController');
+const { getTopics, getDesigns, previewScheme, getContent, resetContent, getStatus } = require('../controllers/schemeController');
 
 const { protect }   = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
@@ -30,6 +30,7 @@ router.get('/designs', authorize('admin', 'teacher', 'superadmin'), getDesigns);
 router.post('/preview', authorize('admin', 'teacher', 'superadmin'), previewScheme);
 
 /* POST /api/schemes/content  — lesson content for up to 5 lessons */
+router.post('/topics', authorize('admin', 'teacher', 'superadmin'), getTopics);
 router.post('/content', contentLimiter, authorize('admin', 'teacher', 'superadmin'), getContent);
 
 /* DELETE /api/schemes/content — clear saved lessons of a sub-strand */

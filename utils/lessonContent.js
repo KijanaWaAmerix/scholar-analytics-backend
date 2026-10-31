@@ -463,7 +463,55 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     return { lang, labels: LABELS[lang], lessons, ai: aiState };
   };
 
-  return { getLessons };
+  /* What each lesson of a sub-strand is about, so a teacher can choose by topic.
+     No AI is called: the saved lesson outline first, then the headings of the stored notes,
+     then the design's own list of content. */
+  const getTopics = async ({ design, designKey, subStrandId }) => {
+    const found = findSubStrand(design, subStrandId);
+    if (!found) throw Object.assign(new Error('Unknown sub-strand.'), { statusCode: 400 });
+    const { sub } = found;
+    const total = sub.lessons || 1;
+    const lang = languageFor(design);
+    const tidy = (t) => { const x = cleanText(t, 90); return x.length > 70 ? `${x.slice(0, 67)}…` : x; };
+
+    if (store) {
+      try {
+        const outline = await store.getOutline(designKey, sub.id, lang);
+        if (outline?.lessons?.length === total && outline.lessons.every((l) => l.focus)) {
+          return { source: 'outline', topics: outline.lessons.map((l) => tidy(l.focus)) };
+        }
+      } catch { /* try the next source */ }
+      try {
+        const text = (await store.getNotes(designKey, sub.id)) || '';
+        const heads = [];
+        const seen = new Set();
+        for (const block of text.split(/\n{2,}/)) {
+          const lines = block.split('\n').map((l) => l.trim()).filter(Boolean);
+          const h = lines[0];
+          /* a real topic heading: words only, no formulas, not an example or a step */
+          if (lines.length >= 2 && h && /^[A-Z][A-Za-z'()\- ]{3,60}$/.test(h) && h.split(' ').length <= 8
+              && (h.split(' ').length >= 2 || h.length >= 8)
+              && !/^(example|use|observation|solution|note|activity|question|exercise|procedure|requirements?|materials?|it|this|these|the following|step|diagram|answer|explanation)\b/i.test(h)
+              && !seen.has(h.toLowerCase())) { seen.add(h.toLowerCase()); heads.push(h); }
+        }
+        if (heads.length >= Math.min(3, total)) {
+          /* a topic taught over several lessons gets "part 1", "part 2" ... */
+          const named = Array.from({ length: total }, (_, i) => pickItems(heads, i + 1, total)[0]);
+          const count = {}; named.forEach((h) => { count[h] = (count[h] || 0) + 1; });
+          const idx = {};
+          const topics = named.map((h) => {
+            idx[h] = (idx[h] || 0) + 1;
+            return tidy(count[h] > 1 ? `${h} (part ${idx[h]} of ${count[h]})` : h);
+          });
+          return { source: 'notes', topics };
+        }
+      } catch { /* try the next source */ }
+    }
+    const scope = sub.scope || [];
+    return { source: 'design', topics: Array.from({ length: total }, (_, i) => tidy(pickItems(scope, i + 1, total)[0] || sub.name)) };
+  };
+
+  return { getLessons, getTopics };
 };
 
 module.exports = {

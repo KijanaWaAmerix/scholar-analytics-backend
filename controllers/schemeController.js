@@ -128,7 +128,7 @@ const previewScheme = async (req, res, next) => {
     const {
       designKey, startSubStrand, endSubStrand,
       termStart, termEnd, halfTermStart, halfTermEnd,
-      holidays, lessonsPerDay,
+      holidays, lessonsPerDay, startLesson, endLesson, skipSubStrands,
     } = req.body;
 
     const fail = (message) => res.status(400).json({ success: false, message });
@@ -145,6 +145,15 @@ const previewScheme = async (req, res, next) => {
     const dateFields = noHalfTerm ? { termStart, termEnd } : { termStart, termEnd, halfTermStart, halfTermEnd };
     for (const [name, value] of Object.entries(dateFields)) {
       if (!isRealDate(value)) return fail(`${name} must be a real date in YYYY-MM-DD format.`);
+    }
+
+    for (const [name, v] of [['startLesson', startLesson], ['endLesson', endLesson]]) {
+      if (v !== undefined && v !== null && v !== '' && !(Number.isInteger(Number(v)) && Number(v) >= 1 && Number(v) <= 200)) {
+        return fail(`${name} must be a whole lesson number, 1 or more.`);
+      }
+    }
+    if (skipSubStrands !== undefined && (!Array.isArray(skipSubStrands) || skipSubStrands.length > 100 || !skipSubStrands.every((x) => typeof x === 'string'))) {
+      return fail('skipSubStrands must be a list of sub-strand numbers such as "1.2".');
     }
 
     let holidayList = [];
@@ -170,6 +179,9 @@ const previewScheme = async (req, res, next) => {
     try {
       result = generateScheme({
         design, startSubStrand, endSubStrand,
+        startLesson: startLesson ? Number(startLesson) : undefined,
+        endLesson: endLesson ? Number(endLesson) : undefined,
+        skipSubStrands: skipSubStrands || [],
         termStart, termEnd, halfTermStart, halfTermEnd,
         holidays: holidayList,
         ...(perDay ? { lessonsPerDay: perDay } : {}),

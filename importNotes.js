@@ -7,7 +7,7 @@
 
    Each file is recognised by its name in data/notes-catalog/<grade>.json. The result for a subject
    is written to data/notes-extracted/<designKey>.json and, with --upload, to storage as
-   notes/<designKey>.json (next to designs/<designKey>.json). Every sub-strand is rated:
+   notes/<designKey>/<subId>/notes.json, where lesson plans, schemes and exams read them. Every sub-strand is rated:
      full = enough notes to build the lesson on,   thin = some notes, AI should expand,   none = AI writes from the design. */
 require('dotenv').config();
 const fs = require('fs');
@@ -76,6 +76,18 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
     Object.values(subs).forEach((v) => { counts[v.coverage]++; });
     console.log(`${subject.name}: ${used.length} file(s); full ${counts.full}, thin ${counts.thin}, none ${counts.none}`);
     for (const [id, v] of Object.entries(subs)) console.log(`    ${id} ${v.name}: ${v.words} words, ${v.coverage}`);
-    if (store) { await store.putJson(`notes/${subject.designKey}.json`, doc); console.log(`  Uploaded notes/${subject.designKey}.json`); }
+    if (store) {
+      /* The layout the app already reads: notes/<designKey>/<subId>/<file>.json holding { text }.
+         Lesson plans, schemes and exams all pick the notes up from there. */
+      let n = 0;
+      for (const [id, v] of Object.entries(subs)) {
+        if (!v.sections.length) continue;
+        const text = v.sections.map((sec) => [sec.heading, ...sec.text].filter(Boolean).join('\n')).join('\n\n');
+        await store.putJson(`notes/${subject.designKey}/${id}/notes.json`, { text, words: v.words, coverage: v.coverage, files: v.files });
+        n += 1;
+      }
+      await store.putJson(`notes/${subject.designKey}/coverage.json`, { built_at: doc.built_at, files: used, coverage: Object.fromEntries(Object.entries(subs).map(([id, v]) => [id, { name: v.name, words: v.words, coverage: v.coverage }])) });
+      console.log(`  Uploaded notes for ${n} sub-strands to notes/${subject.designKey}/`);
+    }
   }
 })().catch((e) => { console.error(e.message); process.exit(1); });

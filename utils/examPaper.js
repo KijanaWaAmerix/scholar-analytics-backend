@@ -97,6 +97,7 @@ const paperPrompt = ({ design, sub, lang, notes, mcq, structured }) => [
   'Test only the scope and outcomes below. Questions must be scientifically and factually accurate, clear, and suitable for the grade. Do not repeat a question.',
   lang === 'sw' ? 'Write everything in Kiswahili sanifu.' : 'Write in clear English.',
   NOTES_RULES,
+  notes ? 'The notes are the teacher\'s own and are the only source of facts. Every question must test something stated in the notes, and every correct answer and marking point must be taken from the notes in their own wording. Do not add facts, examples, numbers or terms that the notes do not contain, and do not change what the notes say. The design only tells you which topic and outcomes to cover.' : '',
   `<design>${JSON.stringify({
     sub_strand: sub.name, scope: sub.scope, specific_learning_outcomes: sub.outcomes,
     learning_experiences: sub.experiences,

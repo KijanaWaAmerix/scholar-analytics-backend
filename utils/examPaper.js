@@ -16,6 +16,7 @@
 
 const { cleanText, findSubStrand, languageFor } = require('./lessonContent');
 const { DEFAULT_SCALE } = require('./gradingEngine');
+const { fromNotes } = require('./notesQuestions');
 
 const LIMITS = { maxSubStrands: 8, maxMcq: 60, maxStructured: 20, maxQuestions: 70 };
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -149,7 +150,7 @@ const cleanStructured = (raw) => {
 };
 
 /* ── The writer ────────────────────────────────────────────── */
-const MODES = ['auto', 'gemini', 'saved'];
+const MODES = ['auto', 'gemini', 'saved', 'notes'];
 
 /* n random items from a list */
 const sample = (list, n, random) => {
@@ -165,6 +166,7 @@ const sample = (list, n, random) => {
    mode: 'auto'   Gemini first; saved questions fill in what is missing (or everything if Gemini is down)
          'gemini' Gemini only
          'saved'  only questions already saved in the bank (no Gemini)
+         'notes'  questions made by plain code from the stored notes (no AI at all)
    bank: { get(designKey, subId) -> { mcq:[], structured:[] }, add(designKey, subId, { mcq, structured }) }
 */
 const createPaperWriter = ({ ai, notes = async () => '', bank = null, random = Math.random } = {}) => {
@@ -213,6 +215,13 @@ const createPaperWriter = ({ ai, notes = async () => '', bank = null, random = M
         }
       }
     };
+
+    if (mode === 'notes') {
+      const text = (await notes(designKey, sub.id)) || '';
+      if (!text) throw Object.assign(new Error('There are no notes stored for this sub-strand yet.'), { statusCode: 404 });
+      take(fromNotes(text, { mcq, structured, random }), 'notes');
+      return { mcq: goodMcq, structured: goodStr, aiError: null };
+    }
 
     let aiError = null;
     if (mode !== 'saved') {

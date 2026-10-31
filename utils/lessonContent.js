@@ -330,6 +330,62 @@ const lessonsPrompt = ({ design, sub, lang, notes, outline, numbers }) => [
   notes ? `<reference_notes>${notes}</reference_notes>` : '',
 ].filter(Boolean).join('\n');
 
+
+/* ── Finding where a teacher's own topic sits in the stored notes ── */
+const STOP = new Set('the and for with that this from into are was were its our your their how what why when where who which about lesson lessons topic teach teaching learn learners learner will can use using have has not but also than then them they these those'.split(' '));
+const stem = (w) => w.replace(/(ing|ed|es|s)$/i, '');
+const tokens = (text) => String(text || '').toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}=\/]{2,}/gu)?.filter((w) => !STOP.has(w)).map(stem) || [];
+
+const notesBlocks = (text) => String(text || '').split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
+
+/* The parts of the notes that match the topic, in their original order */
+const matchNotes = (notesText, topic, maxChars = 4500) => {
+  const want = [...new Set(tokens(topic))];
+  const blocks = notesBlocks(notesText);
+  if (!want.length || !blocks.length) return { text: '', blocks: 0 };
+  const bt = blocks.map((b) => new Set(tokens(b)));
+  const idf = Object.fromEntries(want.map((w) => [w, Math.log(1 + blocks.length / (1 + bt.filter((t) => t.has(w)).length))]));
+  const scored = blocks.map((b, i) => {
+    const head = new Set(tokens(b.split('\n')[0]));
+    const score = want.reduce((n, w) => n + (bt[i].has(w) ? idf[w] : 0) + (head.has(w) ? idf[w] : 0), 0);
+    return { i, score };
+  });
+  const top = Math.max(...scored.map((x) => x.score));
+  if (top <= 0) return { text: '', blocks: 0 };
+  const chosen = scored.filter((x) => x.score >= top * 0.45).sort((a, b) => b.score - a.score);
+  const picked = [];
+  let size = 0;
+  for (const c of chosen) {
+    if (size + blocks[c.i].length > maxChars && picked.length) continue;
+    picked.push(c.i); size += blocks[c.i].length;
+    if (picked.length >= 8) break;
+  }
+  picked.sort((a, b) => a - b);
+  return { text: picked.map((i) => blocks[i]).join('\n\n'), blocks: picked.length };
+};
+
+const topicPrompt = ({ design, sub, lang, notes, topic }) => [
+  `You are a Kenyan CBC teacher writing ONE lesson plan for ${design.grade} ${design.learning_area}, sub-strand "${sub.name}". The lesson is ${design.lesson_minutes} minutes: 5 minutes introduction, ${design.lesson_minutes - 10} minutes development, 5 minutes conclusion.`,
+  'The teacher has said what this lesson covers (between <teacher_topic> tags). Plan exactly that, nothing more. Give it lessonNo 1.',
+  'Rules:',
+  '- outcomes: 2 to 4 items, each completing "By the end of the lesson, the learner should be able to:" (start with a verb).',
+  '- experiences: 3 to 5 learner activities, each completing "In groups, learners are guided to:" (start with a verb).',
+  '- kiqs: 1 or 2 key inquiry questions.',
+  '- resources: realistic items available in a Kenyan school.',
+  '- assessment: 1 or 2 methods such as oral questions, written test, observation.',
+  '- organisation: one sentence on how the class is arranged.',
+  '- introduction: 1 or 2 short steps.',
+  '- development: exactly 3 parts, each with a title and 2 to 4 steps.',
+  '- extended: 1 or 2 activities for fast learners or homework.',
+  '- conclusion: 1 or 2 short steps.',
+  notes ? 'The reference notes are the teacher\'s own notes for this topic. Take the facts, definitions, examples and worked steps from them and do not contradict them.' : 'No notes matched this topic, so use the design and your own accurate knowledge.',
+  langRule(lang),
+  NOTES_RULES,
+  `<design>${designBlock(design, sub)}</design>`,
+  `<teacher_topic>${String(topic).slice(0, 1500)}</teacher_topic>`,
+  notes ? `<reference_notes>${notes}</reference_notes>` : '',
+].filter(Boolean).join('\n');
+
 /* ── The engine ────────────────────────────────────────────── */
 const defaultSleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -511,10 +567,51 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     return { source: 'design', topics: Array.from({ length: total }, (_, i) => tidy(pickItems(scope, i + 1, total)[0] || sub.name)) };
   };
 
-  return { getLessons, getTopics };
+  /* One lesson for a topic the teacher typed: find it in the notes, then plan from what was found.
+     Nothing is saved, because it does not belong to a numbered lesson. */
+  const getLessonByTopic = async ({ design, designKey, subStrandId, topic, lessonNo = 1, useAi = true }) => {
+    const found = findSubStrand(design, subStrandId);
+    if (!found) throw Object.assign(new Error('Unknown sub-strand.'), { statusCode: 400 });
+    const { sub } = found;
+    const lang = languageFor(design);
+    const clean = cleanText(topic, 1500);
+    if (clean.length < 3) throw Object.assign(new Error('Type what the lesson will cover.'), { statusCode: 400 });
+
+    let notesText = '';
+    if (store) { try { notesText = (await store.getNotes(designKey, sub.id)) || ''; } catch { notesText = ''; } }
+    const matched = matchNotes(notesText, clean);
+
+    const aiState = { configured: Boolean(ai), used: false, failed: false, skipped: !useAi };
+    let content = null;
+    let source = 'design';
+    if (ai && useAi) {
+      aiState.used = true;
+      try {
+        const out = await callJson(topicPrompt({ design, sub, lang, notes: matched.text, topic: clean }), LESSON_SCHEMA);
+        const item = (out.lessons || [])[0];
+        const c = item ? cleanLesson({ ...item, lessonNo: 1 }) : null;
+        if (c) {
+          c.competencies = sub.core_competencies || [];
+          c.values = sub.values || [];
+          c.pcis = sub.pcis || [];
+          content = c; source = 'gemini';
+        } else aiState.failed = true;
+      } catch (err) { aiState.failed = true; console.error('Topic lesson failed:', err.message); }
+    }
+    if (!content) {
+      const base = buildFallback({ design, subStrandId: sub.id, lessonNo, lang });
+      base.focus = clean.length > 120 ? `${clean.slice(0, 117)}…` : clean;
+      const fromNotes = matched.text ? buildFromNotes({ base: { ...base, development: [{ title: base.focus, steps: base.development?.[0]?.steps || [] }] }, notes: matched.text, lessonNo: 1, total: 1 }) : null;
+      content = fromNotes || base;
+      source = fromNotes ? 'notes' : 'design';
+    }
+    return { lang, labels: LABELS[lang], lessons: [{ lessonNo, source, content }], ai: aiState, matched: { blocks: matched.blocks, found: matched.blocks > 0 } };
+  };
+
+  return { getLessons, getTopics, getLessonByTopic };
 };
 
 module.exports = {
   MAX_BATCH, LABELS, languageFor, findSubStrand, cleanText, cleanLesson,
-  buildFallback, buildFromNotes, noteItems, createLessonEngine, outlinePrompt, lessonsPrompt,
+  buildFallback, buildFromNotes, noteItems, matchNotes, createLessonEngine, outlinePrompt, lessonsPrompt,
 };

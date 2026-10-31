@@ -218,7 +218,7 @@ const previewScheme = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 const getContent = async (req, res, next) => {
   try {
-    const { designKey, subStrandId, from, to, source = 'auto' } = req.body;
+    const { designKey, subStrandId, from, to, source = 'auto', topic } = req.body;
     const fail = (message) => res.status(400).json({ success: false, message });
     if (!['auto', 'saved'].includes(source)) return fail('Unknown source.');
 
@@ -228,6 +228,14 @@ const getContent = async (req, res, next) => {
 
     let result;
     try {
+      /* A topic the teacher typed: find it in the notes and plan that lesson. Not saved. */
+      if (typeof topic === 'string' && topic.trim()) {
+        if (topic.length > 3000) return fail('The topic is too long. Keep it under 3000 characters.');
+        result = await getEngine().getLessonByTopic({
+          design, designKey, subStrandId, topic, lessonNo: Number.isInteger(from) && from >= 1 ? from : 1, useAi: source !== 'saved',
+        });
+        return res.status(200).json({ success: true, ...result });
+      }
       result = await getEngine().getLessons({ design, designKey, subStrandId, from, to, useAi: source !== 'saved' });
     } catch (err) {
       if (err.statusCode === 400) return fail(err.message);

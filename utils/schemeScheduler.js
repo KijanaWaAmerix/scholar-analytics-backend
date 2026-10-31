@@ -38,7 +38,8 @@ function mondayOf(date) {
 }
 
 /** Flat list of lessons for the chosen sub-strand range, in design order. */
-function buildLessonSequence(design, startSubStrand, endSubStrand) {
+function buildLessonSequence(design, startSubStrand, endSubStrand, range = {}) {
+  const { startLesson, endLesson, skip = [] } = range;
   const all = [];
   for (const strand of design.strands) {
     for (const sub of strand.sub_strands) {
@@ -52,8 +53,15 @@ function buildLessonSequence(design, startSubStrand, endSubStrand) {
   if (endIdx < startIdx) throw new Error('End sub-strand comes before the start sub-strand');
 
   const sequence = [];
-  for (const { strand, sub } of all.slice(startIdx, endIdx + 1)) {
-    for (let n = 1; n <= sub.lessons; n++) {
+  const skipped = new Set(skip);
+  const picked = all.slice(startIdx, endIdx + 1);
+  for (const { strand, sub } of picked) {
+    if (skipped.has(sub.id)) continue;
+    /* the first sub-strand may begin part-way, the last may stop part-way */
+    const from = sub.id === startSubStrand && startLesson ? startLesson : 1;
+    const to = sub.id === endSubStrand && endLesson ? Math.min(endLesson, sub.lessons) : sub.lessons;
+    if (from > sub.lessons) throw new Error(`${sub.id} has only ${sub.lessons} lessons, so it cannot start at lesson ${from}`);
+    for (let n = from; n <= to; n++) {
       sequence.push({
         strandId: strand.id,
         strand: strand.name,
@@ -64,6 +72,7 @@ function buildLessonSequence(design, startSubStrand, endSubStrand) {
       });
     }
   }
+  if (!sequence.length) throw new Error('No lessons are left after the chosen range and skipped sub-strands');
   return sequence;
 }
 
@@ -116,8 +125,8 @@ function buildCalendar(opts) {
 }
 
 function generateScheme(opts) {
-  const { design, startSubStrand, endSubStrand } = opts;
-  const sequence = buildLessonSequence(design, startSubStrand, endSubStrand);
+  const { design, startSubStrand, endSubStrand, startLesson, endLesson, skipSubStrands } = opts;
+  const sequence = buildLessonSequence(design, startSubStrand, endSubStrand, { startLesson, endLesson, skip: skipSubStrands || [] });
   const calendar = buildCalendar(opts);
 
   const rows = [];

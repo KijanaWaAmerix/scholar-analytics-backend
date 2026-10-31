@@ -152,7 +152,10 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   const experiences = pickItems(sub.experiences || [], lessonNo, total);
   const focusItem   = pickItems(scope, lessonNo, total)[0] || sub.name;
   /* The sub-strand's own resources and assessment methods (from the design's appendix) come first */
-  const resources   = (sub.resources && sub.resources.length ? sub.resources : (design.appendix?.learning_resources || [])).slice(0, 6);
+  const allRes      = (sub.resources && sub.resources.length ? sub.resources : (design.appendix?.learning_resources || []));
+  /* A long list is shared out: each lesson gets its own handful, so rows differ */
+  const resources   = allRes.length <= 6 ? allRes
+    : Array.from({ length: 5 }, (_, k) => allRes[((lessonNo - 1) * 3 + k) % allRes.length]);
   const ownAssess   = sub.assessment || [];
   const kiqs        = sub.key_inquiry_questions || [];
   const sw = lang === 'sw';

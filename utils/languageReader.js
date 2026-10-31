@@ -87,6 +87,115 @@ const tailItems = (lines, tail) => {
   };
 };
 
+
+/* ── The appendix of English and Kiswahili: assessment, resources and activities are listed by skill ── */
+const BULLET = /^[●◦•\u2022\uf0b7\uf0a7\s]+/;
+
+const clusterStarts = (items) => {
+  const xs = items.filter((i) => String(i.s).trim()).sort((a, b) => a.x - b.x);
+  const starts = [];
+  let edge = -Infinity;
+  for (const it of xs) {
+    if (it.x - edge > 22) starts.push(it.x);
+    edge = Math.max(edge, it.x + String(it.s).trimEnd().length * 5);
+  }
+  return starts;
+};
+
+const entriesOf = (lines, strip) => {
+  const out = [];
+  for (const ln of lines) {
+    let t = tidy(ln.text.replace(BULLET, ''));
+    if (strip) t = t.replace(strip, '');
+    if (!t) continue;
+    const prev = out[out.length - 1];
+    const continues = prev && !ln.bullet && !(strip && strip.test(ln.text.replace(BULLET, '')))
+      && (/^[a-z(]/.test(t) || /[\/,&-]$/.test(prev) || /\b(and|of|by|on|in|for|to|the|a|an|na|ya|wa|za|kwa)$/i.test(prev));
+    if (continues) out[out.length - 1] = `${prev} ${t}`;
+    else out.push(t);
+  }
+  return [...new Set(out.map((v) => v.replace(/[;,.]+$/, '').trim()).filter((v) => v.length > 2 && !/^(Page\b|Property of|Mali ya serikali|Download this)/i.test(v)))];
+};
+
+const splitColumns = (items, starts, from = 0) => starts.map((x, i) => {
+  const next = starts[i + 1] === undefined ? Infinity : starts[i + 1] - 12;
+  return items.filter((t) => t.x >= x - 12 && t.x < next && t.y < from);
+});
+
+const pageLines = (page) => lineify(cleanPage(page));
+
+const englishAppendix = (pages) => {
+  const find = (re) => pages.findIndex((p) => pageLines(p).some((l) => l.x <= 90 && re.test(l.text) && !/\.{4,}/.test(l.text)));
+  const a = find(/^SUGGESTED ASSESSMENT METHODS/);
+  const r = find(/^SUGGESTED LEARNING RESOURCES/);
+  const n = find(/^SUGGESTED NON-FORMAL ACTIVITIES/);
+  if (a < 0) return null;
+  const skills = ['Listening and Speaking', 'Reading', 'Grammar in Use', 'Writing'];
+  const out = skills.map(() => ({ assessment: [], resources: [], activities: [] }));
+  const byColumns = (pageIndex, key, headerRe) => {
+    const items = cleanPage(pages[pageIndex]);
+    const head = lineify(items).find((l) => headerRe.test(l.text));
+    if (!head) return;
+    const row = items.filter((t) => Math.abs(t.y - head.y) <= 3);
+    const starts = clusterStarts(row).slice(0, 4);
+    splitColumns(items, starts, head.y - 1).forEach((col, i) => { if (out[i]) out[i][key] = entriesOf(lineify(col)); });
+  };
+  byColumns(a, 'assessment', /^Listening and Speaking/);
+  if (n >= 0) byColumns(n, 'activities', /^Listening and Speaking/);
+  /* resources are shared by every skill: a non-digital and a digital list */
+  const shared = [];
+  if (r >= 0) {
+    const items = cleanPage(pages[r]);
+    const head = lineify(items).find((l) => /^Non-digital/i.test(l.text));
+    if (head) {
+      const row = items.filter((t) => Math.abs(t.y - head.y) <= 3);
+      const starts = clusterStarts(row).slice(0, 2);
+      splitColumns(items, starts, head.y - 1).forEach((col) => shared.push(...entriesOf(lineify(col))));
+    }
+  }
+  return { skills: out, shared };
+};
+
+const swahiliAppendix = (pages) => {
+  const first = pages.findIndex((p, i) => i > pages.length / 2 && pageLines(p).some((l) => l.x <= 90 && /^MUHTASARI WA MBINU ZA KUTATHMINI/.test(l.text) && !/\.{4,}/.test(l.text)));
+  if (first < 0) return null;
+  const rows = {};
+  let skill = null;
+  const names = [['KUSIKILIZA', 0], ['KUSOMA', 1], ['KUANDIKA', 2], ['SARUFI', 3]];
+  for (const page of pages.slice(first)) {
+    const items = cleanPage(page);
+    const labels = lineify(items.filter((t) => t.x < 150)).filter((l) => l.x <= 90);
+    /* the skill names sit in the first column, assessment from ~182, resources from ~357, activities from ~520 */
+    const marks = labels.map((l) => ({ y: l.y, k: (names.find(([w]) => l.text.toUpperCase().startsWith(w)) || [])[1] })).filter((v) => v.k !== undefined);
+    const body = items.filter((t) => t.x >= 170);
+    const colOf = (x) => (x < 350 ? 'assessment' : x < 515 ? 'resources' : 'activities');
+    const groups = {};
+    for (const t of body) {
+      const above = marks.filter((m) => m.y >= t.y - 1).pop();
+      if (above) skill = above.k;
+      if (skill === null) continue;
+      const key = `${skill}|${colOf(t.x)}`;
+      (groups[key] = groups[key] || []).push(t);
+    }
+    for (const [key, list] of Object.entries(groups)) {
+      const [k, col] = key.split('|');
+      rows[k] = rows[k] || { assessment: [], resources: [], activities: [] };
+      rows[k][col].push(...lineify(list));
+    }
+  }
+  const out = [0, 1, 2, 3].map((k) => {
+    const r = rows[k] || { assessment: [], resources: [], activities: [] };
+    return {
+      assessment: entriesOf(r.assessment, /^[a-z]\)\s*/),
+      resources: entriesOf(r.resources),
+      activities: entriesOf(r.activities, /^\d+\.\s*/),
+    };
+  });
+  return { skills: out, shared: [] };
+};
+
+const languageAppendix = (pages, language) => (language === 'sw' ? swahiliAppendix(pages) : englishAppendix(pages));
+
 const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, learningArea = '', grade, language = 'en' } = {}) => {
   const L = LANG[language];
   const problems = [];
@@ -203,6 +312,24 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
     if (!sub.core_competencies.length) notes.push(`Sub-strand ${id} ${sub.name}: nothing found for core_competencies.`);
     return { theme: t.theme, sub };
   });
+
+  /* The tables of a theme come in the same skill order every time */
+  const SKILL_ORDER = language === 'sw' ? [0, 1, 2, 3] : [0, 1, 2, 1, 3];
+  const appendix = languageAppendix(pages, language);
+  if (appendix) {
+    const seen = {};
+    for (const x of subs) {
+      seen[x.theme] = (seen[x.theme] || 0) + 1;
+      const row = appendix.skills[SKILL_ORDER[(seen[x.theme] - 1) % SKILL_ORDER.length]];
+      if (!row) continue;
+      const resources = [...row.resources, ...appendix.shared];
+      if (resources.length) x.sub.resources = resources;
+      if (row.assessment.length) x.sub.assessment = row.assessment;
+      if (row.activities.length) x.sub.activities = row.activities;
+    }
+  } else {
+    notes.push('The appendix with learning resources and assessment methods was not found.');
+  }
 
   /* Lessons the design does not state are shared out from the lessons per week (30 teaching weeks) */
   const known = subs.filter((x) => Number.isInteger(x.sub.lessons));

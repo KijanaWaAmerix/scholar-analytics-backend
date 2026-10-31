@@ -277,4 +277,17 @@ const getStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { getDesigns, previewScheme, getContent, resetContent, getStatus, loadDesign, getContentStore };
+const getTopics = async (req, res, next) => {
+  try {
+    const { designKey, subStrandId } = req.body;
+    const design = await loadDesign(designKey);
+    if (!design) return res.status(400).json({ success: false, message: 'Unknown curriculum design.' });
+    if (typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId)) return res.status(400).json({ success: false, message: 'Invalid sub-strand.' });
+    res.status(200).json({ success: true, ...(await getEngine().getTopics({ design, designKey, subStrandId })) });
+  } catch (error) {
+    if (error.statusCode === 400) return res.status(400).json({ success: false, message: error.message });
+    next(error);
+  }
+};
+
+module.exports = { getTopics, getDesigns, previewScheme, getContent, resetContent, getStatus, loadDesign, getContentStore };

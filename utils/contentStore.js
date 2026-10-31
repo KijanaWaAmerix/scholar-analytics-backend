@@ -10,7 +10,7 @@
 const DESIGN_KEY = /^[a-z0-9-]{1,60}$/;
 const SUB_ID     = /^\d{1,2}\.\d{1,2}$/;
 const LANGS      = ['en', 'sw'];
-const NOTES_MAX  = 12000;
+const NOTES_MAX  = 20000;
 const BANK_MAX   = 300;   /* saved questions kept for each kind in each sub-strand */
 
 const check = (designKey, subId, lang) => {

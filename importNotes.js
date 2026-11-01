@@ -14,7 +14,8 @@ const fs = require('fs');
 const path = require('path');
 const designs = require('./data/curriculum');
 const { getObjectStore } = require('./utils/objectStore');
-const { linesFromFile, looksRunTogether, splitBySubStrands } = require('./utils/notesReader');
+const { linesFromFile, looksRunTogether, splitBySubStrands, sectionsOf } = require('./utils/notesReader');
+const { matchNotes } = require('./utils/lessonContent');
 
 const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase();
 
@@ -53,11 +54,23 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
 
     const subs = {};
     const used = [];
+    const allText = [];
+    let loose = false;
     for (const f of files) {
       try {
         const lines = await linesFromFile(path.join(from, f));
-        const split = splitBySubStrands(lines, design);
+        let split = splitBySubStrands(lines, design);
         const runTogether = looksRunTogether(lines);
+        /* If most sub-strand headings were not found, the notes are not laid out by sub-strand
+           (English, Kiswahili...): do not trust the split, match by content instead. */
+        const nSubs = design.strands.reduce((n, st) => n + st.sub_strands.length, 0);
+        const nFound = Object.values(split).filter((v) => v.found).length;
+        if (nFound < nSubs * 0.6) {
+          console.log(`  - ${f}: only ${nFound} of ${nSubs} sub-strand headings found, matching by content instead`);
+          split = Object.fromEntries(Object.entries(split).map(([id, v]) => [id, { ...v, found: false, words: 0, sections: [] }]));
+        }
+        allText.push(sectionsOf(lines).map((sec) => [sec.heading, ...sec.text].filter(Boolean).join('\n')).join('\n\n'));
+        if (runTogether) loose = true;
         used.push(f);
         if (runTogether) console.log(`  ! ${f}: words look run together, the text will need clean-up`);
         for (const [id, v] of Object.entries(split)) {
@@ -71,9 +84,21 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
         }
       } catch (e) { console.log(`  ! ${f}: ${e.message}`); }
     }
+    const everything = allText.join('\n\n');
     for (const strand of design.strands) for (const sub of strand.sub_strands) {
       const cur = subs[sub.id] || { name: sub.name, found: false, words: 0, sections: [], files: [] };
-      const per = sub.lessons ? cur.words / sub.lessons : cur.words;
+      let per = sub.lessons ? cur.words / sub.lessons : cur.words;
+      /* Thin or missing: look through all the notes of the subject for what matches this sub-strand */
+      if (per < 35 && everything) {
+        const query = [sub.name, ...(sub.scope || []), ...(sub.outcomes || [])].join(' ');
+        const m = matchNotes(everything, query, 6000, loose);
+        const words = m.text.split(/\s+/).filter(Boolean).length;
+        if (m.blocks && words > cur.words) {
+          cur.sections = [{ heading: '', text: m.text.split('\n'), source: 'matched' }];
+          cur.words = words; cur.matched = true; cur.found = true; cur.files = used.slice();
+          per = sub.lessons ? words / sub.lessons : words;
+        }
+      }
       cur.lessons = sub.lessons;
       cur.coverage = per >= 35 ? 'full' : per >= 12 ? 'thin' : 'none';
       subs[sub.id] = cur;
@@ -83,7 +108,7 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
     const counts = { full: 0, thin: 0, none: 0 };
     Object.values(subs).forEach((v) => { counts[v.coverage]++; });
     console.log(`${subject.name}: ${used.length} file(s); full ${counts.full}, thin ${counts.thin}, none ${counts.none}`);
-    for (const [id, v] of Object.entries(subs)) console.log(`    ${id} ${v.name}: ${v.words} words, ${v.coverage}`);
+    for (const [id, v] of Object.entries(subs)) console.log(`    ${id} ${v.name}: ${v.words} words, ${v.coverage}${v.matched ? ' (matched by content)' : ''}`);
     if (store) {
       /* The layout the app already reads: notes/<designKey>/<subId>/<file>.json holding { text }.
          Lesson plans, schemes and exams all pick the notes up from there. */

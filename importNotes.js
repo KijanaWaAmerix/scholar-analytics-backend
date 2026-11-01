@@ -36,10 +36,18 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
   const outDir = path.join(__dirname, 'data', 'notes-extracted');
   fs.mkdirSync(outDir, { recursive: true });
 
+  const claimed = new Set();
   for (const subject of catalog.subjects) {
     if (only && subject.slug !== only) continue;
     const design = designs[subject.designKey] || (store && await store.getJson(`designs/${subject.designKey}.json`).catch(() => null));
-    const files = subject.notes.map((u) => local.find((f) => f.toLowerCase() === base(u))).filter(Boolean);
+    /* Files named in the catalog, plus any file in the folder whose name holds the subject's words */
+    const KEYS = { 'integrated-science': ['integrated-science', 'integrated science'], mathematics: ['mathematics', 'maths', 'math-'], 'pre-technical': ['pre-technical', 'pre technical', 'pretechnical'], 'social-studies': ['social-studies', 'social studies'], agriculture: ['agric'], cre: ['c-r-e', '-cre-', ' cre '], 'creative-arts': ['creative-arts', 'creative arts'], english: ['english'], kiswahili: ['kiswahili'] };
+    const keys = KEYS[subject.slug] || [subject.slug.replace(/-/g, ' '), subject.slug];
+    const files = [...new Set([
+      ...subject.notes.map((u) => local.find((f) => f.toLowerCase() === base(u))).filter(Boolean),
+      ...local.filter((f) => /\.(pdf|docx?)$/i.test(f) && keys.some((k) => f.toLowerCase().replace(/_/g, '-').includes(k))),
+    ])];
+    files.forEach((f) => claimed.add(f));
     if (!files.length) { console.log(`${subject.name}: no notes found in the folder, skipped`); continue; }
     if (!design) { console.log(`${subject.name}: no design ${subject.designKey} yet, skipped`); continue; }
 
@@ -90,4 +98,6 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
       console.log(`  Uploaded notes for ${n} sub-strands to notes/${subject.designKey}/`);
     }
   }
+  const left = local.filter((f) => /\.(pdf|docx?)$/i.test(f) && !claimed.has(f));
+  if (left.length && !only) console.log('\nFiles not matched to any subject (tell me and I will add them):\n  ' + left.join('\n  '));
 })().catch((e) => { console.error(e.message); process.exit(1); });

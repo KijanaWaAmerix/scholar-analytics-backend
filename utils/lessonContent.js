@@ -339,7 +339,7 @@ const tokens = (text) => String(text || '').toLowerCase().match(/[\p{L}\p{N}][\p
 const notesBlocks = (text) => String(text || '').split(/\n{2,}/).map((b) => b.trim()).filter(Boolean);
 
 /* The parts of the notes that match the topic, in their original order */
-const matchNotes = (notesText, topic, maxChars = 4500) => {
+const matchNotes = (notesText, topic, maxChars = 4500, loose = false) => {
   const want = [...new Set(tokens(topic))];
   const blocks = notesBlocks(notesText);
   if (!want.length || !blocks.length) return { text: '', blocks: 0 };
@@ -347,7 +347,9 @@ const matchNotes = (notesText, topic, maxChars = 4500) => {
   const idf = Object.fromEntries(want.map((w) => [w, Math.log(1 + blocks.length / (1 + bt.filter((t) => t.has(w)).length))]));
   const scored = blocks.map((b, i) => {
     const head = new Set(tokens(b.split('\n')[0]));
-    const score = want.reduce((n, w) => n + (bt[i].has(w) ? idf[w] : 0) + (head.has(w) ? idf[w] : 0), 0);
+    const low = loose ? blocks[i].toLowerCase() : '';
+    const has = (w) => bt[i].has(w) || (loose && w.length >= 5 && low.includes(w));
+    const score = want.reduce((n, w) => n + (has(w) ? idf[w] : 0) + (head.has(w) ? idf[w] : 0), 0);
     return { i, score };
   });
   const top = Math.max(...scored.map((x) => x.score));

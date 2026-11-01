@@ -354,7 +354,11 @@ const matchNotes = (notesText, topic, maxChars = 4500, loose = false) => {
   });
   const top = Math.max(...scored.map((x) => x.score));
   if (top <= 0) return { text: '', blocks: 0 };
-  const chosen = scored.filter((x) => x.score >= top * 0.45).sort((a, b) => b.score - a.score);
+  /* Normally only the blocks close to the best one; when that leaves very little, let weaker ones in */
+  let chosen = scored.filter((x) => x.score >= top * 0.45).sort((a, b) => b.score - a.score);
+  if (chosen.reduce((n, c) => n + blocks[c.i].length, 0) < 900) {
+    chosen = scored.filter((x) => x.score >= top * 0.2).sort((a, b) => b.score - a.score);
+  }
   const picked = [];
   let size = 0;
   for (const c of chosen) {

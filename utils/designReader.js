@@ -274,8 +274,8 @@ const readTables = (pages) => {
           inHeader = true;
         }
         if (!current) continue;
-        const count = ln.text.match(/\(\s*(\d+)\s*lessons?\s*\)/i);
-        const rest = tidy(ln.text.replace(/\(\s*\d+\s*lessons?\s*\)/i, ''));
+        const count = ln.text.match(/\(\s*(\d+)\s*l?essons?\s*\)/i);
+        const rest = tidy(ln.text.replace(/\(\s*\d+\s*l?essons?\s*\)/i, ''));
         if (count && acc[current].lessons === undefined) acc[current].lessons = Number(count[1]);
         if (inHeader) {
           /* A bulleted line under the name is content (scope), not part of the name */
@@ -482,7 +482,7 @@ const readAppendix = (pages) => {
       const id = rowOf(ln.y);
       if (!id) continue;
       if (!found[id]) found[id] = { assessment: [], resources: [], activities: [], name: [] };
-      found[id].name.push(ln.text.replace(/^\d{1,2}\s*\.\s*\d{1,2}\s*\.?\s*/, '').replace(/\d+\s*lessons?/i, ''));
+      found[id].name.push(ln.text.replace(/^\d{1,2}\s*\.\s*\d{1,2}\s*\.?\s*/, '').replace(/\d+\s*l?essons?/i, ''));
     }
     for (const k of ['assessment', 'resources', 'activities']) {
       for (const ln of lineify(cols[k])) {

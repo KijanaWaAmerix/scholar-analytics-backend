@@ -81,6 +81,7 @@ function buildCalendar(opts) {
   const {
     termStart, termEnd, halfTermStart, halfTermEnd,
     holidays = [], lessonsPerDay = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1 },
+    lessonsPerWeek,
   } = opts;
 
   const start = parseDate(termStart);
@@ -114,8 +115,20 @@ function buildCalendar(opts) {
       }
     }
 
+    /* A learning area with 4 lessons a week gets 4, however many days are set up: the extra slots are dropped */
+    if (Number.isInteger(lessonsPerWeek) && lessonsPerWeek > 0 && slots.length > lessonsPerWeek) {
+      slots.length = lessonsPerWeek;
+    }
+
+    /* The week runs Monday to Friday, cut to the term (a term may start or end mid-week) */
+    const weekFrom = monday < start ? start : monday;
+    const friday = addDays(monday, 4);
+    const weekTo = friday > end ? end : friday;
+
     weeks.push({
       mondayISO: toISO(monday),
+      weekFrom: toISO(weekFrom),
+      weekTo: toISO(weekTo),
       slots,
       isHalfTermWeek: weekdaysInTerm > 0 && weekdaysOnBreak === weekdaysInTerm,
       lostToBreak: weekdaysOnBreak,
@@ -127,7 +140,7 @@ function buildCalendar(opts) {
 function generateScheme(opts) {
   const { design, startSubStrand, endSubStrand, startLesson, endLesson, skipSubStrands } = opts;
   const sequence = buildLessonSequence(design, startSubStrand, endSubStrand, { startLesson, endLesson, skip: skipSubStrands || [] });
-  const calendar = buildCalendar(opts);
+  const calendar = buildCalendar({ lessonsPerWeek: design.lessons_per_week, ...opts });
 
   const rows = [];
   let weekNo = 0;
@@ -159,6 +172,8 @@ function generateScheme(opts) {
         type: 'LESSON',
         week: weekNo,
         lessonOfWeek: rows.filter((r) => r.type === 'LESSON' && r.week === weekNo).length + 1,
+        weekFrom: week.weekFrom,
+        weekTo: week.weekTo,
         ...slot,
         ...sequence[next],
         lessonNo: next + 1,

@@ -400,8 +400,8 @@ const topicPrompt = ({ design, sub, lang, notes, topic, span = 1 }) => [
    lessons make one topic (20 -> 8), so a topic plan stays useful when lessons are lost. */
 const LESSONS_PER_TOPIC = 2.5;
 
-const groupLessons = (total) => {
-  const count = Math.max(1, Math.min(total, Math.round(total / LESSONS_PER_TOPIC)));
+const groupLessons = (total, wanted) => {
+  const count = Math.max(1, Math.min(total, wanted || Math.round(total / LESSONS_PER_TOPIC)));
   const base = Math.floor(total / count);
   const extra = total % count;
   const groups = [];
@@ -632,7 +632,16 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     const used = new Set();
     const shorten = (t) => String(t || '').replace(/\s*\([^)]*\)?/g, '').replace(/\s{2,}/g, ' ').trim();
     const sentence = (t) => { const x = shorten(t); return x ? x.charAt(0).toUpperCase() + x.slice(1) : x; };
-    const spans = groupLessons(found.sub.lessons || 1);
+    /* When the notes are loaded, their own headings decide how many topics there are (kept between
+       a topic every 4 lessons and one every 1.5), otherwise it is about 2.5 lessons to a topic */
+    const total = found.sub.lessons || 1;
+    let wanted;
+    if (base.source === 'notes') {
+      const heads = [];
+      base.topics.forEach((t) => { const c = clean(t); if (c && !heads.some((h) => h.toLowerCase() === c.toLowerCase())) heads.push(c); });
+      wanted = Math.min(Math.round(total / 1.5), Math.max(Math.ceil(total / 4), heads.length));
+    }
+    const spans = groupLessons(total, wanted);
     const groups = spans.map((g, i) => {
       const names = [];
       for (let n = g.from; n <= g.to; n++) {

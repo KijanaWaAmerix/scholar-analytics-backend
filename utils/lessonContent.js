@@ -370,9 +370,12 @@ const matchNotes = (notesText, topic, maxChars = 4500, loose = false) => {
   return { text: picked.map((i) => blocks[i]).join('\n\n'), blocks: picked.length };
 };
 
-const topicPrompt = ({ design, sub, lang, notes, topic }) => [
+const topicPrompt = ({ design, sub, lang, notes, topic, span = 1 }) => [
   `You are a Kenyan CBC teacher writing ONE lesson plan for ${design.grade} ${design.learning_area}, sub-strand "${sub.name}". The lesson is ${design.lesson_minutes} minutes: 5 minutes introduction, ${design.lesson_minutes - 10} minutes development, 5 minutes conclusion.`,
   'The teacher has said what this lesson covers (between <teacher_topic> tags). Plan exactly that, nothing more. Give it lessonNo 1.',
+  span > 1
+    ? `This is a whole topic that may take about ${span} lessons, and the teacher may only get through part of it. Make the plan comprehensive: bring together everything related to the topic in one plan, in the order it should be taught, so it can be used across those lessons. Use up to 6 outcomes, up to 8 learner activities and 4 development parts.`
+    : '',
   'Rules:',
   '- outcomes: 2 to 4 items, each completing "By the end of the lesson, the learner should be able to:" (start with a verb).',
   '- experiences: 3 to 5 learner activities, each completing "In groups, learners are guided to:" (start with a verb).',
@@ -391,6 +394,52 @@ const topicPrompt = ({ design, sub, lang, notes, topic }) => [
   `<teacher_topic>${String(topic).slice(0, 1500)}</teacher_topic>`,
   notes ? `<reference_notes>${notes}</reference_notes>` : '',
 ].filter(Boolean).join('\n');
+
+/* ── Topics: the lessons of a sub-strand grouped the way a teacher really teaches them ──
+   The design suggests, say, 20 lessons, but a class seldom gets that many. About 2.5 suggested
+   lessons make one topic (20 -> 8), so a topic plan stays useful when lessons are lost. */
+const LESSONS_PER_TOPIC = 2.5;
+
+const groupLessons = (total, wanted) => {
+  const count = Math.max(1, Math.min(total, wanted || Math.round(total / LESSONS_PER_TOPIC)));
+  const base = Math.floor(total / count);
+  const extra = total % count;
+  const groups = [];
+  let at = 1;
+  for (let g = 0; g < count; g++) {
+    const size = base + (g < extra ? 1 : 0);
+    groups.push({ from: at, to: at + size - 1 });
+    at += size;
+  }
+  return groups;
+};
+
+/* One plan out of several lessons' plain content: everything the topic needs, without repeats */
+const mergeFallbacks = (list, label) => {
+  const uniq = (key, max) => {
+    const seen = new Set();
+    const out = [];
+    for (const item of list.flatMap((c) => c[key] || [])) {
+      const k = String(item).trim().toLowerCase();
+      if (!k || seen.has(k)) continue;
+      seen.add(k); out.push(item);
+      if (out.length >= max) break;
+    }
+    return out;
+  };
+  const first = list[0];
+  const experiences = uniq('experiences', 10);
+  return {
+    ...first,
+    focus      : label || first.focus,
+    outcomes   : uniq('outcomes', 8),
+    experiences,
+    kiqs       : uniq('kiqs', 3),
+    resources  : uniq('resources', 8),
+    assessment : uniq('assessment', 4),
+    development: [{ title: label || first.focus, steps: experiences.length ? experiences : [first.focus] }],
+  };
+};
 
 /* ── The engine ────────────────────────────────────────────── */
 const defaultSleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -528,7 +577,7 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
   /* What each lesson of a sub-strand is about, so a teacher can choose by topic.
      No AI is called: the saved lesson outline first, then the headings of the stored notes,
      then the design's own list of content. */
-  const getTopics = async ({ design, designKey, subStrandId }) => {
+  const getLessonTopics = async ({ design, designKey, subStrandId }) => {
     const found = findSubStrand(design, subStrandId);
     if (!found) throw Object.assign(new Error('Unknown sub-strand.'), { statusCode: 400 });
     const { sub } = found;
@@ -573,9 +622,51 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     return { source: 'design', topics: Array.from({ length: total }, (_, i) => tidy(pickItems(scope, i + 1, total)[0] || sub.name)) };
   };
 
+  /* The topics a teacher chooses from: the sub-strand's lessons grouped at about 2.5 lessons a topic.
+     `topics` still names every lesson; `groups` is what the lesson-plan and record pages show. */
+  const getTopics = async ({ design, designKey, subStrandId }) => {
+    const found = findSubStrand(design, subStrandId);
+    if (!found) throw Object.assign(new Error('Unknown sub-strand.'), { statusCode: 400 });
+    const base = await getLessonTopics({ design, designKey, subStrandId });
+    const clean = (t) => String(t || '').replace(/\s*\(part \d+ of \d+\)\s*$/i, '').trim();
+    const used = new Set();
+    const shorten = (t) => String(t || '').replace(/\s*\([^)]*\)?/g, '').replace(/\s{2,}/g, ' ').trim();
+    const sentence = (t) => { const x = shorten(t); return x ? x.charAt(0).toUpperCase() + x.slice(1) : x; };
+    /* When the notes are loaded, their own headings decide how many topics there are (kept between
+       a topic every 4 lessons and one every 1.5), otherwise it is about 2.5 lessons to a topic */
+    const total = found.sub.lessons || 1;
+    let wanted;
+    if (base.source === 'notes') {
+      const heads = [];
+      base.topics.forEach((t) => { const c = clean(t); if (c && !heads.some((h) => h.toLowerCase() === c.toLowerCase())) heads.push(c); });
+      wanted = Math.min(Math.round(total / 1.5), Math.max(Math.ceil(total / 4), heads.length));
+    }
+    const spans = groupLessons(total, wanted);
+    const groups = spans.map((g, i) => {
+      const names = [];
+      for (let n = g.from; n <= g.to; n++) {
+        const name = clean(base.topics[n - 1]);
+        if (name && !names.some((x) => x.toLowerCase() === name.toLowerCase())) names.push(name);
+      }
+      const short = names.map(shorten).filter(Boolean);
+      let label = short[0] || found.sub.name;
+      if (short[1] && `${label} and ${short[1]}`.length <= 90 && !used.has(label.toLowerCase())) {
+        label = `${label} and ${short[1].charAt(0).toLowerCase()}${short[1].slice(1)}`;
+      }
+      /* two topics must not share a name: fall back on what this group's outcomes say */
+      if (used.has(label.toLowerCase())) {
+        label = sentence(pickItems(found.sub.outcomes || [], i + 1, spans.length)[0]) || label;
+      }
+      if (used.has(label.toLowerCase())) label = `${label} (continued)`;
+      used.add(label.toLowerCase());
+      return { no: i + 1, label, from: g.from, to: g.to, lessons: g.to - g.from + 1, covers: names };
+    });
+    return { ...base, groups };
+  };
+
   /* One lesson for a topic the teacher typed: find it in the notes, then plan from what was found.
      Nothing is saved, because it does not belong to a numbered lesson. */
-  const getLessonByTopic = async ({ design, designKey, subStrandId, topic, lessonNo = 1, useAi = true }) => {
+  const getLessonByTopic = async ({ design, designKey, subStrandId, topic, lessonNo = 1, lessonTo, useAi = true }) => {
     const found = findSubStrand(design, subStrandId);
     if (!found) throw Object.assign(new Error('Unknown sub-strand.'), { statusCode: 400 });
     const { sub } = found;
@@ -585,7 +676,9 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
 
     let notesText = '';
     if (store) { try { notesText = (await store.getNotes(designKey, sub.id)) || ''; } catch { notesText = ''; } }
-    const matched = matchNotes(notesText, clean);
+    /* A whole topic (several suggested lessons) gets more of the notes and one combined plan */
+    const span = Number.isInteger(lessonTo) && lessonTo > lessonNo ? Math.min(lessonTo, sub.lessons) - lessonNo + 1 : 1;
+    const matched = matchNotes(notesText, clean, span > 1 ? 7000 : 4500);
 
     const aiState = { configured: Boolean(ai), used: false, failed: false, skipped: !useAi };
     let content = null;
@@ -593,7 +686,7 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
     if (ai && useAi) {
       aiState.used = true;
       try {
-        const out = await callJson(topicPrompt({ design, sub, lang, notes: matched.text, topic: clean }), LESSON_SCHEMA);
+        const out = await callJson(topicPrompt({ design, sub, lang, notes: matched.text, topic: clean, span }), LESSON_SCHEMA);
         const item = (out.lessons || [])[0];
         const c = item ? cleanLesson({ ...item, lessonNo: 1 }) : null;
         if (c) {
@@ -605,7 +698,9 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
       } catch (err) { aiState.failed = true; console.error('Topic lesson failed:', err.message); }
     }
     if (!content) {
-      const base = buildFallback({ design, subStrandId: sub.id, lessonNo, lang });
+      const base = span > 1
+        ? mergeFallbacks(Array.from({ length: span }, (_, k) => buildFallback({ design, subStrandId: sub.id, lessonNo: lessonNo + k, lang })), clean.slice(0, 120))
+        : buildFallback({ design, subStrandId: sub.id, lessonNo, lang });
       base.focus = clean.length > 120 ? `${clean.slice(0, 117)}…` : clean;
       const fromNotes = matched.text ? buildFromNotes({ base: { ...base, development: [{ title: base.focus, steps: base.development?.[0]?.steps || [] }] }, notes: matched.text, lessonNo: 1, total: 1 }) : null;
       content = fromNotes || base;
@@ -619,5 +714,5 @@ const createLessonEngine = ({ ai = null, store = null, sleep = defaultSleep } = 
 
 module.exports = {
   MAX_BATCH, LABELS, languageFor, findSubStrand, cleanText, cleanLesson,
-  buildFallback, buildFromNotes, noteItems, matchNotes, createLessonEngine, outlinePrompt, lessonsPrompt,
+  buildFallback, buildFromNotes, groupLessons, mergeFallbacks, noteItems, matchNotes, createLessonEngine, outlinePrompt, lessonsPrompt,
 };

@@ -232,7 +232,8 @@ const getContent = async (req, res, next) => {
       if (typeof topic === 'string' && topic.trim()) {
         if (topic.length > 3000) return fail('The topic is too long. Keep it under 3000 characters.');
         result = await getEngine().getLessonByTopic({
-          design, designKey, subStrandId, topic, lessonNo: Number.isInteger(from) && from >= 1 ? from : 1, useAi: source !== 'saved',
+          design, designKey, subStrandId, topic, lessonNo: Number.isInteger(from) && from >= 1 ? from : 1,
+          lessonTo: Number.isInteger(to) && to >= 1 ? to : undefined, useAi: source !== 'saved',
         });
         return res.status(200).json({ success: true, ...result });
       }

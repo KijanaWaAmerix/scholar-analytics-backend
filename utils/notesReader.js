@@ -32,10 +32,14 @@ const looksRunTogether = (lines) => {
 /* ── 2. find the line where each sub-strand begins ── */
 const STRAND_LINE = /^(strand|sub[- ]?strand)\s*\d*/i;
 
-const findAnchors = (lines, design) => {
+const findAnchors = (lines, design, { byName = true } = {}) => {
   const subs = design.strands.flatMap((st) => st.sub_strands.map((sub) => ({ strand: st, sub })));
   const anchors = [];
-  let from = 0;
+  /* A table of contents lists every heading ("1.1 KUSIKILIZA ........ 13") and would be taken for the
+     real ones. It shows as a block of dot-leader lines near the start: begin the search after it. */
+  const leaders = lines.map((l, i) => (/\.{5,}/.test(l) ? i : -1)).filter((i) => i >= 0);
+  const early = leaders.filter((i) => i < lines.length * 0.3);
+  let from = early.length >= 8 ? early[early.length - 1] + 1 : 0;
   for (const { strand, sub } of subs) {
     const id = sub.id.replace('.', '\\.');
     const byId = new RegExp(`^\\W{0,3}${id}(?!\\d)\\b`);
@@ -48,7 +52,7 @@ const findAnchors = (lines, design) => {
       if (byId.test(l)) found = i;
     }
     /* a numberless heading: a short line holding the sub-strand's own words */
-    for (let i = from; i < lines.length && found < 0; i++) {
+    for (let i = from; byName && i < lines.length && found < 0; i++) {
       const l = lines[i];
       if (l.length > 90 || /[,;]$/.test(l)) continue;
       const n = norm(l);
@@ -80,7 +84,10 @@ const sectionsOf = (lines) => {
 
 /* ── 4. share the notes out ── */
 const splitBySubStrands = (lines, design) => {
-  const anchors = findAnchors(lines, design);
+  /* Notes numbered like the design (1.1, 1.2 ...): trust the numbers and do not guess by name */
+  const total = design.strands.reduce((n, st) => n + st.sub_strands.length, 0);
+  let anchors = findAnchors(lines, design, { byName: false });
+  if (anchors.filter((a) => a.line >= 0).length < total * 0.6) anchors = findAnchors(lines, design);
   /* the first sub-strand often has no number: it starts right after the title block */
   if (anchors.length && anchors[0].line < 0) {
     const strandLine = lines.findIndex((l) => STRAND_LINE.test(l));

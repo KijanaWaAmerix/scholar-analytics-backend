@@ -73,6 +73,20 @@ const createContentStore = (objects) => ({
     return { mcq: next.mcq.length, structured: next.structured.length };
   },
 
+  /* Take one bad question out of the bank (kind: 'mcq' or 'structured') */
+  async removeFromBank(designKey, subId, kind, text) {
+    check(designKey, subId);
+    if (kind !== 'mcq' && kind !== 'structured') throw Object.assign(new Error('Unknown question type.'), { statusCode: 400 });
+    const key = `bank/${designKey}/${subId}.json`;
+    const bank = await this.getBank(designKey, subId);
+    const same = String(text || '').toLowerCase();
+    const keyOf = kind === 'mcq' ? (q) => String(q.question || '').toLowerCase() : (q) => String(q.parts?.[0]?.text || '').toLowerCase();
+    const left = bank[kind].filter((q) => keyOf(q) !== same);
+    const removed = bank[kind].length - left.length;
+    if (removed) await objects.putJson(key, { ...bank, [kind]: left });
+    return { removed };
+  },
+
   /* Keys of every design uploaded to storage */
   async listDesignKeys() {
     const keys = await objects.list('designs/', 300);

@@ -127,7 +127,8 @@ const relevantTo = (text, sub) => {
   const words = norm(text).split(' ');
   let hits = 0, matched = 0;
   for (const t of terms) {
-    const stem = t.slice(0, Math.max(4, Math.min(t.length, 6)));
+    /* peace / peaceful / peaceable share a stem; maps / map too */
+    const stem = t.length <= 5 ? t.replace(/s$/, '') : t.slice(0, 5);
     const n = words.filter((w) => w.startsWith(stem)).length;
     if (n) { matched += 1; hits += n; }
   }

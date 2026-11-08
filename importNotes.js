@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const designs = require('./data/curriculum');
 const { getObjectStore } = require('./utils/objectStore');
-const { linesFromFile, looksRunTogether, splitBySubStrands, sectionsOf } = require('./utils/notesReader');
+const { linesFromFile, looksRunTogether, splitBySubStrands, sectionsOf, relevantTo } = require('./utils/notesReader');
 const { matchNotes } = require('./utils/lessonContent');
 
 const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase();
@@ -93,7 +93,7 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
         const query = [sub.name, ...(sub.scope || []), ...(sub.outcomes || [])].join(' ');
         const m = matchNotes(everything, query, 6000, loose);
         const words = m.text.split(/\s+/).filter(Boolean).length;
-        if (m.blocks && words > cur.words) {
+        if (m.blocks && words > cur.words && relevantTo(m.text, sub)) {
           cur.sections = [{ heading: '', text: m.text.split('\n'), source: 'matched' }];
           cur.words = words; cur.matched = true; cur.found = true; cur.files = used.slice();
           per = sub.lessons ? words / sub.lessons : words;

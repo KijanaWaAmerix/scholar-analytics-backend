@@ -108,4 +108,30 @@ const splitBySubStrands = (lines, design) => {
   return result;
 };
 
-module.exports = { linesFromFile, looksRunTogether, splitBySubStrands, findAnchors, sectionsOf, norm, clean };
+/* ── Is matched text really about this sub-strand? ─────────────────────────
+   Content matching always finds *something*. For English and Kiswahili the sub-strand names are
+   mostly generic ("Reading: Intensive Reading: Class Reader"), so the same grammar text was being
+   attached to dozens of sub-strands. A match is kept only when the text mentions the sub-strand's
+   own distinctive words (its name, without the skill words) at least twice in all. Otherwise the
+   sub-strand stays without notes and the design/AI covers it, which is better than wrong notes. */
+const GENERIC = new Set(('and the for with from into of in on to a an by or as at its their your our use using used '
+  + 'word words skills skill basic simple general introduction intensive extensive reading writing listening speaking grammar '
+  + 'comprehension class reader readers passage passages text texts activities activity learner learners '
+  + 'kusikiliza kuzungumza kusoma kuandika sarufi kwa na ya wa za la cha vya ili katika au matini kifungu').split(' '));
+
+const distinctiveTerms = (sub) => norm(sub.name).split(' ').filter((w) => w.length >= 4 && !GENERIC.has(w));
+
+const relevantTo = (text, sub) => {
+  const terms = [...new Set(distinctiveTerms(sub))];
+  if (!terms.length) return false;
+  const words = norm(text).split(' ');
+  let hits = 0, matched = 0;
+  for (const t of terms) {
+    const stem = t.slice(0, Math.max(4, Math.min(t.length, 6)));
+    const n = words.filter((w) => w.startsWith(stem)).length;
+    if (n) { matched += 1; hits += n; }
+  }
+  return matched >= Math.ceil(terms.length / 2) && hits >= 2;
+};
+
+module.exports = { relevantTo, distinctiveTerms, linesFromFile, looksRunTogether, splitBySubStrands, findAnchors, sectionsOf, norm, clean };

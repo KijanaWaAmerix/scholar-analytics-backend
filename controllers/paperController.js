@@ -36,13 +36,13 @@ const planPaper = async (req, res, next) => {
     const design = await loadDesign(designKey);
     if (!design) return fail('Unknown curriculum design.');
 
-    if (!Array.isArray(subStrandIds) || !subStrandIds.length || subStrandIds.length > 8 ||
+    if (!Array.isArray(subStrandIds) || !subStrandIds.length ||
         !subStrandIds.every((id) => typeof id === 'string' && SUB_ID.test(id)) ||
         new Set(subStrandIds).size !== subStrandIds.length) {
-      return fail('Choose between 1 and 8 different sub-strands.');
+      return fail('Choose at least one sub-strand, each only once.');
     }
-    if (!Number.isInteger(mcq) || mcq < 0 || mcq > 60) return fail('Multiple choice questions must be from 0 to 60.');
-    if (!Number.isInteger(structured) || structured < 0 || structured > 20) return fail('Structured questions must be from 0 to 20.');
+    if (!Number.isInteger(mcq) || mcq < 0) return fail('Multiple choice questions must be a whole number, 0 or more.');
+    if (!Number.isInteger(structured) || structured < 0) return fail('Structured questions must be a whole number, 0 or more.');
     if (mcq + structured < 1) return fail('Choose at least one question.');
 
     const subs = [];
@@ -74,7 +74,7 @@ const planPaper = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 const writePart = async (req, res, next) => {
   try {
-    const { designKey, subStrandId, mcq, structured, source = 'auto' } = req.body;
+    const { designKey, subStrandId, mcq, structured } = req.body;
     const design = await loadDesign(designKey);
     if (!design) return res.status(400).json({ success: false, message: 'Unknown curriculum design.' });
     if (typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId)) {
@@ -83,7 +83,7 @@ const writePart = async (req, res, next) => {
 
     let part;
     try {
-      part = await getWriter().writePart({ design, designKey, subStrandId, mcq, structured, mode: source });
+      part = await getWriter().writePart({ design, designKey, subStrandId, mcq, structured, mode: 'bank' });
     } catch (err) {
       if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message });
       throw err;
@@ -102,10 +102,89 @@ const writePart = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 const getBands = (req, res) => {
   const total = req.body.total;
-  if (!Number.isInteger(total) || total < 1 || total > 200) {
-    return res.status(400).json({ success: false, message: 'Total marks must be from 1 to 200.' });
+  if (!Number.isInteger(total) || total < 1 || total > 10000) {
+    return res.status(400).json({ success: false, message: 'Total marks must be from 1 to 10000.' });
   }
   res.status(200).json({ success: true, bands: bandsFor(total) });
 };
 
-module.exports = { planPaper, writePart, getBands };
+/* ══════════════════════════════════════════════════════════
+   @route   POST /api/papers/bank/fill
+   @desc    Gemini writes new questions for ONE sub-strand from the notes
+            and keeps them in the bank (the page calls it once per sub-strand)
+   @access  Admin
+   body: { designKey, subStrandId, mcq?, structured? }
+══════════════════════════════════════════════════════════ */
+const fillBank = async (req, res, next) => {
+  try {
+    const { designKey, subStrandId, mcq = 12, structured = 4 } = req.body;
+    const design = await loadDesign(designKey);
+    if (!design) return res.status(400).json({ success: false, message: 'Unknown curriculum design.' });
+    if (typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId)) {
+      return res.status(400).json({ success: false, message: 'Invalid sub-strand.' });
+    }
+    try {
+      const out = await getWriter().fillBank({ design, designKey, subStrandId, mcq, structured });
+      res.status(200).json({ success: true, ...out });
+    } catch (err) {
+      if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message });
+      throw err;
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
+   @route   POST /api/papers/bank/stats
+   @desc    How many questions the bank holds for each sub-strand
+   @access  Admin, Teacher
+   body: { designKey }
+══════════════════════════════════════════════════════════ */
+const bankStats = async (req, res, next) => {
+  try {
+    const design = await loadDesign(req.body.designKey);
+    if (!design) return res.status(400).json({ success: false, message: 'Unknown curriculum design.' });
+    const store = getContentStore();
+    const subs = design.strands.flatMap((s) => s.sub_strands);
+    const counts = {};
+    for (let i = 0; i < subs.length; i += 10) {
+      await Promise.all(subs.slice(i, i + 10).map(async (s) => {
+        try {
+          const b = store ? await store.getBank(req.body.designKey, s.id) : { mcq: [], structured: [] };
+          counts[s.id] = { mcq: b.mcq.length, structured: b.structured.length };
+        } catch { counts[s.id] = { mcq: 0, structured: 0 }; }
+      }));
+    }
+    res.status(200).json({ success: true, counts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
+   @route   POST /api/papers/bank/remove
+   @desc    Take one bad question out of the bank
+   @access  Admin
+   body: { designKey, subStrandId, kind: 'mcq'|'structured', text }
+══════════════════════════════════════════════════════════ */
+const removeQuestion = async (req, res, next) => {
+  try {
+    const { designKey, subStrandId, kind, text } = req.body;
+    const store = getContentStore();
+    if (!store) return res.status(503).json({ success: false, message: 'The question bank needs the storage set-up (Backblaze).' });
+    if (typeof designKey !== 'string' || typeof subStrandId !== 'string' || !SUB_ID.test(subStrandId) || typeof text !== 'string' || !text) {
+      return res.status(400).json({ success: false, message: 'Invalid request.' });
+    }
+    try {
+      res.status(200).json({ success: true, ...(await store.removeFromBank(designKey, subStrandId, kind, text)) });
+    } catch (err) {
+      if (err.statusCode || /key|sub/i.test(err.message)) return res.status(err.statusCode || 400).json({ success: false, message: err.message });
+      throw err;
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { planPaper, writePart, getBands, fillBank, bankStats, removeQuestion };

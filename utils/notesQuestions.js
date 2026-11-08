@@ -55,43 +55,75 @@ const fromNotes = (text, { mcq = 0, structured = 0, random = Math.random } = {})
   const { defs, lists } = parse(text);
   const out = { mcq: [], structured: [] };
 
-  /* Multiple choice: name the term from its meaning, or pick the meaning of a term */
-  if (defs.length >= 4) {
-    shuffle(defs, random).slice(0, mcq).forEach((d, i) => {
-      const others = shuffle(defs.filter((x) => x !== d), random).slice(0, 3);
-      if (i % 2 === 0) {
-        out.mcq.push({
-          question: `Which term is described as: "${d.meaning}"?`,
-          options: [d.term, ...others.map((o) => o.term)],
-          answer: 'A',
-          explanation: d.sentence,
-        });
-      } else {
-        out.mcq.push({
-          question: `Which of the following best describes the ${d.term}?`,
-          options: [d.meaning, ...others.map((o) => o.meaning)].map((o) => o.charAt(0).toUpperCase() + o.slice(1)),
-          answer: 'A',
-          explanation: d.sentence,
-        });
-      }
-    });
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  const pick = (arr, i) => arr[i % arr.length];
+  const NUM = ['', 'one', 'two', 'three', 'four', 'five'];
+
+  /* Multiple choice: name the term, pick the meaning, or pick a true point about a heading */
+  const D = shuffle(defs, random);
+  const Lm = shuffle(lists, random);
+  const mcqMakers = [];
+  if (D.length >= 4) {
+    D.forEach((d, i) => mcqMakers.push(() => {
+      const others = shuffle(D.filter((x) => x !== d), random).slice(0, 3);
+      return i % 2 === 0
+        ? { question: `Which term is described as: "${d.meaning}"?`, options: [d.term, ...others.map((o) => o.term)], answer: 'A', explanation: d.sentence }
+        : { question: `Which of the following best describes the ${d.term}?`, options: [d.meaning, ...others.map((o) => o.meaning)].map(cap), answer: 'A', explanation: d.sentence };
+    }));
+  }
+  if (Lm.length >= 2) {
+    Lm.forEach((l) => l.items.slice(0, 2).forEach((item, k) => mcqMakers.push(() => {
+      const others = shuffle(Lm.filter((x) => x !== l).flatMap((x) => x.items), random).slice(0, 3);
+      if (others.length < 3) return null;
+      return { question: k === 0 ? `Which of the following is a point about ${l.heading.toLowerCase()}?` : `Which one of these is correct about ${l.heading.toLowerCase()}?`, options: [item, ...others], answer: 'A', explanation: `${l.heading}: ${item}` };
+    })));
+  }
+  /* alternate the kinds so the paper is not all definitions */
+  const mixed = [];
+  const defMk = mcqMakers.slice(0, D.length >= 4 ? D.length : 0);
+  const lstMk = mcqMakers.slice(defMk.length);
+  for (let i = 0; i < Math.max(defMk.length, lstMk.length); i += 1) {
+    if (defMk[i]) mixed.push(defMk[i]);
+    if (lstMk[i]) mixed.push(lstMk[i]);
+  }
+  for (const mk of mixed) {
+    if (out.mcq.length >= mcq) break;
+    const q = mk();
+    if (q) out.mcq.push(q);
   }
 
-  /* Structured: a definition part, plus an "outline points" part when the notes have a list */
+  /* Structured: parts that rise from recall (Define, State, List) to Outline, Describe, Explain, Discuss, Differentiate */
+  const ITEMISED = /^(types|kinds|examples|uses|causes|effects|advantages|disadvantages|characteristics|features|ways|methods|functions|steps|factors|reasons|benefits|properties|sources|symptoms|stages|rules|roles|qualities|signs|safety)\b/i;
+  const RECALL = ['State', 'List', 'Identify', 'Name', 'Give'];
+  const WIDER = ['Outline', 'Describe', 'Explain', 'Discuss'];
+  const DEFINE = (t, i) => pick([`Define the term ${t}.`, `State the meaning of ${t}.`, `What is meant by ${t}?`, `Explain the term ${t}.`], i);
+
   const pool = shuffle(defs, random);
   const lst = shuffle(lists, random);
+  let di = 0; let li = 0; let cw = 0;
+  const listPart = (l, hard) => {
+    const n = Math.min(hard ? 3 : 3, l.items.length);
+    const h = l.heading.toLowerCase();
+    const word = NUM[n] || String(n);
+    const text = ITEMISED.test(l.heading)
+      ? (hard ? `${pick(['Describe', 'Outline'], cw)} ${word} ${h}.` : `${pick(RECALL, cw)} ${word} ${h}.`)
+      : `${pick(WIDER, cw)} ${word} points ${/^importance of\b/i.test(h) ? 'on the' : 'about'} ${h}.`;
+    cw += 1;
+    return { text, marks: n, answer: l.items.slice(0, Math.max(n, 4)).slice(0, 4) };
+  };
+
   for (let i = 0; i < structured; i += 1) {
     const parts = [];
-    const d = pool[i];
-    if (d) parts.push({ text: `Define ${d.term}.`, marks: 2, answer: [d.sentence] });
-    const l = lst[i];
-    if (l) {
-      const n = Math.min(3, l.items.length);
-      parts.push({ text: `Outline ${n} points about ${l.heading.toLowerCase()}.`, marks: n, answer: l.items.slice(0, Math.max(n, 4)).slice(0, 4) });
-    } else if (pool[structured + i]) {
-      const d2 = pool[structured + i];
-      parts.push({ text: `Explain what is meant by ${d2.term}.`, marks: 2, answer: [d2.sentence] });
+    const d1 = pool[di];
+    const at = d1 ? defs.indexOf(d1) : -1;
+    const d2 = at >= 0 ? (defs[at + 1] || defs[at - 1]) : null;   /* the next definition in the notes: usually a related term */
+    const l1 = lst[li]; const l2 = lst[li + 1];
+    if (d1) { parts.push({ text: DEFINE(d1.term, i), marks: 2, answer: [d1.sentence] }); di += 1; }
+    if (l1) { parts.push(listPart(l1, false)); li += 1; }
+    if (d1 && d2 && (i % 2 === 0 || !l1)) {
+      parts.push({ text: `Differentiate between ${d1.term} and ${d2.term}.`, marks: 2, answer: [d1.sentence, d2.sentence] });
     }
+    if (l2 && parts.length < 4) { parts.push(listPart(l2, true)); li += 1; }
     if (parts.length) out.structured.push({ intro: '', parts });
   }
   return out;

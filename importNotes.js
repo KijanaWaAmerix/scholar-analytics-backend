@@ -69,7 +69,8 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
           console.log(`  - ${f}: only ${nFound} of ${nSubs} sub-strand headings found, matching by content instead`);
           split = Object.fromEntries(Object.entries(split).map(([id, v]) => [id, { ...v, found: false, words: 0, sections: [] }]));
         }
-        allText.push(sectionsOf(lines).map((sec) => [sec.heading, ...sec.text].filter(Boolean).join('\n')).join('\n\n'));
+        /* the table of contents ("Nouns ........ 9") names every topic and would win every match: leave it out */
+        allText.push(sectionsOf(lines.filter((l) => !/\.{4,}/.test(l))).map((sec) => [sec.heading, ...sec.text].filter(Boolean).join('\n')).join('\n\n'));
         if (runTogether) loose = true;
         used.push(f);
         if (runTogether) console.log(`  ! ${f}: words look run together, the text will need clean-up`);
@@ -90,10 +91,15 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
       let per = sub.lessons ? cur.words / sub.lessons : cur.words;
       /* Thin or missing: look through all the notes of the subject for what matches this sub-strand */
       if (per < 35 && everything) {
-        const query = [sub.name, ...(sub.scope || []), ...(sub.outcomes || [])].join(' ');
+        /* For notes that cover only some sub-strands the outcomes are too general ("use ... correctly") and
+           pull in other chapters: search by the sub-strand's own name only */
+        const query = subject.matchOnly ? sub.name : [sub.name, ...(sub.scope || []), ...(sub.outcomes || [])].join(' ');
         const m = matchNotes(everything, query, 6000, loose);
         const words = m.text.split(/\s+/).filter(Boolean).length;
-        if (m.blocks && words > cur.words && relevantTo(m.text, sub)) {
+        /* A notes file may cover only some kinds of sub-strands (an English "grammar notes" file):
+           the catalog's matchOnly lists the words a sub-strand's name must contain to receive matched text */
+        const allowed = !subject.matchOnly || subject.matchOnly.some((w) => sub.name.toLowerCase().includes(w));
+        if (allowed && m.blocks && words > cur.words && relevantTo(m.text, sub)) {
           cur.sections = [{ heading: '', text: m.text.split('\n'), source: 'matched' }];
           cur.words = words; cur.matched = true; cur.found = true; cur.files = used.slice();
           per = sub.lessons ? words / sub.lessons : words;

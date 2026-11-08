@@ -20,7 +20,10 @@
       "slug": "english",
       "designKey": "grade7-english",
       "name": "English",
-      "notes": []
+      "notes": [],
+      "matchOnly": [
+        "grammar"
+      ]
     },
     {
       "slug": "kiswahili",

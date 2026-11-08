@@ -76,7 +76,40 @@ const extractPages = async (buffer, { max = 0 } = {}) => {
 
 /* ── 1. Summary table: strands, sub-strands, lesson counts ── */
 
+/* Fallback for summary pages the column reader cannot place (a table that runs onto a second page,
+   headings spelled "Sub-Strand"): read each row as a line, "1.1 Self-Exploration 6", and the total. */
+const readSummaryLines = (pages) => {
+  const at = pages.findIndex((p) => {
+    const t = lineify(p).map((l) => l.text).join(' ');
+    return /SUMMARY OF STRANDS AND SUB[\s-]?STRANDS/i.test(t) && /Suggested Number of Lessons/i.test(t);
+  });
+  if (at === -1) return { strands: [] };
+  const byStrand = new Map();
+  let total;
+  for (const page of pages.slice(at, at + 2)) {
+    for (const ln of lineify(page.filter((t) => t.y >= 30))) {
+      const tot = ln.text.match(/Total Number of Lessons\s+(\d{2,3})\s*$/i);
+      if (tot) { total = Number(tot[1]); continue; }
+      const m = ln.text.match(/(?:^|\s)(\d{1,2})\.([1-9]\d?)\s+(.+?)\s+(\d{1,2})\s*$/);
+      if (!m) continue;
+      const id = `${m[1]}.${m[2]}`;
+      if (!byStrand.has(m[1])) byStrand.set(m[1], { id: `${m[1]}.0`, name: '', sub_strands: [] });
+      const st = byStrand.get(m[1]);
+      if (!st.sub_strands.some((x) => x.id === id)) st.sub_strands.push({ id, name: tidy(m[3]), lessons: Number(m[4]) });
+    }
+  }
+  return { strands: [...byStrand.values()], total };
+};
+
 const readSkeleton = (pages) => {
+  const lines = readSkeletonColumns(pages);
+  const n = (r) => r.strands.reduce((a, st) => a + st.sub_strands.length, 0);
+  const alt = readSummaryLines(pages);
+  /* The column reader is used when it finds the whole table; otherwise the line reader */
+  return n(lines) >= n(alt) && n(lines) > 0 ? lines : (n(alt) > 0 ? alt : lines);
+};
+
+const readSkeletonColumns = (pages) => {
   const at = pages.findIndex((p) => {
     const t = lineify(p).map((l) => l.text).join(' ');
     return /SUMMARY OF STRANDS AND SUB\s?STRANDS/i.test(t) && /Suggested Number of Lessons/i.test(t);
@@ -265,6 +298,20 @@ const readTables = (pages) => {
       if (outX !== undefined && outX < pageBounds.out) pageBounds.out = outX;
       if (expX !== undefined && expX < pageBounds.exp) pageBounds.exp = expX;
       tableItems.forEach((t) => cols[columnOf(t.x, pageBounds)].push(t));
+
+      /* A strand with a single sub-strand may print only "3.0" in its strand cell and no "3.1" for the
+         sub-strand (Grade 7 Social Studies, Community Service Learning). Its first row then starts the
+         sub-strand "<strand>.1". */
+      const subIds = lineify(cols.sub).some((l) => !l.bullet && /^\d{1,2}\.\d{1,2}\.?(?=\s|$|[A-Z])/.test(l.text));
+      if (!subIds) {
+        const sl = lineify(cols.strand).find((l) => /^\d{1,2}\.0(\s|$)/.test(l.text));
+        const major = sl && sl.text.match(/^(\d{1,2})\.0/)[1];
+        if (major && !acc[`${major}.1`] && (!current || current.split('.')[0] !== major)) {
+          current = `${major}.1`;
+          acc[current] = emptyAcc(); order.push(current);
+          inHeader = true;
+        }
+      }
 
       for (const ln of lineify(cols.sub)) {
         const id = ln.text.match(/^(\d{1,2})\.(\d{1,2})\.?(?=\s|$|[A-Z])/);
@@ -550,6 +597,17 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
         else if (!strict) continue;
       }
     }
+    /* no name matched: the row with the same number, then any row of the same strand nobody took
+       (some appendices use older names and numbers, but their resources still fit the strand) */
+    for (const sub of subs) {
+      if (!assigned[sub.id] && appendix[sub.id] && !taken.has(sub.id)) { assigned[sub.id] = sub.id; taken.add(sub.id); }
+    }
+    for (const sub of subs) {
+      if (assigned[sub.id]) continue;
+      const major = sub.id.split('.')[0];
+      const left = rows.find(([rid]) => !taken.has(rid) && rid.split('.')[0] === major);
+      if (left) { assigned[sub.id] = left[0]; taken.add(left[0]); }
+    }
     /* rows written for a whole strand (numbered x.0) apply to every sub-strand of it that has none */
     for (const sub of subs) {
       const whole = appendix[`${sub.id.split('.')[0]}.0`];
@@ -634,6 +692,19 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
     };
   });
 
+  /* The tables and the summary page sometimes disagree (Grade 7 Social Studies: 5 lessons on the summary,
+     4 in the table). When the summary page adds up to the total it states and the tables do not, the
+     summary is the design's own allocation and is used. */
+  const sum = (list) => list.reduce((n, x) => n + (Number.isInteger(x) ? x : 0), 0);
+  const allSubs = strands.flatMap((s) => s.sub_strands);
+  const fromSummaryCounts = allSubs.map((x) => (summarySub[x.id] ? summarySub[x.id].lessons : undefined));
+  if (skeleton.total && allSubs.every((x, i) => Number.isInteger(fromSummaryCounts[i]))
+      && sum(fromSummaryCounts) === skeleton.total && sum(allSubs.map((x) => x.lessons)) !== skeleton.total) {
+    allSubs.forEach((x, i) => {
+      if (x.lessons !== fromSummaryCounts[i]) notes.push(`Sub-strand ${x.id}: ${x.lessons} lessons in the table, ${fromSummaryCounts[i]} on the summary page. The summary page was used because it adds up to the stated total of ${skeleton.total}.`);
+      x.lessons = fromSummaryCounts[i];
+    });
+  }
   const total = strands.reduce((n, s) => n + s.sub_strands.reduce((m, x) => m + (Number.isInteger(x.lessons) ? x.lessons : 0), 0), 0);
   if (skeleton.total && skeleton.total !== total) problems.push(`Lessons add up to ${total}, but the design says ${skeleton.total}.`);
 

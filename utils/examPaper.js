@@ -97,7 +97,7 @@ const paperPrompt = ({ design, sub, lang, notes, mcq, structured, twist }) => [
   '- "explanation" is one short sentence saying why the answer is correct.',
   'Structured question rules:',
   '- Each question has 2 to 5 parts worth 6 to 12 marks in all. Begin with a short real-life or classroom scenario in "intro" that the parts follow from.',
-  '- Parts rise in difficulty: start with recall (State, Name, List), then understanding (Explain, Describe, Differentiate), and end with application or higher-order thinking (Suggest, Justify, Predict, Design, What would happen if...).',
+  '- Parts rise in difficulty and use a wide range of command words: recall (State, Name, List, Identify, Define, Give), understanding (Outline, Describe, Explain, Differentiate, Compare, Give reasons), and higher-order (Discuss, Justify, Suggest, Predict, Evaluate, Design, What would happen if...). Do not repeat the same command word in one question.',
   '- Each part has "text", "marks" (a whole number from 1 to 4) and "answer".',
   '- "answer" lists the marking points, one string each. The number of marking points must equal the marks for that part. Accept only correct, checkable answers.',
   '- If the question is about a diagram, do not refer to a diagram. Describe the situation in words instead.',
@@ -225,18 +225,16 @@ const createPaperWriter = ({ ai, notes = async () => '', bank = null, random = M
       }
     };
 
-    /* What teachers use: saved questions first, then plain questions from the notes. No AI. */
+    /* What teachers use: the notes come first (they are the source), the saved bank fills what is missing. No AI. */
     if (mode === 'bank') {
-      if (bank) {
+      const text = (await notes(designKey, sub.id)) || '';
+      if (text) take(fromNotes(text, { mcq, structured, random }), 'notes');
+      if (bank && (goodMcq.length < mcq || goodStr.length < structured)) {
         try {
           const saved = await bank.get(designKey, sub.id);
           take({ mcq: sample(saved.mcq || [], (saved.mcq || []).length, random) }, 'saved');
           take({ structured: sample(saved.structured || [], (saved.structured || []).length, random) }, 'saved');
         } catch (err) { console.error('Reading saved questions failed:', err.message); }
-      }
-      if (goodMcq.length < mcq || goodStr.length < structured) {
-        const text = (await notes(designKey, sub.id)) || '';
-        if (text) take(fromNotes(text, { mcq: mcq - goodMcq.length, structured: structured - goodStr.length, random }), 'notes');
       }
       return { mcq: goodMcq, structured: goodStr, aiError: null };
     }

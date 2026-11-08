@@ -112,6 +112,9 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
     if (store) {
       /* The layout the app already reads: notes/<designKey>/<subId>/<file>.json holding { text }.
          Lesson plans, schemes and exams all pick the notes up from there. */
+      /* Start clean: notes from an earlier import (possibly matched wrongly) must not stay behind
+         for sub-strands that now have none. Everything is rebuilt from the folder just read. */
+      await store.deletePrefix(`notes/${subject.designKey}/`);
       let n = 0;
       for (const [id, v] of Object.entries(subs)) {
         if (!v.sections.length) continue;

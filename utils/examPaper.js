@@ -4,7 +4,7 @@
 
    Builds a KJSEA-style paper for the sub-strands a teacher picks:
      Section A  multiple choice, four options (A to D), one mark each
-     Section B  structured questions with parts and marks
+     Section B  structured questions: a scenario, then 2 to 5 parts that rise in difficulty
    plus a full marking scheme.
 
    Gemini writes the questions from the KICD design and any stored
@@ -18,12 +18,16 @@ const { cleanText, findSubStrand, languageFor } = require('./lessonContent');
 const { DEFAULT_SCALE } = require('./gradingEngine');
 const { fromNotes } = require('./notesQuestions');
 
-const LIMITS = { maxSubStrands: 8, maxMcq: 60, maxStructured: 20, maxQuestions: 70 };
+const LIMITS = { maxSubStrands: Infinity, maxMcq: Infinity, maxStructured: Infinity, maxQuestions: Infinity };
 const LETTERS = ['A', 'B', 'C', 'D'];
 
 /* ── Splitting the numbers over the chosen sub-strands ─────── */
 /* Whole numbers in proportion to each sub-strand's lessons; the total stays exact */
-const share = (total, weights) => {
+const share = (total, weights, minOne = true) => {
+  /* every chosen sub-strand is tested at least once when there are enough questions */
+  if (minOne && total >= weights.length && weights.length > 1) {
+    return share(total - weights.length, weights, false).map((n) => n + 1);
+  }
   const sum = weights.reduce((a, b) => a + b, 0) || 1;
   const raw = weights.map((w) => (total * w) / sum);
   const out = raw.map(Math.floor);
@@ -88,10 +92,13 @@ const paperPrompt = ({ design, sub, lang, notes, mcq, structured }) => [
   'Multiple choice rules:',
   '- Four options only. "answer" is the single correct option as the letter A, B, C or D, and it must match the position of the correct option in "options".',
   '- Options are plain text without the letters A-D in front. Distractors must be believable. Never use "all of the above" or "none of the above".',
-  '- Mix recall with application, for example short classroom or daily-life situations such as "Grade 8 learners were investigating...".',
+  '- Spread the questions over the whole scope and every specific learning outcome, not only the first one. About 40% recall, 40% understanding and application, 20% reasoning or analysis.',
+  '- Mix recall with application, for example short classroom or daily-life situations such as "Learners were investigating...".',
   '- "explanation" is one short sentence saying why the answer is correct.',
   'Structured question rules:',
-  '- Each question has 1 to 3 parts. Each part has "text" (for example "State two uses of...", "Differentiate between...", "Explain why..."), "marks" (a whole number from 1 to 4) and "answer".',
+  '- Each question has 2 to 5 parts worth 6 to 12 marks in all. Begin with a short real-life or classroom scenario in "intro" that the parts follow from.',
+  '- Parts rise in difficulty: start with recall (State, Name, List), then understanding (Explain, Describe, Differentiate), and end with application or higher-order thinking (Suggest, Justify, Predict, Design, What would happen if...).',
+  '- Each part has "text", "marks" (a whole number from 1 to 4) and "answer".',
   '- "answer" lists the marking points, one string each. The number of marking points must equal the marks for that part. Accept only correct, checkable answers.',
   '- If the question is about a diagram, do not refer to a diagram. Describe the situation in words instead.',
   'Test only the scope and outcomes below. Questions must be scientifically and factually accurate, clear, and suitable for the grade. Do not repeat a question.',
@@ -139,7 +146,7 @@ const cleanMcq = (raw, rng) => {
 
 const cleanStructured = (raw) => {
   const intro = cleanText(raw?.intro, 600);
-  const parts = (Array.isArray(raw?.parts) ? raw.parts : []).slice(0, 3).map((p) => {
+  const parts = (Array.isArray(raw?.parts) ? raw.parts : []).slice(0, 5).map((p) => {
     const text = cleanText(p?.text, 400);
     const marks = Number(p?.marks);
     const answer = (Array.isArray(p?.answer) ? p.answer : []).map((a) => cleanText(a, 300)).filter(Boolean);
@@ -270,14 +277,13 @@ const createPaperWriter = ({ ai, notes = async () => '', bank = null, random = M
     if ((mode === 'gemini' && !ai) || (mode === 'auto' && !ai && !bank)) throw Object.assign(new Error('Writing exams needs Gemini, which is not set up yet.'), { statusCode: 503 });
 
     const bad = (m) => Object.assign(new Error(m), { statusCode: 400 });
-    if (!Array.isArray(subStrandIds) || !subStrandIds.length || subStrandIds.length > LIMITS.maxSubStrands) {
-      throw bad(`Choose between 1 and ${LIMITS.maxSubStrands} sub-strands.`);
+    if (!Array.isArray(subStrandIds) || !subStrandIds.length) {
+      throw bad('Choose at least one sub-strand.');
     }
     if (new Set(subStrandIds).size !== subStrandIds.length) throw bad('A sub-strand was chosen twice.');
-    if (!Number.isInteger(mcq) || mcq < 0 || mcq > LIMITS.maxMcq) throw bad(`Multiple choice questions must be from 0 to ${LIMITS.maxMcq}.`);
-    if (!Number.isInteger(structured) || structured < 0 || structured > LIMITS.maxStructured) throw bad(`Structured questions must be from 0 to ${LIMITS.maxStructured}.`);
+    if (!Number.isInteger(mcq) || mcq < 0) throw bad('Multiple choice questions must be a whole number, 0 or more.');
+    if (!Number.isInteger(structured) || structured < 0) throw bad('Structured questions must be a whole number, 0 or more.');
     if (mcq + structured < 1) throw bad('Choose at least one question.');
-    if (mcq + structured > LIMITS.maxQuestions) throw bad(`A paper can have at most ${LIMITS.maxQuestions} questions.`);
 
     const subs = subStrandIds.map((id) => {
       const f = findSubStrand(design, id);
@@ -330,8 +336,8 @@ const createPaperWriter = ({ ai, notes = async () => '', bank = null, random = M
     const bad = (m) => Object.assign(new Error(m), { statusCode: 400 });
     const found = findSubStrand(design, subStrandId);
     if (!found) throw bad('Unknown sub-strand.');
-    if (!Number.isInteger(mcq) || mcq < 0 || mcq > 30) throw bad('Multiple choice questions per sub-strand must be from 0 to 30.');
-    if (!Number.isInteger(structured) || structured < 0 || structured > 10) throw bad('Structured questions per sub-strand must be from 0 to 10.');
+    if (!Number.isInteger(mcq) || mcq < 0) throw bad('Multiple choice questions must be a whole number, 0 or more.');
+    if (!Number.isInteger(structured) || structured < 0) throw bad('Structured questions must be a whole number, 0 or more.');
     if (mcq + structured < 1) throw bad('Ask for at least one question.');
 
     const got = await writeForSub({ design, designKey, sub: found.sub, lang: languageFor(design), mode, mcq, structured });

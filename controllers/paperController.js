@@ -36,13 +36,13 @@ const planPaper = async (req, res, next) => {
     const design = await loadDesign(designKey);
     if (!design) return fail('Unknown curriculum design.');
 
-    if (!Array.isArray(subStrandIds) || !subStrandIds.length || subStrandIds.length > 8 ||
+    if (!Array.isArray(subStrandIds) || !subStrandIds.length ||
         !subStrandIds.every((id) => typeof id === 'string' && SUB_ID.test(id)) ||
         new Set(subStrandIds).size !== subStrandIds.length) {
-      return fail('Choose between 1 and 8 different sub-strands.');
+      return fail('Choose at least one sub-strand, each only once.');
     }
-    if (!Number.isInteger(mcq) || mcq < 0 || mcq > 60) return fail('Multiple choice questions must be from 0 to 60.');
-    if (!Number.isInteger(structured) || structured < 0 || structured > 20) return fail('Structured questions must be from 0 to 20.');
+    if (!Number.isInteger(mcq) || mcq < 0) return fail('Multiple choice questions must be a whole number, 0 or more.');
+    if (!Number.isInteger(structured) || structured < 0) return fail('Structured questions must be a whole number, 0 or more.');
     if (mcq + structured < 1) return fail('Choose at least one question.');
 
     const subs = [];
@@ -102,8 +102,8 @@ const writePart = async (req, res, next) => {
 ══════════════════════════════════════════════════════════ */
 const getBands = (req, res) => {
   const total = req.body.total;
-  if (!Number.isInteger(total) || total < 1 || total > 200) {
-    return res.status(400).json({ success: false, message: 'Total marks must be from 1 to 200.' });
+  if (!Number.isInteger(total) || total < 1 || total > 10000) {
+    return res.status(400).json({ success: false, message: 'Total marks must be from 1 to 10000.' });
   }
   res.status(200).json({ success: true, bands: bandsFor(total) });
 };

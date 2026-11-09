@@ -1,0 +1,74 @@
+{
+  "grade": "grade9",
+  "label": "Grade 9",
+  "page": "https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-nine-designs/",
+  "note": "Grade 9 designs are read from a folder: run importGradeDesigns.js grade9 --from <folder>. lessonsPerWeek is copied from Grade 8 (same junior school timetable) and should be checked against the 2026 Ministry guideline.",
+  "subjects": [
+    {
+      "slug": "integrated-science",
+      "name": "Integrated Science",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "mathematics",
+      "name": "Mathematics",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "english",
+      "name": "English",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "kiswahili",
+      "name": "Kiswahili",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "cre",
+      "name": "Christian Religious Education",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "social-studies",
+      "name": "Social Studies",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "pre-technical-studies",
+      "name": "Pre-Technical Studies",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "agriculture-and-nutrition",
+      "name": "Agriculture and Nutrition",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "creative-arts-and-sports",
+      "name": "Creative Arts and Sports",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "ire",
+      "name": "Islamic Religious Education",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "hre",
+      "name": "Hindu Religious Education",
+      "lessonsPerWeek": 4,
+      "urls": []
+    }
+  ]
+}

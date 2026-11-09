@@ -1,0 +1,74 @@
+{
+  "grade": "grade9",
+  "label": "Grade 9",
+  "source": "https://teacher.co.ke/grade-9-notes/",
+  "note": "Design key = <grade>-<subject>. Notes are reference only. Files are read from a folder, matched by the subject words in their names.",
+  "subjects": [
+    {
+      "slug": "integrated-science",
+      "designKey": "grade9-integrated-science",
+      "name": "Integrated Science",
+      "notes": []
+    },
+    {
+      "slug": "mathematics",
+      "designKey": "grade9-mathematics",
+      "name": "Mathematics",
+      "notes": []
+    },
+    {
+      "slug": "english",
+      "designKey": "grade9-english",
+      "name": "English",
+      "notes": []
+    },
+    {
+      "slug": "kiswahili",
+      "designKey": "grade9-kiswahili",
+      "name": "Kiswahili",
+      "notes": []
+    },
+    {
+      "slug": "cre",
+      "designKey": "grade9-cre",
+      "name": "Christian Religious Education",
+      "notes": []
+    },
+    {
+      "slug": "social-studies",
+      "designKey": "grade9-social-studies",
+      "name": "Social Studies",
+      "notes": []
+    },
+    {
+      "slug": "pre-technical-studies",
+      "designKey": "grade9-pre-technical-studies",
+      "name": "Pre-Technical Studies",
+      "notes": []
+    },
+    {
+      "slug": "agriculture-and-nutrition",
+      "designKey": "grade9-agriculture-and-nutrition",
+      "name": "Agriculture and Nutrition",
+      "notes": []
+    },
+    {
+      "slug": "creative-arts-and-sports",
+      "designKey": "grade9-creative-arts-and-sports",
+      "name": "Creative Arts and Sports",
+      "notes": []
+    },
+    {
+      "slug": "ire",
+      "designKey": "grade9-ire",
+      "name": "Islamic Religious Education",
+      "notes": []
+    },
+    {
+      "slug": "hre",
+      "designKey": "grade9-hre",
+      "name": "Hindu Religious Education",
+      "notes": []
+    }
+  ]
+}

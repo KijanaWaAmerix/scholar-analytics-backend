@@ -42,7 +42,7 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
     if (only && subject.slug !== only) continue;
     const design = designs[subject.designKey] || (store && await store.getJson(`designs/${subject.designKey}.json`).catch(() => null));
     /* Files named in the catalog, plus any file in the folder whose name holds the subject's words */
-    const KEYS = { 'integrated-science': ['integrated-science', 'integrated science'], mathematics: ['mathematics', 'maths', 'math-'], 'pre-technical': ['pre-technical', 'pre technical', 'pretechnical'], 'social-studies': ['social-studies', 'social studies'], agriculture: ['agric'], cre: ['c-r-e', '-cre-', ' cre '], 'creative-arts': ['creative-arts', 'creative arts'], english: ['english'], kiswahili: ['kiswahili'] };
+    const KEYS = { 'integrated-science': ['integrated-science', 'integrated science'], mathematics: ['mathematics', 'maths', 'math-'], 'pre-technical': ['pre-technical', 'pre technical', 'pretechnical'], 'pre-technical-studies': ['pre-technical', 'pre technical', 'pretechnical'], 'agriculture-and-nutrition': ['agric'], 'creative-arts-and-sports': ['creative-arts', 'creative arts'], 'social-studies': ['social-studies', 'social studies'], agriculture: ['agric'], cre: ['c-r-e', '-cre-', ' cre '], 'creative-arts': ['creative-arts', 'creative arts'], english: ['english'], kiswahili: ['kiswahili'] };
     const keys = KEYS[subject.slug] || [subject.slug.replace(/-/g, ' '), subject.slug];
     const files = [...new Set([
       ...subject.notes.map((u) => local.find((f) => f.toLowerCase() === base(u))).filter(Boolean),

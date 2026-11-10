@@ -251,7 +251,9 @@ const readTables = (pages) => {
 
   pages.forEach((page) => {
     /* Drop the page number in the footer, but keep real text near the bottom edge */
-    const isFooter = (t) => t.y < 90 && /^\s*(\d{1,3}|[ivxl]+)\s*$/i.test(t.s);
+    const isFooter = (t) => t.y < 90 && /^\s*(\d{1,3}|[ivxl]+)\s*$/i.test(t.s)
+      /* "(6 lessons)" can fall at the very bottom of a page: its "6" is not a page number */
+      && !page.some((o) => o !== t && Math.abs(o.y - t.y) < 3 && o.x < t.x && t.x - o.x < 14 && /\(\s*$/.test(String(o.s)));
     const items = page.filter((t) => t.y >= 30 && !isFooter(t) && String(t.s).trim() !== '');
     const header = findHeader(items);
     /* "STRAND 1.0: NAME" above the first table of a strand */
@@ -288,7 +290,7 @@ const readTables = (pages) => {
     if (bounds && tableItems.length) {
       const cols = { strand: [], sub: [], out: [], exp: [], kiq: [] };
       /* A sub-strand number can start well left of its heading ("5.3" at 200, "Sub Strand" at 218) */
-      const idx = tableItems.filter((t) => /^\d{1,2}\.[1-9]\d?\s*$/.test(t.s) && t.x < bounds.sub - 10 && t.x > bounds.sub - 60 && t.x > 110).map((t) => t.x);
+      const idx = tableItems.filter((t) => /^\d{1,2}\.[1-9]\d?(\s|$)/.test(t.s) && t.x < bounds.sub - 10 && t.x > bounds.sub - 60 && t.x > 110).map((t) => t.x);
       const pageBounds = idx.length ? { ...bounds, sub: Math.min(...idx) } : { ...bounds };
       /* Some tables sit a little left of their headings; the first row's opening words show where the columns really start */
       const top = [...tableItems].sort((a, b) => b.y - a.y);
@@ -313,7 +315,16 @@ const readTables = (pages) => {
         }
       }
 
+      /* the count can wrap in a narrow column: "(8" on one line and "lessons)" on the next */
+      const subLines = [];
       for (const ln of lineify(cols.sub)) {
+        const prev = subLines[subLines.length - 1];
+        if (prev && /\(\s*\d+\s*$/.test(prev.text) && /^l?essons?\s*\)/i.test(ln.text)) {
+          subLines[subLines.length - 1] = { ...prev, text: `${prev.text.trim()} ${ln.text.trim()}` };
+        } else subLines.push(ln);
+      }
+
+      for (const ln of subLines) {
         const id = ln.text.match(/^(\d{1,2})\.(\d{1,2})\.?(?=\s|$|[A-Z])/);
         if (id && !ln.bullet) {
           current = `${id[1]}.${id[2]}`;
@@ -321,8 +332,8 @@ const readTables = (pages) => {
           inHeader = true;
         }
         if (!current) continue;
-        const count = ln.text.match(/\(\s*(\d+)\s*l?essons?\s*\)/i);
-        const rest = tidy(ln.text.replace(/\(\s*\d+\s*l?essons?\s*\)/i, ''));
+        const count = ln.text.match(/\(\s*(\d+)\s*l?essons?\s*\)?/i);
+        const rest = tidy(ln.text.replace(/\(\s*\d+\s*l?essons?\s*\)?/i, ''));
         if (count && acc[current].lessons === undefined) acc[current].lessons = Number(count[1]);
         if (inHeader) {
           /* A bulleted line under the name is content (scope), not part of the name */
@@ -660,8 +671,12 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
       sub_strands: ids.sort((x, y) => Number(x.split('.')[1]) - Number(y.split('.')[1])).map((id) => {
         const a = acc[id];
         const tail = tailOf(a.tail);
-        const name = cleanItem(a.header.join(' ').replace(/^\d{1,2}\.\d{1,2}\.?\s*/, ''));
+        let name = cleanItem(a.header.join(' ').replace(/^\d{1,2}\.\d{1,2}\.?\s*/, ''));
         const fromSummary = summarySub[id];
+        if (/[A-Z]/.test(name) && name === name.toUpperCase()) name = titleCase(name);   /* "INTEGERS" -> "Integers" */
+        /* some tables list the content after the name: "Healthy relationships - empathy - assertiveness" */
+        if (fromSummary && fromSummary.name && norm(name) !== norm(fromSummary.name) && norm(name).startsWith(norm(fromSummary.name))
+            && /\(| - /.test(name.slice(String(fromSummary.name).length))) name = cleanItem(fromSummary.name);
         if (fromSummary && fromSummary.name && norm(fromSummary.name) !== norm(name)) {
           notes.push(`Sub-strand ${id}: the summary page says "${fromSummary.name}" but the table says "${name}". The table name was used.`);
         }
@@ -693,15 +708,15 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
   });
 
   /* The tables and the summary page sometimes disagree (Grade 7 Social Studies: 5 lessons on the summary,
-     4 in the table). When the summary page adds up to the total it states and the tables do not, the
-     summary is the design's own allocation and is used. */
+     4 in the table). When the summary page adds up to the total it states, it is the design's own
+     allocation and is used (Grade 9 Social Studies: both add up to 120, but the tables hold typos such as 3 and 9). */
   const sum = (list) => list.reduce((n, x) => n + (Number.isInteger(x) ? x : 0), 0);
   const allSubs = strands.flatMap((s) => s.sub_strands);
   const fromSummaryCounts = allSubs.map((x) => (summarySub[x.id] ? summarySub[x.id].lessons : undefined));
   if (skeleton.total && allSubs.every((x, i) => Number.isInteger(fromSummaryCounts[i]))
-      && sum(fromSummaryCounts) === skeleton.total && sum(allSubs.map((x) => x.lessons)) !== skeleton.total) {
+      && sum(fromSummaryCounts) === skeleton.total) {
     allSubs.forEach((x, i) => {
-      if (x.lessons !== fromSummaryCounts[i]) notes.push(`Sub-strand ${x.id}: ${x.lessons} lessons in the table, ${fromSummaryCounts[i]} on the summary page. The summary page was used because it adds up to the stated total of ${skeleton.total}.`);
+      if (x.lessons !== fromSummaryCounts[i]) notes.push(`Sub-strand ${x.id}: ${x.lessons} lessons in the table, ${fromSummaryCounts[i]} on the summary page. The summary page was used because it lists every sub-strand and adds up to the stated total of ${skeleton.total}.`);
       x.lessons = fromSummaryCounts[i];
     });
   }
@@ -723,18 +738,30 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
 };
 
 /* Cover: "JUNIOR [SECONDARY] SCHOOL CURRICULUM DESIGN" / AREA / "GRADE n" (Kiswahili: "MTAALA ... SHULE ZA UPILI" / AREA / "GREDI YA n") */
+const GRADE_WORDS = { SABA: 7, NANE: 8, TISA: 9 };
 const coverFrom = (cover) => {
-  const at = cover.findIndex((t) => /JUNIOR\s+(SECONDARY\s+)?SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+DARAJA/i.test(t));
+  /* English: JUNIOR SCHOOL CURRICULUM DESIGN. Kiswahili: MTAALA WA DARAJA ... or MTAALA WA SHULE YA JUNIA */
+  const at = cover.findIndex((t) => /JUNIOR\s+(SECONDARY\s+)?SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
   const area = at >= 0 ? cover[at + 1] : '';
-  const grade = Number(((cover.find((t) => /^(GRADE|GREDI\s+YA)\s*\d/i.test(t)) || '').match(/\d+/) || [])[0]);
+  const gradeLine = cover.find((t) => /^(GRADE|GREDI\s+YA)\s*(\d|SABA|NANE|TISA)/i.test(t)) || '';
+  const word = (gradeLine.match(/\b(SABA|NANE|TISA)\b/i) || [])[1];
+  const grade = word ? GRADE_WORDS[word.toUpperCase()] : Number((gradeLine.match(/\d+/) || [])[0]);
   return { area, grade };
 };
 
 /** The learning area and grade on a design's cover page (reads only the first page) */
+/* The cover is usually page 1, but a download site may put its own page in front (Studocu) */
+const findCover = (pages) => {
+  for (const page of pages.slice(0, 4)) {
+    const r = coverFrom(lineify(page || []).map((l) => l.text));
+    if (r.area && Number.isInteger(r.grade)) return r;
+  }
+  return coverFrom(lineify(pages[0] || []).map((l) => l.text));
+};
+
 const coverOf = async (buffer) => {
-  const pages = await extractPages(buffer, { max: 1 });
-  const cover = lineify(pages[0] || []).map((l) => l.text);
-  const { area, grade } = coverFrom(cover);
+  const pages = await extractPages(buffer, { max: 4 });
+  const { area, grade } = findCover(pages);
   return { area: String(area || '').trim(), grade: Number.isInteger(grade) ? grade : null };
 };
 
@@ -745,8 +772,7 @@ const coverOf = async (buffer) => {
 const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinutes = 40 } = {}) => {
   const pages = await extractPages(buffer);
   /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
-  const cover = lineify(pages[0] || []).map((l) => l.text);
-  const { area, grade } = coverFrom(cover);
+  const { area, grade } = findCover(pages);
   const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\b(And|Of)\b/g, (w) => w.toLowerCase());
   const opts = { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade };
   /* English and Kiswahili are written in themes, with one table per skill and no numbered sub-strands */

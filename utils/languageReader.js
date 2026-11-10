@@ -23,7 +23,7 @@ const LANG = {
       links: /^links?\s+to\s+other/i,
     },
     stop: /^(STRAND\b|Suggested Assessment|Ass\w*\s+Rubric|Indicators?\s|APPENDIX|COMMUNITY SERVICE LEARNING)/i,
-    theme: /^(?:STRAND\s*:?\s*)?(\d{1,2})\.0\s*:?\s*(?:THEME\s*:?\s*)?(\S.*)$/,
+    theme: /^(?:(?:STRAND|THEME)\s*:?\s*)?(\d{1,2})\.0\s*:?\s*(?:THEME\s*:?\s*)?(\S.*)$/,
     lessons: /\(?\s*(\d+)\s*lessons?\s*\)?/i,
     strandLabel: /^STRAND/i,
   },

@@ -141,6 +141,8 @@ const pickItems = (items, n, total) => {
   return items.length ? [items[(n - 1) % items.length]] : [];
 };
 
+const { resourcesFor } = require('./resourceFallback');
+
 const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(design) }) => {
   const found = findSubStrand(design, subStrandId);
   if (!found) return null;
@@ -152,7 +154,8 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   const experiences = pickItems(sub.experiences || [], lessonNo, total);
   const focusItem   = pickItems(scope, lessonNo, total)[0] || sub.name;
   /* The sub-strand's own resources and assessment methods (from the design's appendix) come first */
-  const allRes      = (sub.resources && sub.resources.length ? sub.resources : (design.appendix?.learning_resources || []));
+  /* A design that lists none (CRE, for example) gets the usual resources of its learning area */
+  const allRes      = resourcesFor(design, sub);
   /* A long list is shared out: each lesson gets its own handful, so rows differ */
   const resources   = allRes.length <= 6 ? allRes
     : Array.from({ length: 5 }, (_, k) => allRes[((lessonNo - 1) * 3 + k) % allRes.length]);

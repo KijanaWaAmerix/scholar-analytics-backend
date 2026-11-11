@@ -156,9 +156,7 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   /* The sub-strand's own resources and assessment methods (from the design's appendix) come first */
   /* A design that lists none (CRE, for example) gets the usual resources of its learning area */
   const allRes      = resourcesFor(design, sub);
-  /* A long list is shared out: each lesson gets its own handful, so rows differ */
-  const resources   = allRes.length <= 6 ? allRes
-    : Array.from({ length: 5 }, (_, k) => allRes[((lessonNo - 1) * 3 + k) % allRes.length]);
+  const resources   = allRes;   /* the same list for every lesson of the sub-strand: tidy and in a fixed order */
   const ownAssess   = sub.assessment || [];
   const kiqs        = sub.key_inquiry_questions || [];
   const sw = lang === 'sw';

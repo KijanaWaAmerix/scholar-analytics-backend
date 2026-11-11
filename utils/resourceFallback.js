@@ -38,12 +38,33 @@ const CUES = [
   [/\b(graph|plot|ruler|protractor|compass|draw)/i, 'Drawing and measuring instruments'],
 ];
 
+/* A design that gives one long list for the whole learning area (Agriculture: cooking tools, foodstuffs, gardening tools ...)
+   would put everything in every row. Only the items that fit the sub-strand are kept, plus the general ones, always in the
+   same order, so a topic about hay is not given cooking tools. */
+const STOP = new Set(['selected', 'equipment', 'materials', 'material', 'tools', 'general', 'space', 'samples', 'sample', 'other', 'items', 'various', 'available', 'locally', 'learning', 'resources', 'resource']);
+const stems = (text) => new Set((String(text).toLowerCase().match(/[a-z]{4,}/g) || []).filter((w) => !STOP.has(w)).map((w) => w.slice(0, 5)));
+const GENERAL_ITEM = /digital|print|text ?book|reference|general environment|internet|resource person|chart/i;
+
+const narrow = (list, text) => {
+  if (list.length <= 6) return list;
+  const mine = stems(text);
+  const fits = list.filter((item) => !GENERAL_ITEM.test(item) && [...stems(item)].some((w) => mine.has(w))).slice(0, 3);
+  const general = list.filter((item) => GENERAL_ITEM.test(item)).slice(0, Math.max(2, 5 - fits.length));
+  const chosen = list.filter((item) => fits.includes(item) || general.includes(item));
+  return chosen.length >= 3 ? chosen.slice(0, 5) : list.slice(0, 5);
+};
+
 const resourcesFor = (design, sub) => {
   const own = sub && sub.resources && sub.resources.length ? sub.resources : (design.appendix && design.appendix.learning_resources) || [];
-  if (own.length) return own;
+  const text = [sub.name, ...(sub.scope || []), ...(sub.outcomes || []), ...(sub.experiences || [])].join(' ');
+  if (own.length) {
+    /* Only a list that every (or most) sub-strands share needs narrowing; a list written for this sub-strand is kept */
+    const key = JSON.stringify(own);
+    const sharedBy = (design.strands || []).flatMap((st) => st.sub_strands || []).filter((x) => JSON.stringify(x.resources || (design.appendix && design.appendix.learning_resources) || []) === key).length;
+    return sharedBy >= 3 ? narrow(own, text) : own.slice(0, 6);
+  }
 
   const base = (AREAS.find((a) => a.re.test(String(design.learning_area || ''))) || { items: GENERAL }).items;
-  const text = [sub.name, ...(sub.scope || []), ...(sub.experiences || [])].join(' ');
   const extra = CUES.filter(([re]) => re.test(text)).map(([, label]) => label).slice(0, 3);
   const sw = /kiswahili/i.test(String(design.learning_area || ''));
   return [...new Set([...base.slice(0, 3), ...(sw ? [] : extra), ...base.slice(3)])].slice(0, 6);

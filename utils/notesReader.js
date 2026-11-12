@@ -16,6 +16,7 @@ const linesFromFile = async (file) => {
   let text = '';
   /* PDFs go through the shared reader, which also reads scanned pages with OCR */
   if (ext === '.pdf') text = await require('./readNotesFile').readNotesBuffer(fs.readFileSync(file), file);
+  else if (ext === '.txt') text = fs.readFileSync(file, 'utf8');
   else if (ext === '.docx') text = (await require('mammoth').extractRawText({ path: file })).value;
   else if (ext === '.doc') text = (await new (require('word-extractor'))().extract(file)).getBody();
   else throw new Error(`Unsupported file type ${ext}`);

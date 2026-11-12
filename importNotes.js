@@ -46,7 +46,7 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
     const keys = KEYS[subject.slug] || [subject.slug.replace(/-/g, ' '), subject.slug];
     const files = [...new Set([
       ...subject.notes.map((u) => local.find((f) => f.toLowerCase() === base(u))).filter(Boolean),
-      ...local.filter((f) => /\.(pdf|docx?)$/i.test(f) && keys.some((k) => f.toLowerCase().replace(/_/g, '-').includes(k))),
+      ...local.filter((f) => /\.(pdf|docx?|txt)$/i.test(f) && keys.some((k) => f.toLowerCase().replace(/_/g, '-').includes(k))),
     ])];
     files.forEach((f) => claimed.add(f));
     if (!files.length) { console.log(`${subject.name}: no notes found in the folder, skipped`); continue; }
@@ -132,6 +132,6 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
       console.log(`  Uploaded notes for ${n} sub-strands to notes/${subject.designKey}/`);
     }
   }
-  const left = local.filter((f) => /\.(pdf|docx?)$/i.test(f) && !claimed.has(f));
+  const left = local.filter((f) => /\.(pdf|docx?|txt)$/i.test(f) && !claimed.has(f));
   if (left.length && !only) console.log('\nFiles not matched to any subject (tell me and I will add them):\n  ' + left.join('\n  '));
 })().catch((e) => { console.error(e.message); process.exit(1); });

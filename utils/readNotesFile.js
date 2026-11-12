@@ -2,8 +2,9 @@
    SCHOLAR ANALYTICS — Read a notes document as plain text
    File: backend/utils/readNotesFile.js
 
-   Supports Word (.docx and the old .doc), PDF (.pdf with real text,
-   not a scanned picture) and plain text (.txt, .md).
+   Supports Word (.docx and the old .doc), PDF (real text, or a scanned
+   picture, which is read with OCR when tesseract and pdftoppm are
+   installed) and plain text (.txt, .md).
 ═══════════════════════════════════════════════════════════ */
 
 const needs = (name) => new Error(`Run "npm install" first (the ${name} reader is missing).`);
@@ -21,15 +22,44 @@ const readDoc = async (buffer) => {
   return doc.getBody();
 };
 
+/** Read a scanned PDF page by page with OCR (needs the tesseract and pdftoppm programs) */
+const ocrPdf = async (buffer) => {
+  const fs = require('fs'); const os = require('os'); const path = require('path');
+  const { execFile } = require('child_process'); const { promisify } = require('util');
+  const run = promisify(execFile);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'notes-ocr-'));
+  try {
+    fs.writeFileSync(path.join(dir, 'in.pdf'), buffer);
+    await run('pdftoppm', ['-r', '150', '-gray', '-png', path.join(dir, 'in.pdf'), path.join(dir, 'p')], { maxBuffer: 1 << 26 });
+    const pages = fs.readdirSync(dir).filter((f) => /^p-\d+\.png$/.test(f)).sort();
+    const out = [];
+    for (const f of pages) {
+      const { stdout } = await run('tesseract', [path.join(dir, f), 'stdout', '-l', 'eng', '--psm', '6'], { maxBuffer: 1 << 26 });
+      out.push(stdout);
+    }
+    return out.join('\n')
+      .split('\n')
+      /* download-site banners and page footers that every scanned page carries */
+      .filter((l) => !/studocu|scan to open|downloaded by|lOMoAR|publishers\s*[-–]\s*\d{6,}/i.test(l))
+      .join('\n');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+};
+
 const readPdf = async (buffer) => {
   let pdf;
   try { pdf = require('pdf-parse'); } catch { throw needs('pdf'); }
   const data = await pdf(buffer);
   const text = String(data.text || '');
-  if (text.replace(/\s/g, '').length < 200) {
-    throw new Error('This PDF has no readable text (it may be a scan). Skipped.');
+  /* a scan has no text except a stamp such as a download banner: read it with OCR instead */
+  const real = text.split('\n').filter((l) => !/studocu|downloaded by|lOMoAR/i.test(l)).join(' ');
+  if (real.replace(/\s/g, '').length >= 200 && data.numpages <= real.length / 40) return text;
+  try {
+    const ocr = await ocrPdf(buffer);
+    if (ocr.replace(/\s/g, '').length >= 200) return ocr;
+  } catch (e) {
+    throw new Error('This PDF is a scan and could not be read with OCR (' + (e.code === 'ENOENT' ? 'tesseract and pdftoppm are not installed' : e.message) + '). Skipped.');
   }
-  return text;
+  throw new Error('This PDF has no readable text. Skipped.');
 };
 
 /** The file type from a name or link, ignoring any ?query part */

@@ -154,9 +154,9 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   const experiences = pickItems(sub.experiences || [], lessonNo, total);
   const focusItem   = pickItems(scope, lessonNo, total)[0] || sub.name;
   /* The sub-strand's own resources and assessment methods (from the design's appendix) come first */
-  /* A design that lists none (CRE, for example) gets the usual resources of its learning area */
-  const allRes      = resourcesFor(design, sub);
-  const resources   = allRes;   /* the same list for every lesson of the sub-strand: tidy and in a fixed order */
+  /* Textbooks, digital devices and whatever THIS lesson calls for (see resourceFallback.js) */
+  const lessonText  = [...experiences, ...outcomes, focusItem, sub.name].join(' ');
+  const resources   = resourcesFor(design, sub, lessonText);
   const ownAssess   = sub.assessment || [];
   const kiqs        = sub.key_inquiry_questions || [];
   const sw = lang === 'sw';

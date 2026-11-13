@@ -22,11 +22,11 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
 (async () => {
   const args = process.argv.slice(2);
   const grab = (flag) => { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : null; };
-  const from = grab('--from'); const only = grab('--only'); const upload = args.includes('--upload');
+  const from = grab('--from'); const only = grab('--only'); const upload = args.includes('--upload'); const headingsOnly = args.includes('--headings-only');
   const gradeKey = args.find((a, i) => !a.startsWith('--') && !['--from', '--only'].includes(args[i - 1]));
   const catalogFile = path.join(__dirname, 'data', 'notes-catalog', `${gradeKey}.json`);
   if (!gradeKey || !from || !fs.existsSync(catalogFile) || !fs.existsSync(from)) {
-    console.error('Usage: node importNotes.js <grade> --from "<folder with the notes>" [--only subject] [--upload]');
+    console.error('Usage: node importNotes.js <grade> --from "<folder with the notes>" [--only subject] [--headings-only] [--upload]');
     process.exit(1);
   }
   const catalog = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
@@ -90,7 +90,7 @@ const base = (u) => decodeURIComponent(String(u).split('/').pop()).toLowerCase()
       const cur = subs[sub.id] || { name: sub.name, found: false, words: 0, sections: [], files: [] };
       let per = sub.lessons ? cur.words / sub.lessons : cur.words;
       /* Thin or missing: look through all the notes of the subject for what matches this sub-strand */
-      if (per < 35 && everything) {
+      if (per < 35 && everything && !headingsOnly) {
         /* For notes that cover only some sub-strands the outcomes are too general ("use ... correctly") and
            pull in other chapters: search by the sub-strand's own name only */
         const query = subject.matchOnly ? sub.name : [sub.name, ...(sub.scope || []), ...(sub.outcomes || [])].join(' ');

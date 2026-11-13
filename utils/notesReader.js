@@ -14,7 +14,9 @@ const norm = (s) => clean(s).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(
 const linesFromFile = async (file) => {
   const ext = path.extname(file).toLowerCase();
   let text = '';
-  if (ext === '.pdf') text = (await require('pdf-parse')(fs.readFileSync(file))).text;
+  /* PDFs go through the shared reader, which also reads scanned pages with OCR */
+  if (ext === '.pdf') text = await require('./readNotesFile').readNotesBuffer(fs.readFileSync(file), file);
+  else if (ext === '.txt') text = fs.readFileSync(file, 'utf8');
   else if (ext === '.docx') text = (await require('mammoth').extractRawText({ path: file })).value;
   else if (ext === '.doc') text = (await new (require('word-extractor'))().extract(file)).getBody();
   else throw new Error(`Unsupported file type ${ext}`);
@@ -42,18 +44,25 @@ const findAnchors = (lines, design) => {
     const words = norm(sub.name).split(' ').filter((w) => w.length > 2);
     const need = Math.max(1, Math.ceil(words.length * 0.75));
     let found = -1;
+    /* the table of contents ("Soil conservation ....... 12") is not where a topic begins */
+    const toc = (l) => /\.{4,}|…{2,}/.test(l);
+    /* a numbered line that also holds some of the sub-strand's words; some books number every
+       small heading (1.1, 1.2, 1.3 ...) so a number alone may belong to another topic */
+    const hasName = (l) => { const n = norm(l); return words.some((w) => n.includes(w)); };
+    let weak = -1;
     for (let i = from; i < lines.length && found < 0; i++) {
       const l = lines[i];
-      if (l.length > 110) continue;
-      if (byId.test(l)) found = i;
+      if (l.length > 110 || toc(l)) continue;
+      if (byId.test(l)) { if (hasName(l)) found = i; else if (weak < 0) weak = i; }
     }
     /* a numberless heading: a short line holding the sub-strand's own words */
     for (let i = from; i < lines.length && found < 0; i++) {
       const l = lines[i];
-      if (l.length > 90 || /[,;]$/.test(l)) continue;
+      if (l.length > 90 || /[,;]$/.test(l) || toc(l)) continue;
       const n = norm(l);
       if (words.filter((w) => n.includes(w)).length >= need && n.split(' ').length <= words.length + 4) found = i;
     }
+    if (found < 0) found = weak;
     anchors.push({ strand, sub, line: found });
     if (found >= 0) from = found + 1;
   }

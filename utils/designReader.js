@@ -214,6 +214,11 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
       const last = [...text.matchAll(/Sugg?\s*ested/gi)].pop();
       if (last && owner[last.index].x > x.exp + 50) x.kiq = owner[last.index].x;
     }
+    /* "Key" on the header row, "Inquiry" and "Question(s)" on the rows below (Grade 6 Social Studies) */
+    if (x.kiq === null && x.exp !== null) {
+      const key = [...text.matchAll(/Key(?![a-z])/gi)].map((m) => owner[m.index].x).find((v) => v > x.exp + 50);
+      if (key !== undefined) x.kiq = key;
+    }
     if (Object.values(x).some((v) => v === null)) continue;
     /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
     const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));
@@ -264,7 +269,7 @@ const readTables = (pages) => {
     /* "STRAND 1.0: NAME" above the first table of a strand */
     for (const ln of lineify(items)) {
       const t = ln.text.match(/^STRAND\s+(\d{1,2})\.0\s*[:.\-]?\s*(.+)$/i);
-      if (t && ln.x <= 90 && !/\.{4,}/.test(ln.text) && !strandTitles[`${t[1]}.0`]) strandTitles[`${t[1]}.0`] = cleanItem(t[2]);
+      if (t && ln.x <= 90 && !/\.{4,}/.test(ln.text) && !strandTitles[`${t[1]}.0`]) strandTitles[`${t[1]}.0`] = cleanItem(t[2]).replace(/\s+\d{1,3}$/, '');
     }
     let tableItems = items;
     let tailLines = [];
@@ -272,7 +277,8 @@ const readTables = (pages) => {
     if (header) {
       bounds = header.x;
       mode = 'table';
-      tableItems = items.filter((t) => t.y < header.bottom - 4);
+      /* the first row can sit level with the last header line ("Question(s)"): keep what is left of that column */
+      tableItems = items.filter((t) => t.y < header.bottom - 4 || (t.x < header.x.kiq - 10 && t.y < header.bottom + 3 && t.y > header.bottom - 4 - 0.5 * 28));
     } else if (mode === 'none') {
       return;
     }
@@ -747,7 +753,12 @@ const GRADE_WORDS = { SABA: 7, NANE: 8, TISA: 9 };
 const coverFrom = (cover) => {
   /* English: JUNIOR SCHOOL CURRICULUM DESIGN. Kiswahili: MTAALA WA DARAJA ... or MTAALA WA SHULE YA JUNIA */
   const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
-  const area = at >= 0 ? cover[at + 1] : '';
+  let area = at >= 0 ? cover[at + 1] : '';
+  /* Grade 6 Science & Technology: "UPPER PRIMARY SCHOOL" on one line, "SCIENCE & TECHNOLOGY CURRICULUM DESIGN" on the next */
+  if (!area) {
+    const own = cover.map((t) => t.match(/^(?!(?:JUNIOR|PRIMARY|LOWER|UPPER)\b)(.{3,60}?)\s+CURRICULUM\s+DESIGNS?\s*$/i)).find(Boolean);
+    if (own) area = own[1].replace(/\s*&\s*/g, ' and ');
+  }
   const gradeLine = cover.find((t) => /^(GRADE|GREDI\s+YA)\s*(\d|SABA|NANE|TISA)/i.test(t)) || '';
   const word = (gradeLine.match(/\b(SABA|NANE|TISA)\b/i) || [])[1];
   const grade = word ? GRADE_WORDS[word.toUpperCase()] : Number((gradeLine.match(/\d+/) || [])[0]);

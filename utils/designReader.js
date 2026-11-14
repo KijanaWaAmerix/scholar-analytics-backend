@@ -688,6 +688,9 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
         /* some tables list the content after the name: "Healthy relationships - empathy - assertiveness" */
         if (fromSummary && fromSummary.name && norm(name) !== norm(fromSummary.name) && norm(name).startsWith(norm(fromSummary.name))
             && /\(| - /.test(name.slice(String(fromSummary.name).length))) name = cleanItem(fromSummary.name);
+        /* a label before the name and the lesson count after it: "Bible Stories Samson defeats the Philistines 4 lessons" */
+        name = name.replace(/\s*\(?\b\d+\s*lessons?\)?\s*$/i, '');
+        if (fromSummary && fromSummary.name && norm(name) !== norm(fromSummary.name) && norm(name).endsWith(norm(fromSummary.name))) name = cleanItem(fromSummary.name);
         if (fromSummary && fromSummary.name && norm(fromSummary.name) !== norm(name)) {
           notes.push(`Sub-strand ${id}: the summary page says "${fromSummary.name}" but the table says "${name}". The table name was used.`);
         }
@@ -732,7 +735,14 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
     });
   }
   const total = strands.reduce((n, s) => n + s.sub_strands.reduce((m, x) => m + (Number.isInteger(x.lessons) ? x.lessons : 0), 0), 0);
-  if (skeleton.total && skeleton.total !== total) problems.push(`Lessons add up to ${total}, but the design says ${skeleton.total}.`);
+  if (skeleton.total && skeleton.total !== total) {
+    /* a design whose own summary page does not add up to its stated total (CRE Grade 6: 100 against 90) cannot be checked against it */
+    const summaryTotal = sum(fromSummaryCounts);
+    if (allSubs.every((x, i) => Number.isInteger(fromSummaryCounts[i])) && summaryTotal !== skeleton.total) {
+      notes.push(`The design states ${skeleton.total} lessons in total, but its own summary page adds up to ${summaryTotal} and its tables to ${total}. The table counts were used (${total}).`);
+      skeleton.total = total;
+    } else problems.push(`Lessons add up to ${total}, but the design says ${skeleton.total}.`);
+  }
 
   const design = {
     source,
@@ -752,7 +762,7 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
 const GRADE_WORDS = { SABA: 7, NANE: 8, TISA: 9 };
 const coverFrom = (cover) => {
   /* English: JUNIOR SCHOOL CURRICULUM DESIGN. Kiswahili: MTAALA WA DARAJA ... or MTAALA WA SHULE YA JUNIA */
-  const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
+  const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+(EDUCATION\s+)?CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
   let area = at >= 0 ? cover[at + 1] : '';
   /* Grade 6 Science & Technology: "UPPER PRIMARY SCHOOL" on one line, "SCIENCE & TECHNOLOGY CURRICULUM DESIGN" on the next */
   if (!area) {

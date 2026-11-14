@@ -204,6 +204,11 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
       const hit = [...text.matchAll(/Sugg?\s*ested\s*Learning/gi)].map((m) => owner[m.index].x).find((v) => v > x.out + 50);
       if (hit !== undefined) x.exp = hit;
     }
+    /* "Suggested" (experiences) and "Suggested Key Inquiry" on one row, "Learning" and "Experiences" on rows below (Grade 6) */
+    if (x.exp === null && x.out !== null && x.kiq !== null) {
+      const hit = [...text.matchAll(/Sugg?\s*ested/gi)].map((m) => owner[m.index].x).find((v) => v > x.out + 50 && v < x.kiq - 50);
+      if (hit !== undefined) x.exp = hit;
+    }
     /* "Suggested" alone on the header row, "Key Inquiry Question(s)" on the next rows */
     if (x.kiq === null && x.exp !== null) {
       const last = [...text.matchAll(/Sugg?\s*ested/gi)].pop();
@@ -231,7 +236,7 @@ const columnOf = (x, b) => {
 
 const TAIL = {
   competencies: /^core competenc/i,
-  pcis: /^pertinent and contemporary/i,
+  pcis: /^(pertinent and contemporary|pcis?\s*:?\s*$)/i,
   values: /^values?\s*:?\s*$/i,
   links: /^links?\s+to\s+other/i,
 };
@@ -737,11 +742,11 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
   return { design, problems, notes };
 };
 
-/* Cover: "JUNIOR [SECONDARY] SCHOOL CURRICULUM DESIGN" / AREA / "GRADE n" (Kiswahili: "MTAALA ... SHULE ZA UPILI" / AREA / "GREDI YA n") */
+/* Cover: "JUNIOR [SECONDARY] SCHOOL CURRICULUM DESIGN" (primary designs: "PRIMARY SCHOOL CURRICULUM DESIGN") / AREA / "GRADE n" (Kiswahili: "MTAALA ... SHULE ZA UPILI" / AREA / "GREDI YA n") */
 const GRADE_WORDS = { SABA: 7, NANE: 8, TISA: 9 };
 const coverFrom = (cover) => {
   /* English: JUNIOR SCHOOL CURRICULUM DESIGN. Kiswahili: MTAALA WA DARAJA ... or MTAALA WA SHULE YA JUNIA */
-  const at = cover.findIndex((t) => /JUNIOR\s+(SECONDARY\s+)?SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
+  const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
   const area = at >= 0 ? cover[at + 1] : '';
   const gradeLine = cover.find((t) => /^(GRADE|GREDI\s+YA)\s*(\d|SABA|NANE|TISA)/i.test(t)) || '';
   const word = (gradeLine.match(/\b(SABA|NANE|TISA)\b/i) || [])[1];

@@ -136,8 +136,9 @@ const fetchPdf = async (url) => {
 
     try {
       const read = await designFromPdf(pdf, {
-        source: `KICD Junior School Curriculum Design (${path.basename(where)})`,
+        source: `KICD ${catalog.levelName || 'Junior School'} Curriculum Design (${path.basename(where)})`,
         lessonsPerWeek: subject.lessonsPerWeek,
+        lessonMinutes: catalog.lessonMinutes || 40,
       });
       const { design } = read;
       const problems = [...read.problems, ...validateDesign(design)];

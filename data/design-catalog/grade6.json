@@ -1,0 +1,70 @@
+{
+  "grade": "grade6",
+  "label": "Grade 6",
+  "page": "https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-six-designs/",
+  "note": "Grade 6 (upper primary) designs are read from a folder: run importGradeDesigns.js grade6 --from <folder>. lessonsPerWeek follows the KICD upper primary lesson allocation (English 5, Kiswahili 4, Mathematics 5, Religious Education 3, Science and Technology 4, Agriculture and Nutrition 4, Social Studies 3, Creative Arts 6). Upper primary lessons are 35 minutes.",
+  "subjects": [
+    {
+      "slug": "english",
+      "name": "English",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "kiswahili",
+      "name": "Kiswahili",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "mathematics",
+      "name": "Mathematics",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "cre",
+      "name": "Christian Religious Education",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "ire",
+      "name": "Islamic Religious Education",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "hre",
+      "name": "Hindu Religious Education",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "science-and-technology",
+      "name": "Science and Technology",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "agriculture-and-nutrition",
+      "name": "Agriculture and Nutrition",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "social-studies",
+      "name": "Social Studies",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "creative-arts",
+      "name": "Creative Arts",
+      "lessonsPerWeek": 6,
+      "urls": []
+    }
+  ],
+  "lessonMinutes": 35,
+  "levelName": "Primary School"
+}

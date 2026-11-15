@@ -9,3 +9,5 @@ links.txt
 design-pdfs/
 data/curriculum-review/
 data/notes-extracted/
+
+*.whl

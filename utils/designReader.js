@@ -767,6 +767,10 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
     if (allSubs.every((x, i) => Number.isInteger(fromSummaryCounts[i])) && summaryTotal !== skeleton.total) {
       notes.push(`The design states ${skeleton.total} lessons in total, but its own summary page adds up to ${summaryTotal} and its tables to ${total}. The table counts were used (${total}).`);
       skeleton.total = total;
+    } else if (!allSubs.some((x) => x.lessons_estimated) && Math.abs(total - skeleton.total) <= skeleton.total * 0.15) {
+      /* every table states its own count: the design's headline total is what disagrees (Creative Arts Grade 5: 195 against 180) */
+      notes.push(`The design states ${skeleton.total} lessons in total, but its sub-strands add up to ${total}. The sub-strand counts were used (${total}).`);
+      skeleton.total = total;
     } else problems.push(`Lessons add up to ${total}, but the design says ${skeleton.total}.`);
   }
 
@@ -815,6 +819,12 @@ const findCover = (pages) => {
   if (!first.area) {
     const text = pages.slice(0, 12).map((p) => lineify(p || []).map((l) => l.text).join(' ')).join(' ');
     if (/SOMO\s+LA\s+KISWAHILI/i.test(text)) first.area = 'KISWAHILI';
+    /* English Grade 5: the cover has no learning area line either; the essence statement names it */
+    if (!first.area) {
+      const m = text.match(/ESSENCE\s+STATEMENT\s+FOR\s+([A-Z][A-Z &]*?)(?=\s{2,}|\s+[A-Z][a-z]|\s*$)/);
+      if (m) first.area = m[1].trim();
+      else if (/English\s+is\s+a\s+major\s+language/i.test(text)) first.area = 'ENGLISH';
+    }
   }
   return first;
 };

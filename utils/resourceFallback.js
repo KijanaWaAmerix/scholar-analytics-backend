@@ -8,11 +8,12 @@
  */
 const AREAS = [
   { re: /kiswahili/i, general: 'Chati na kadi za maneno', items: ['Kamusi ya Kiswahili', 'Vitabu vya ziada na hadithi', 'Chati na kadi za maneno', 'Rekodi za sauti', 'Video', 'Picha na michoro'] },
-  { re: /english/i, general: 'Charts and flash cards', items: ['Dictionary and thesaurus', 'Class readers and set texts', 'Charts and flash cards', 'Audio recordings', 'Video clips', 'Newspapers and magazines', 'Games and puzzles'] },
-  { re: /mathematics/i, general: 'Charts and models', items: ['Number lines and number cards', 'Geometrical instruments (ruler, protractor, compasses, set square)', 'Scientific calculators', 'Graph paper', 'Charts and models', 'Real objects'] },
+  { re: /english/i, general: 'Charts and flash cards', items: ['Dictionary and thesaurus', 'Class readers and set texts', 'Poems and songs', 'Charts and flash cards', 'Audio recordings', 'Video clips', 'Newspapers and magazines', 'Games and puzzles'] },
+  { re: /mathematics/i, general: 'Charts and models', items: ['Number lines and number cards', 'Abacus, counters and bottle tops', 'Geometrical instruments (ruler, protractor, compasses, set square)', 'Measuring tools (tape measure, weighing scale, measuring cylinder)', 'Clock face and calendar', 'Play money (coins and notes)', 'Paper shapes and solid models', 'Scientific calculators', 'Graph paper', 'Charts and models', 'Real objects'] },
+  { re: /science and technology/i, general: 'Charts and models', items: ['Real objects, specimens and locally available materials', 'Charts and models', 'Simple apparatus and containers', 'Magnets, batteries, bulbs and connecting wires', 'Measuring tools (thermometer, measuring cylinder, weighing scale)', 'Hand lens', 'School garden and environment', 'Video clips'] },
   { re: /integrated science/i, general: 'Charts and models', items: ['Laboratory apparatus and materials', 'Charts and models', 'Specimens and samples', 'Locally available materials', 'Video clips and simulations'] },
-  { re: /social studies/i, general: 'Pictures and photographs', items: ['Atlases, wall maps and globes', 'Pictures and photographs', 'Newspapers and magazines', 'Charts and diagrams', 'Resource persons', 'Video clips'] },
-  { re: /christian|\bcre\b/i, general: 'Bible', items: ['Bible', 'Bible dictionary and concordance', 'Pictures and charts', 'Resource persons', 'Video clips'] },
+  { re: /social studies/i, general: 'Pictures and photographs', items: ['Atlases, wall maps and globes', 'Pictures and photographs', 'Artefacts and local environment', 'Newspapers and magazines', 'Charts and diagrams', 'Resource persons (elders, officials)', 'Video clips'] },
+  { re: /christian|\bcre\b/i, general: 'Bible', items: ['Bible', 'Bible dictionary and concordance', 'Pictures and charts', 'Songs and hymns', 'Resource persons', 'Video clips'] },
   { re: /islamic|\bire\b/i, general: "Qur'an", items: ["Qur'an", 'Pictures and charts', 'Resource persons', 'Video clips'] },
   { re: /hindu|\bhre\b/i, general: 'Holy scriptures', items: ['Holy scriptures', 'Pictures and charts', 'Resource persons', 'Video clips'] },
   { re: /pre-?technical/i, general: 'Samples and models', items: ['Tools, equipment and materials', 'Drawing instruments and paper', 'Samples and models', 'Charts and pictures', 'Resource persons', 'Video clips'] },
@@ -23,10 +24,16 @@ const GENERAL_ITEMS = ['Charts and pictures', 'Resource persons'];
 
 /* what a resource is (left) and which words in a lesson call for it (right) */
 const RULES = [
-  [/geometr|instrument|protractor|compass|ruler|set square|mathematical set/i, /angle|triang|construct|circle|polygon|measur|draw|protractor|compass|bisect|locus|symmetr|transform|reflect|rotat|translat|scale|bearing|sketch|perpendicular|parallel|arc\b|radius|diameter|geometr/i],
+  [/geometr|drawing instrument|protractor|compass|ruler|set square|mathematical set/i, /angle|triang|construct|circle|polygon|measur|draw|protractor|compass|bisect|locus|symmetr|transform|reflect|rotat|translat|scale|bearing|sketch|perpendicular|parallel|arc\b|radius|diameter|geometr/i],
   [/calculator/i, /calculat|percent|interest|compound|root|power|standard form|\bvat\b|tax|profit|loss|ratio|speed|trigonom|sine|cosine|tangent|logarithm|surd|discount|commission/i],
   [/graph|squared|grid/i, /graph|plot|coordinate|cartesian|gradient|axis|axes|histogram|table of values|inequalit|linear equation/i],
   [/number (line|card|chart)|abacus|counters|place value/i, /integer|number|fraction|decimal|place value|operation|addition|subtract|multipl|divi|factor|multiple|prime|negative|sequence|pattern|order|compar/i],
+  [/measuring|thermometer|weighing|tape measure|cylinder/i, /measur|length|mass|weigh|capacity|volume|litre|metre|kilogram|gram\b|perimeter|area\b|temperature|thermometer|heat|distance/i],
+  [/clock|calendar/i, /time|clock|hour|minute|second|calendar|date|day|week|month|year|duration/i],
+  [/money|coins|notes/i, /money|coin|note|shilling|cent\b|buy|sell|shop|price|bill|change|profit|loss|budget|saving/i],
+  [/shapes|solid/i, /shape|solid|cube|cuboid|cylinder|cone|sphere|prism|pyramid|face|edge|vertex|vertices|net\b|polygon|triangle|square|rectangle|circle/i],
+  [/magnet|batter|bulb|wires?/i, /magnet|attract|repel|battery|cell|bulb|circuit|electric|wire|switch|conduct|light|current/i],
+  [/hand lens|magnif/i, /observe|examine|magnif|small|cell|insect|seed|leaf|flower|structure|part/i],
   [/laborator|apparatus|chemical|test tube|bunsen|microscope/i, /experiment|investigat|apparatus|laborator|test|heat|measure|mix|separat|dissolv|react|burn|filter|distill|evaporat|observe|magnet|circuit|bulb|microscope|thermometer/i],
   [/specimen|sample|realia|real objects?|locally available|food items|seeds/i, /specimen|sample|collect|observe|identify|real objects?|classify|examine|different types|local|material|food|seed|leaf|plant|animal|soil|rock/i],
   [/model|chart|poster|picture|photograph|diagram|realia|illustrat|flash ?card|cards?/i, /chart|poster|picture|photograph|diagram|model|illustrat|label|display|flash ?card|cartoon/i],
@@ -34,7 +41,7 @@ const RULES = [
   [/newspaper|magazine|article/i, /newspaper|magazine|article|advert|headline|current|report|news/i],
   [/video|film|clip|simulation|animation/i, /video|clip|watch|film|documentary|simulat|animation|demonstrat|dramati|recorded|view /i],
   [/audio|recording|song|radio/i, /audio|listen|record|song|radio|podcast|music|pronunc|dialogue|bulletin|oral|speech/i],
-  [/garden|farm|tools|equipment|compost|nursery/i, /garden|plant|seed|soil|crop|farm|weed|compost|mulch|prune|nursery|transplant|harvest|tool|livestock|animal|feed|poultry|fish|bee|hay|forage|pest|disease|irrigat|manure|fertili[sz]er|dig|prepare the|seedbed/i],
+  [/garden|farm|compost|nursery/i, /garden|plant|seed|soil|crop|farm|weed|compost|mulch|prune|nursery|transplant|harvest|tool|livestock|animal|feed|poultry|fish|bee|hay|forage|pest|disease|irrigat|manure|fertili[sz]er|dig|prepare the|seedbed/i],
   [/food|kitchen|utensil|cook|ingredient/i, /food|cook|meal|nutri|recipe|ingredient|diet|prepar|bake|boil|fry|serve|hygiene|kitchen|menu|snack|balanced|vitamin|protein|carbohydrate/i],
   [/bible|holy|qur|scripture/i, /bible|verse|scripture|qur|gospel|psalm|prayer|read|text|passage|book of|story|parable|teaching of|commandment|worship|hadith|surah|chapter/i],
   [/resource person|visit|field|interview/i, /resource person|visit|invite|interview|field|excursion|talk to|survey|community|guest|speaker|expert|professional|elder/i],

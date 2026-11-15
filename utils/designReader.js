@@ -762,14 +762,16 @@ const readDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, le
 const GRADE_WORDS = { SABA: 7, NANE: 8, TISA: 9 };
 const coverFrom = (cover) => {
   /* English: JUNIOR SCHOOL CURRICULUM DESIGN. Kiswahili: MTAALA WA DARAJA ... or MTAALA WA SHULE YA JUNIA */
-  const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+(EDUCATION\s+)?CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI)/i.test(t));
+  const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+(EDUCATION\s+)?CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI|SHULE\s+ZA\s+MSINGI)/i.test(t));
   let area = at >= 0 ? cover[at + 1] : '';
+  /* Grade 6 Kiswahili has no learning area line on the cover: "GREDI 6" follows straight away */
+  if (/^(GREDI|GRADE)\b/i.test(String(area || ''))) area = '';
   /* Grade 6 Science & Technology: "UPPER PRIMARY SCHOOL" on one line, "SCIENCE & TECHNOLOGY CURRICULUM DESIGN" on the next */
   if (!area) {
     const own = cover.map((t) => t.match(/^(?!(?:JUNIOR|PRIMARY|LOWER|UPPER)\b)(.{3,60}?)\s+CURRICULUM\s+DESIGNS?\s*$/i)).find(Boolean);
     if (own) area = own[1].replace(/\s*&\s*/g, ' and ');
   }
-  const gradeLine = cover.find((t) => /^(GRADE|GREDI\s+YA)\s*(\d|SABA|NANE|TISA)/i.test(t)) || '';
+  const gradeLine = cover.find((t) => /^(GRADE|GREDI(\s+YA)?)\s*(\d|SABA|NANE|TISA)/i.test(t)) || '';
   const word = (gradeLine.match(/\b(SABA|NANE|TISA)\b/i) || [])[1];
   const grade = word ? GRADE_WORDS[word.toUpperCase()] : Number((gradeLine.match(/\d+/) || [])[0]);
   return { area, grade };
@@ -782,7 +784,13 @@ const findCover = (pages) => {
     const r = coverFrom(lineify(page || []).map((l) => l.text));
     if (r.area && Number.isInteger(r.grade)) return r;
   }
-  return coverFrom(lineify(pages[0] || []).map((l) => l.text));
+  /* A cover with no learning area (Grade 6 Kiswahili): the first pages say "MATOKEO YA KIJUMLA YA SOMO LA KISWAHILI" */
+  const first = coverFrom(lineify(pages[0] || []).map((l) => l.text));
+  if (!first.area) {
+    const text = pages.slice(0, 12).map((p) => lineify(p || []).map((l) => l.text).join(' ')).join(' ');
+    if (/SOMO\s+LA\s+KISWAHILI/i.test(text)) first.area = 'KISWAHILI';
+  }
+  return first;
 };
 
 const coverOf = async (buffer) => {
@@ -800,12 +808,13 @@ const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinute
   /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
   const { area, grade } = findCover(pages);
   const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\b(And|Of)\b/g, (w) => w.toLowerCase());
-  const opts = { source, lessonsPerWeek, lessonMinutes, learningArea: titled(area), grade };
+  const isLanguage = /^(english(\s+language)?|kiswahili)$/i.test(String(area).trim());
+  const opts = { source, lessonsPerWeek, lessonMinutes, learningArea: isLanguage ? titled(String(area).replace(/\s+language$/i, '')) : titled(area), grade };
   /* English and Kiswahili are written in themes, with one table per skill and no numbered sub-strands */
-  if (/^(english|kiswahili)$/i.test(String(area).trim())) {
+  if (isLanguage) {
     return require('./languageReader').readLanguageDesign(pages, { ...opts, language: /kiswahili/i.test(area) ? 'sw' : 'en' });
   }
   return readDesign(pages, opts);
 };
 
-module.exports = { appendixHeader, readAppendix, findHeader, coverFrom, columnOf, tailOf, TAIL, STOP, byBullet, outcomesOf, experiencesOf, questionsOf, titleCase, tidy, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };
+module.exports = { findCover, appendixHeader, readAppendix, findHeader, coverFrom, columnOf, tailOf, TAIL, STOP, byBullet, outcomesOf, experiencesOf, questionsOf, titleCase, tidy, extractPages, readDesign, designFromPdf, coverOf, readSkeleton, readTables, lineify, cleanItem };

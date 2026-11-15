@@ -219,6 +219,19 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
       const key = [...text.matchAll(/Key(?![a-z])/gi)].map((m) => owner[m.index].x).find((v) => v > x.exp + 50);
       if (key !== undefined) x.kiq = key;
     }
+    /* "Suggested Key" / "Inquiry Question(s)" and "Experiences" can sit on the rows below the header row (Grade 6 English) */
+    if (x.sub !== null && x.out !== null && (x.kiq === null || x.exp === null)) {
+      const lower = items.filter((it) => it.y < row.y && it.y > row.y - 45);
+      if (x.kiq === null) {
+        const k = lower.filter((it) => /^(Key|Inquiry|Suggested Key)/i.test(String(it.s).trim()) && it.x > (x.exp ?? x.out) + 50).map((it) => it.x);
+        if (k.length) x.kiq = Math.min(...k);
+      }
+      if (x.exp === null && x.kiq !== null) {
+        const e = lower.filter((it) => /^Experiences/i.test(String(it.s).trim()) && it.x > x.out + 50 && it.x < x.kiq - 30).map((it) => it.x);
+        const hit = [...text.matchAll(/Sugg?\s*ested\s*Learning/gi)].map((m) => owner[m.index].x).find((v) => v > x.out + 50 && v < x.kiq - 30);
+        x.exp = hit !== undefined ? hit : (e.length ? Math.min(...e) : null);
+      }
+    }
     if (Object.values(x).some((v) => v === null)) continue;
     /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
     const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));

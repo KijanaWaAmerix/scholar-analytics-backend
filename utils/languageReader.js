@@ -198,6 +198,7 @@ const languageAppendix = (pages, language) => (language === 'sw' ? swahiliAppend
 
 const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes = 40, learningArea = '', grade, language = 'en' } = {}) => {
   const L = LANG[language];
+  const primary = Number(grade) <= 6;
   const problems = [];
   const notes = [];
   const tables = [];
@@ -275,11 +276,24 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
 
     let lessons;
     const subText = [];
+    /* Primary designs list what the sub-strand covers under the title (after "(3 lessons)") */
+    const after = [];
+    let seenLessons = false;
     for (const ln of t.sub) {
       const m = ln.text.match(L.lessons);
-      if (m) lessons = Number(m[1] || m[2]);
       const rest = tidy(ln.text.replace(new RegExp(L.lessons.source, 'ig'), ''));
-      if (rest) subText.push(rest);
+      if (m) lessons = Number(m[1] || m[2]);
+      if (rest) {
+        if (primary && seenLessons) {
+          if (ln.bullet || !after.length) after.push(cleanItem(rest)); else after[after.length - 1] += ' ' + rest;
+        } else subText.push(rest);
+      }
+      if (m) seenLessons = true;
+    }
+    /* A count split over two lines: "(Vipindi" / "3)" */
+    if (lessons === undefined) {
+      const m = tidy(t.sub.map((l) => l.text).join(' ')).match(L.lessons);
+      if (m) lessons = Number(m[1] || m[2]);
     }
     const skill = tidy(t.strand.map((l) => l.text).join(' ').replace(/^\s*\d{1,2}\.\d{1,2}\.?\s*/, ''));
     /* Lines starting "1.1.1 ..." are the units of the sub-strand (they become the scope) */
@@ -299,7 +313,7 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
       id,
       name: tidy(name),
       lessons,
-      scope: unitTitles,
+      scope: primary && after.length ? after.map(cleanItem).filter(Boolean) : unitTitles,
       outcomes: outcomesOf(t.out),
       experiences: experiencesOf(t.exp),
       key_inquiry_questions: questionsOf(t.kiq),

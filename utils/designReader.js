@@ -830,7 +830,8 @@ const findCover = (pages) => {
 };
 
 const coverOf = async (buffer) => {
-  const pages = await extractPages(buffer, { max: 4 });
+  /* 12 pages: a cover without a learning area is recognised from the essence statement a few pages in */
+  const pages = await extractPages(buffer, { max: 12 });
   const { area, grade } = findCover(pages);
   return { area: String(area || '').trim(), grade: Number.isInteger(grade) ? grade : null };
 };

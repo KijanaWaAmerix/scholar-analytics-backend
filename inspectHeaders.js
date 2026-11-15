@@ -13,7 +13,7 @@ const { LANG } = require('./utils/languageReader');
   const pages = await extractPages(fs.readFileSync(file));
   pages.forEach((items, i) => {
     const text = items.map((t) => t.s).join(' ');
-    if (sw ? !(/Matokeo/i.test(text) && /Mapendekezo/i.test(text)) : !(/Specific/i.test(text) && /Suggested/i.test(text))) return;
+    if (sw ? !(/Matokeo/i.test(text) && /Shughuli|Mapendekezo/i.test(text)) : !(/Specific/i.test(text) && /Suggested/i.test(text))) return;
     if (findHeader(items, pats)) return;
     const rows = [];
     for (const it of items.filter((t) => t.y >= 60 && String(t.s).trim()).sort((a, b) => b.y - a.y || a.x - b.x)) {

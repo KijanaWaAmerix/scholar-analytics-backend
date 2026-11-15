@@ -187,7 +187,7 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
     }
     const at = (re) => { const m = re.exec(text); return m ? owner[m.index].x : null; };
     if (pats.columns) {
-      const x = pats.columns(text, owner);
+      const x = pats.columns(text, owner, items, row);
       if (!x) continue;
       const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));
       return { x, bottom: below.length ? Math.min(...below.map((it) => it.y)) : row.y - 26 };

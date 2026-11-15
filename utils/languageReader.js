@@ -29,17 +29,29 @@ const LANG = {
   },
   sw: {
     header: {
-      endRe: /Dadisi|Ujifunzaji|Yanayotarajiwa|Swali|Maswali/i,
-      columns: (text, owner) => {
+      endRe: /Dadisi|Ujifunzaji|Yanayotarajiwa|Swali|Maswali|pendekezwa/i,
+      columns: (text, owner, items, row) => {
         const at = (re) => { const m = re.exec(text); return m ? owner[m.index].x : null; };
         const mada = [...text.matchAll(/Mada/g)].map((m) => owner[m.index].x);
         const x = {
           sub: at(/Mada\s*Ndogo/) ?? (mada.length > 1 ? mada[1] : null),
           out: at(/Matokeo\s*Maalum/),
-          exp: at(/Mapendekezo\s*ya\s*Shughuli/),
+          exp: at(/Mapendekezo\s*ya\s*Shughuli|Shughuli\s*za\s*Ujifunzaji/i),
           kiq: at(/Maswali?\s*Dadisi|Swali\s*Dadisi|Maswali?\b|Swali\b/),
         };
-        return Object.values(x).some((v) => v === null) ? null : x;
+        if (!Object.values(x).some((v) => v === null)) return x;
+        /* The header cells can spread over several rows ("Mada Mada" / "Ndogo Matokeo Maalum" ...): read the whole band */
+        if (!items || !row || mada.length < 1) return null;
+        const band = items.filter((it) => it.y <= row.y + 3 && it.y > row.y - 45 && String(it.s).trim() !== '');
+        const first = (re, from, to = Infinity) => {
+          const xs = band.filter((it) => re.test(String(it.s).trim()) && it.x > from && it.x < to).map((it) => it.x);
+          return xs.length ? Math.min(...xs) : null;
+        };
+        const sub = mada.length > 1 ? mada[1] : first(/^Ndogo/i, mada[0] + 10);
+        const out = sub === null ? null : first(/^Matokeo/i, sub + 30);
+        const exp = out === null ? null : first(/^(Mapendekezo|Shughuli)/i, out + 50);
+        const kiq = exp === null ? null : first(/^(Maswali?|Swali)/i, exp + 50);
+        return [sub, out, exp, kiq].some((v) => v === null) ? null : { sub, out, exp, kiq };
       },
     },
     tail: {

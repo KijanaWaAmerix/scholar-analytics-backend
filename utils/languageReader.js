@@ -32,12 +32,12 @@ const LANG = {
       endRe: /Dadisi|Ujifunzaji|Yanayotarajiwa|Swali|Maswali|pendekezwa/i,
       columns: (text, owner, items, row) => {
         const at = (re) => { const m = re.exec(text); return m ? owner[m.index].x : null; };
-        const mada = [...text.matchAll(/Mada/g)].map((m) => owner[m.index].x);
+        const mada = [...text.matchAll(/Mada/gi)].map((m) => owner[m.index].x);
         const x = {
-          sub: at(/Mada\s*Ndogo/) ?? (mada.length > 1 ? mada[1] : null),
-          out: at(/Matokeo\s*Maalum/),
+          sub: at(/Mada\s*Ndogo/i) ?? (mada.length > 1 ? mada[1] : null),
+          out: at(/Matokeo\s*Maalum/i),
           exp: at(/Mapendekezo\s*ya\s*Shughuli|Shughuli\s*za\s*Ujifunzaji/i),
-          kiq: at(/Maswali?\s*Dadisi|Swali\s*Dadisi|Maswali?\b|Swali\b/),
+          kiq: at(/Maswali?\s*Dadisi|Swali\s*Dadisi|Maswali?\b|Swali\b/i),
         };
         if (!Object.values(x).some((v) => v === null)) return x;
         /* The header cells can spread over several rows ("Mada Mada" / "Ndogo Matokeo Maalum" ...): read the whole band */

@@ -389,4 +389,4 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
   return { design, problems, notes };
 };
 
-module.exports = { readLanguageDesign };
+module.exports = { readLanguageDesign, LANG };

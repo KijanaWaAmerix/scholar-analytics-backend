@@ -232,6 +232,19 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
         x.exp = hit !== undefined ? hit : (e.length ? Math.min(...e) : null);
       }
     }
+    /* The header cells spread over three rows ("Strand / Sub Strand / Suggested Key" on the first, "Specific Learning /
+       Suggested Learning" on the second): read the columns from all the rows of the header (Grade 6 English) */
+    if (x.sub !== null && Object.values(x).some((v) => v === null)) {
+      const band = items.filter((it) => it.y <= row.y + 3 && it.y > row.y - 45 && String(it.s).trim() !== '');
+      const first = (re, from, to = Infinity) => {
+        const xs = band.filter((it) => re.test(String(it.s).trim()) && it.x > from && it.x < to).map((it) => it.x);
+        return xs.length ? Math.min(...xs) : null;
+      };
+      const out2 = first(/^Specific/i, x.sub + 30);
+      const exp2 = out2 === null ? null : first(/^(Experiences|Suggested Learning)/i, out2 + 50);
+      const kiq2 = exp2 === null ? null : first(/^(Suggested Key|Key|Inquiry)/i, exp2 + 50);
+      if (out2 !== null && exp2 !== null && kiq2 !== null) { x.out = out2; x.exp = exp2; x.kiq = kiq2; }
+    }
     if (Object.values(x).some((v) => v === null)) continue;
     /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
     const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));

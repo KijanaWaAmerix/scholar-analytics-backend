@@ -141,6 +141,20 @@ const fetchPdf = async (url) => {
         lessonMinutes: catalog.lessonMinutes || 40,
       });
       const { design } = read;
+      /* Hand-typed corrections for a sub-strand the reader cannot split (page layout with overlapping boxes) */
+      const fixFile = path.join(__dirname, 'data', 'design-fixes', `${key}.json`);
+      if (fs.existsSync(fixFile)) {
+        const fixes = JSON.parse(fs.readFileSync(fixFile, 'utf8'));
+        for (const [id, patch] of Object.entries(fixes)) {
+          const sub = design.strands.flatMap((s) => s.sub_strands).find((x) => x.id === id);
+          if (!sub) { console.log(`  fix for ${id} skipped: no such sub-strand`); continue; }
+          Object.assign(sub, patch);
+          delete sub.lessons_estimated;
+          read.problems = read.problems.filter((p) => !new RegExp(`^Sub-strand ${id.replace('.', '\\.')}\\b`).test(p));
+          console.log(`  applied your correction for sub-strand ${id} (data/design-fixes/${key}.json)`);
+        }
+        design.total_suggested_lessons = design.strands.reduce((n, s) => n + s.sub_strands.reduce((m, x) => m + (x.lessons || 0), 0), 0);
+      }
       const problems = [...read.problems, ...validateDesign(design)];
       if (design.grade !== Number(String(catalog.grade).replace(/\D/g, ''))) {
         problems.push(`The PDF says grade ${design.grade}, expected ${catalog.grade}. Is it the right file?`);

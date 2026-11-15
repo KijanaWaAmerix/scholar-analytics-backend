@@ -1,0 +1,34 @@
+{
+  "5.4": {
+    "name": "Sarufi: Ngeli ya U-U",
+    "lessons": 4,
+    "scope": ["Ngeli ya U-U"],
+    "outcomes": [
+      "kutambua viambishi vya upatanisho wa kisarufi vya ngeli ya U-U katika sentensi",
+      "kutambua nomino katika ngeli ya U-U kutokana na upatanisho wa kisarufi",
+      "kutumia nomino za ngeli ya U-U katika umoja na wingi akizingatia upatanisho wa kisarufi",
+      "kuchangamkia kutumia nomino za ngeli ya U-U katika mawasiliano"
+    ],
+    "experiences": [
+      "kutambua viambishi vya ngeli ya U-U katika sentensi kwa kuvipigia mstari au kuvikoleza rangi katika tarakilishi",
+      "kutambua nomino katika ngeli ya U-U kutokana na upatanisho wa kisarufi kwenye sentensi (k.m: uji, ugali, uhuru, ujanja, urafiki)",
+      "kuandika nomino katika ngeli ya U-U katika umoja na wingi akishirikiana na wenzake",
+      "kutunga sentensi sahihi kwa kutumia nomino za ngeli ya U-U kwa kushirikiana na wenzake"
+    ],
+    "key_inquiry_questions": ["Je, ni nomino zipi hupatikana katika ngeli ya U-U?"],
+    "core_competencies": [
+      "Mawasiliano na ushirikiano – mwanafunzi anashirikiana na wenzake",
+      "Kujiamini – mwanafunzi anapotambua nomino za ngeli ya U-U ipasavyo",
+      "Ujuzi wa kidijitali – mwanafunzi anapotumia tarakilishi kutambua nomino za ngeli ya U-U"
+    ],
+    "values": [
+      "Uwajibikaji – kutunza vifaa vya kidijitali anavyotumia",
+      "Uzalendo – kufanya kazi na wenzake kwa kushirikiana na wenzake"
+    ],
+    "pcis": [
+      "Utangamano wa kijamii – mwanafunzi anaposhirikiana na wenzake kutekeleza shughuli mbalimbali za ujifunzaji",
+      "Mshikamano wa kijamii na utaifa – mwanafunzi anapoandika mafungu ya maneno yenye nomino za ngeli ya U-U katika umoja na wingi kuhusu suala lengwa"
+    ],
+    "links": ["English – somo hili pia hushughulikia dhana ya nomino"]
+  }
+}

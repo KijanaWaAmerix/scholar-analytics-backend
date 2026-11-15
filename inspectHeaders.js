@@ -1,5 +1,6 @@
 /* Show the header rows of table pages that the reader could not recognise.
      node inspectHeaders.js "<path to the PDF>" [sw]      (add sw for a Kiswahili design)
+     node inspectHeaders.js "<PDF>" --find "text on the page"     (print every row of the pages containing that text)
    Prints, for every page that looks like it starts a table but has no readable header, the pieces of text in the top of the page. */
 const fs = require('fs');
 const { extractPages, findHeader } = require('./utils/designReader');
@@ -10,9 +11,22 @@ const { LANG } = require('./utils/languageReader');
   if (!file || !fs.existsSync(file)) { console.error('Usage: node inspectHeaders.js "<PDF>"'); process.exit(1); }
   const sw = process.argv[3] === 'sw';
   const pats = sw ? LANG.sw.header : undefined;
+  const findAt = process.argv.indexOf('--find');
+  const find = findAt >= 0 ? process.argv[findAt + 1] : null;
   const pages = await extractPages(fs.readFileSync(file));
   pages.forEach((items, i) => {
     const text = items.map((t) => t.s).join(' ');
+    if (find) {
+      if (!text.toLowerCase().includes(find.toLowerCase())) return;
+      console.log(`\n=== page ${i + 1} (contains "${find}") ===`);
+      const all = [];
+      for (const it of items.filter((t) => String(t.s).trim()).sort((a, b) => b.y - a.y || a.x - b.x)) {
+        const row = all.find((r) => Math.abs(r.y - it.y) <= 3);
+        if (row) row.items.push(it); else all.push({ y: it.y, items: [it] });
+      }
+      all.forEach((r) => console.log(`y=${Math.round(r.y)}: ` + r.items.sort((a, b) => a.x - b.x).map((t) => `[${Math.round(t.x)}] ${String(t.s).trim()}`).join('  ').slice(0, 170)));
+      return;
+    }
     if (sw ? !(/Matokeo/i.test(text) && /Shughuli|Mapendekezo/i.test(text)) : !(/Specific/i.test(text) && /Suggested/i.test(text))) return;
     if (findHeader(items, pats)) return;
     const rows = [];

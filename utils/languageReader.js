@@ -18,7 +18,7 @@ const LANG = {
     header: { endRe: /Question|Questio|Inquiry|n\(s\)/i },
     tail: {
       competencies: /^core competenc/i,
-      pcis: /^pertinent and contemporary/i,
+      pcis: /^(link\s+to\s+)?pertinent and contemporary/i,
       values: /^values?\s*:?\s*$/i,
       links: /^links?\s+to\s+other/i,
     },
@@ -225,7 +225,7 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
     const lines = lineify(items);
     for (const ln of lines) {
       const m = ln.text.match(L.theme);
-      if (m && ln.x <= 90 && !/\.{4,}/.test(ln.text) && ln.text === ln.text.toUpperCase() && /[A-Z]{3}/.test(ln.text)) {
+      if (m && (ln.x <= 90 || (primary && ln.x <= 320)) && !/\.{4,}/.test(ln.text) && ln.text === ln.text.toUpperCase() && /[A-Z]{3}/.test(ln.text)) {
         theme = Number(m[1]);
         if (!themes[theme]) {
           let name = titleCase(cleanItem(m[2]).replace(/^THEME\s*:?\s*/i, '')).replace(/Responsibilites/, 'Responsibilities');

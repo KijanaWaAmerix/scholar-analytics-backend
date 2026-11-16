@@ -199,6 +199,19 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
       exp: at(/Sugg?\s*ested\s*Learning\s*Exp/i) ?? at(/Learning\s*Experiences/i),
       kiq: at(/Sugg?\s*ested\s*Key|Key\s*Inquiry/i),
     };
+    /* "Specific Learning Outcomes     Suggested Learning Experiences" can be ONE piece of text (Grade 5 Mathematics): the
+       experiences column then starts where the first "The learner is guided to" is, and the key inquiry column at the lone "Suggested" */
+    if (x.exp !== null && x.out !== null && Math.abs(x.exp - x.out) < 5) {
+      x.exp = null;
+      if (x.kiq === null) {
+        const last = [...text.matchAll(/Sugg?\s*ested/gi)].pop();
+        if (last && owner[last.index].x > x.out + 100) x.kiq = owner[last.index].x;
+      }
+      if (x.kiq !== null) {
+        const g = items.filter((it) => it.y < row.y && it.y > row.y - 200 && /guided\s+to/i.test(String(it.s)) && it.x > x.out + 50 && it.x < x.kiq - 30).map((it) => it.x);
+        if (g.length) x.exp = Math.min(...g);
+      }
+    }
     /* "Experiences" can sit on the next row, leaving only "Suggested Learning" on the header row */
     if (x.exp === null && x.out !== null) {
       const hit = [...text.matchAll(/Sugg?\s*ested\s*Learning/gi)].map((m) => owner[m.index].x).find((v) => v > x.out + 50);

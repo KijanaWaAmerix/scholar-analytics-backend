@@ -201,6 +201,12 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
     };
     /* "Specific Learning Outcomes     Suggested Learning Experiences" can be ONE piece of text (Grade 5 Mathematics): the
        experiences column then starts where the first "The learner is guided to" is, and the key inquiry column at the lone "Suggested" */
+    /* "Sub strand     Specific Learning Outcomes" can be ONE piece of text (Grade 5 Mathematics): the outcomes column
+       then starts where the first "By the end of the sub strand" line is */
+    if (x.sub !== null && x.out !== null && Math.abs(x.sub - x.out) < 5) {
+      const by = items.filter((it) => it.y < row.y && it.y > row.y - 200 && /^By\s+the\s+end/i.test(String(it.s).trim()) && it.x > x.sub + 30).map((it) => it.x);
+      if (by.length) x.out = Math.min(...by);
+    }
     if (x.exp !== null && x.out !== null && Math.abs(x.exp - x.out) < 5) {
       x.exp = null;
       if (x.kiq === null) {
@@ -297,6 +303,7 @@ const readTables = (pages) => {
   let inHeader = false;
   let mode = 'none';
   let bounds = null;
+  let pastAppendix = false;
 
   pages.forEach((page) => {
     /* Drop the page number in the footer, but keep real text near the bottom edge */
@@ -304,6 +311,9 @@ const readTables = (pages) => {
       /* "(6 lessons)" can fall at the very bottom of a page: its "6" is not a page number */
       && !page.some((o) => o !== t && Math.abs(o.y - t.y) < 3 && o.x < t.x && t.x - o.x < 14 && /\(\s*$/.test(String(o.s)));
     const items = page.filter((t) => t.y >= 30 && !isFooter(t) && String(t.s).trim() !== '');
+    /* Appendices follow the last table: pages after the first one headed "APPENDIX I" are not table pages */
+    if (pastAppendix) return;
+    if (page.some((t) => /^APPENDIX\s+I\b/i.test(String(t.s).trim()) && t.x <= 90) && !page.some((t) => /\.{6,}/.test(String(t.s)))) pastAppendix = true;
     const header = findHeader(items);
     /* "STRAND 1.0: NAME" above the first table of a strand */
     for (const ln of lineify(items)) {

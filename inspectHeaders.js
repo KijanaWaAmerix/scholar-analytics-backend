@@ -2,6 +2,7 @@
      node inspectHeaders.js "<path to the PDF>" [sw]      (add sw for a Kiswahili design)
      node inspectHeaders.js "<PDF>" --find "text on the page"     (print every row of the pages containing that text)
      node inspectHeaders.js "<PDF>" --pages 5-9                    (print every row of pages 5 to 9)
+     add  --rows 6  to print only the first 6 rows of each page
    Prints, for every page that looks like it starts a table but has no readable header, the pieces of text in the top of the page. */
 const fs = require('fs');
 const { extractPages, findHeader } = require('./utils/designReader');
@@ -14,6 +15,8 @@ const { LANG } = require('./utils/languageReader');
   const pats = sw ? LANG.sw.header : undefined;
   const findAt = process.argv.indexOf('--find');
   const find = findAt >= 0 ? process.argv[findAt + 1] : null;
+  const rowsAt = process.argv.indexOf('--rows');
+  const maxRows = rowsAt >= 0 ? Number(process.argv[rowsAt + 1]) : 0;
   const pgAt = process.argv.indexOf('--pages');
   const [pFrom, pTo] = pgAt >= 0 ? String(process.argv[pgAt + 1]).split('-').map(Number) : [0, 0];
   const pages = await extractPages(fs.readFileSync(file));
@@ -28,7 +31,7 @@ const { LANG } = require('./utils/languageReader');
         const row = all.find((r) => Math.abs(r.y - it.y) <= 3);
         if (row) row.items.push(it); else all.push({ y: it.y, items: [it] });
       }
-      all.forEach((r) => console.log(`y=${Math.round(r.y)}: ` + r.items.sort((a, b) => a.x - b.x).map((t) => `[${Math.round(t.x)}] ${String(t.s).trim()}`).join('  ').slice(0, 170)));
+      (maxRows ? all.slice(0, maxRows) : all).forEach((r) => console.log(`y=${Math.round(r.y)}: ` + r.items.sort((a, b) => a.x - b.x).map((t) => `[${Math.round(t.x)}] ${String(t.s).trim()}`).join('  ').slice(0, 170)));
       return;
     }
     if (sw ? !(/Matokeo/i.test(text) && /Shughuli|Mapendekezo/i.test(text)) : !(/Specific/i.test(text) && /Suggested/i.test(text))) return;

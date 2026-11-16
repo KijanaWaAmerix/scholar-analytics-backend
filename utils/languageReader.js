@@ -224,6 +224,13 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
     const items = cleanPage(raw);
     const lines = lineify(items);
     for (const ln of lines) {
+      /* A centred theme heading mistyped as "2.4 NATIONAL CELEBRATIONS": taken as the next theme number */
+      const typo = primary && theme ? ln.text.match(/^(\d{1,2})\.[1-9]\s+([A-Z][A-Z ,&'\-]{4,})$/) : null;
+      if (typo && ln.x >= 200 && Number(typo[1]) === theme + 1 && !themes[theme + 1] && !/\.{4,}/.test(ln.text)) {
+        theme += 1;
+        themes[theme] = titleCase(cleanItem(typo[2]));
+        continue;
+      }
       const m = ln.text.match(L.theme);
       if (m && (ln.x <= 90 || (primary && ln.x <= 320)) && !/\.{4,}/.test(ln.text) && ln.text === ln.text.toUpperCase() && /[A-Z]{3}/.test(ln.text)) {
         theme = Number(m[1]);

@@ -310,10 +310,14 @@ const readTables = (pages) => {
     const isFooter = (t) => t.y < 90 && /^\s*(\d{1,3}|[ivxl]+)\s*$/i.test(t.s)
       /* "(6 lessons)" can fall at the very bottom of a page: its "6" is not a page number */
       && !page.some((o) => o !== t && Math.abs(o.y - t.y) < 3 && o.x < t.x && t.x - o.x < 14 && /\(\s*$/.test(String(o.s)));
-    const items = page.filter((t) => t.y >= 30 && !isFooter(t) && String(t.s).trim() !== '');
     /* Appendices follow the last table: pages after the first one headed "APPENDIX I" are not table pages */
     if (pastAppendix) return;
-    if (page.some((t) => /^APPENDIX\s+I\b/i.test(String(t.s).trim()) && t.x <= 90) && !page.some((t) => /\.{6,}/.test(String(t.s)))) pastAppendix = true;
+    let appendixY = null;
+    if (page.some((t) => /^APPENDIX\s+I\b/i.test(String(t.s).trim()) && t.x <= 90) && !page.some((t) => /\.{6,}/.test(String(t.s)))) {
+      pastAppendix = true;
+      appendixY = Math.max(...page.filter((t) => /^APPENDIX\s+I\b/i.test(String(t.s).trim()) && t.x <= 90).map((t) => t.y));
+    }
+    const items = page.filter((t) => t.y >= 30 && !isFooter(t) && String(t.s).trim() !== '' && (appendixY === null || t.y > appendixY + 2));
     const header = findHeader(items);
     /* "STRAND 1.0: NAME" above the first table of a strand */
     for (const ln of lineify(items)) {
@@ -386,6 +390,8 @@ const readTables = (pages) => {
 
       for (const ln of subLines) {
         const id = ln.text.match(/^(\d{1,2})\.(\d{1,2})\.?(?=\s|$|[A-Z])/);
+        /* A design can number its first sub-strand "1.0" like the strand (Grade 5 Mathematics): it is "<strand>.1" */
+        if (id && id[2] === '0' && !acc[`${id[1]}.1`] && !acc[`${id[1]}.0`]) id[2] = '1';
         if (id && !ln.bullet) {
           current = `${id[1]}.${id[2]}`;
           if (!acc[current]) { acc[current] = emptyAcc(); order.push(current); }

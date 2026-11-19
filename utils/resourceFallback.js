@@ -76,6 +76,27 @@ const calls = (item, lessonText) => {
   return [...stems(item)].some((w) => mine.has(w));
 };
 
+/* Some designs write a sub-strand's resources as one long sentence ("Suitable organic materials for composting such as
+   slashed vegetation, kitchen wastes, ... digging tools such as jembes and spade, metal pipes, ..."). Such an entry is cut
+   into its parts, so that a lesson takes only the ones it needs and the table stays readable. */
+const splitResources = (list) => {
+  const out = [];
+  for (const raw of list) {
+    const item = String(raw || '').replace(/^[\s\-\u2013\u2022]+/, '').replace(/\s+/g, ' ').trim();
+    if (!item) continue;
+    const parts = item.length > 70 ? item.split(/\s*;\s*|,\s+(?=[A-Za-z])/) : [item];
+    for (let part of parts) {
+      part = part.replace(/^[\s\-\u2013\u2022]+/, '').replace(/[\s,;.]+$/, '').trim();
+      if (part.length < 4 || part.length > 90) continue;
+      /* a piece that ends on a dangling word ("materials for making physical") is not a resource */
+      if (/\b(for making|physical|such as|and|or|of|for)$/i.test(part) && part.split(' ').length <= 5) continue;
+      part = part.charAt(0).toUpperCase() + part.slice(1);
+      if (!out.some((x) => x.toLowerCase() === part.toLowerCase())) out.push(part);
+    }
+  }
+  return out;
+};
+
 const resourcesFor = (design, sub, lessonText = '') => {
   const area = String(design.learning_area || '');
   const sw = /kiswahili/i.test(area);
@@ -83,7 +104,7 @@ const resourcesFor = (design, sub, lessonText = '') => {
 
   const own = sub.resources && sub.resources.length ? sub.resources : (design.appendix && design.appendix.learning_resources) || [];
   const catalogue = (AREAS.find((a) => a.re.test(area)) || { items: GENERAL_ITEMS, general: 'Charts and pictures' });
-  const pool = (own.length ? own : catalogue.items).filter((x) => !COMMON.test(x));
+  const pool = splitResources(own.length ? own : catalogue.items).filter((x) => !COMMON.test(x));
 
   const chosen = pool.filter((item) => calls(item, text)).slice(0, 4);
   /* a lesson that calls for nothing in particular still gets one plain classroom resource */

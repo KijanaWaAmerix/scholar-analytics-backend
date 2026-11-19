@@ -17,8 +17,8 @@
    reported in `problems` so a person can fix it by hand.
 ═══════════════════════════════════════════════════════════ */
 
-const BULLET_START = /^[●○◦•▪■·∙‣➢]/;
-const BULLET_ONLY = /^[●○◦•▪■·∙‣➢]\s*$/;
+const BULLET_START = /^[●○◦•▪■·∙‣➢\ue000-\uf8ff]/;
+const BULLET_ONLY = /^[●○◦•▪■·∙‣➢\ue000-\uf8ff]\s*$/;
 
 /* ── Text helpers ─────────────────────────────────────────── */
 
@@ -549,7 +549,7 @@ const appendixHeader = (items) => {
 const cellEntries = (lines) => {
   const out = [];
   for (const ln of lines) {
-    const t = tidy(ln.text.replace(/^[●◦•\u2022\uf0b7\uf0a7\s]+/, ''));
+    const t = tidy(ln.text.replace(/^[●◦•\u2022\ue000-\uf8ff\s]+/, ''));
     if (!t) continue;
     const prev = out[out.length - 1];
     const continues = prev && !ln.bullet

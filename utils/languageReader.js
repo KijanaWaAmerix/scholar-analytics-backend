@@ -101,7 +101,7 @@ const tailItems = (lines, tail) => {
 
 
 /* ── The appendix of English and Kiswahili: assessment, resources and activities are listed by skill ── */
-const BULLET = /^[●◦•\u2022\uf0b7\uf0a7\s]+/;
+const BULLET = /^[●◦•\u2022\ue000-\uf8ff\s]+/;
 
 const clusterStarts = (items) => {
   const xs = items.filter((i) => String(i.s).trim()).sort((a, b) => a.x - b.x);

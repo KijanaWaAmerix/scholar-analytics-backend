@@ -66,7 +66,8 @@ const extractPages = async (buffer, { max = 0 } = {}) => {
   const pages = [];
   const render = (page) => page.getTextContent({ normalizeWhitespace: false }).then((tc) => {
     pages.push(tc.items.filter((i) => i.str !== undefined).map((i) => ({
-      s: i.str, x: Math.round(i.transform[4]), y: Math.round(i.transform[5]), w: Math.round(i.width),
+      /* Some designs draw bullets with a symbol-font character (private-use area, e.g. U+E006): treat it as a bullet */
+      s: i.str.replace(/^(\s*)[\ue000-\uf8ff]+/, '$1•'), x: Math.round(i.transform[4]), y: Math.round(i.transform[5]), w: Math.round(i.width),
     })));
     return '';
   });

@@ -157,7 +157,7 @@ const buildFallback = ({ design, subStrandId, lessonNo, lang = languageFor(desig
   /* Textbooks, digital devices and whatever THIS lesson calls for (see resourceFallback.js) */
   const lessonText  = [...experiences, ...outcomes, focusItem, sub.name].join(' ');
   const resources   = resourcesFor(design, sub, lessonText);
-  const ownAssess   = sub.assessment || [];
+  const ownAssess   = (sub.assessment || []).map((v) => String(v).replace(/^[\s\-\u2013\u2022]+/, '').trim()).filter(Boolean);
   const kiqs        = sub.key_inquiry_questions || [];
   const sw = lang === 'sw';
 

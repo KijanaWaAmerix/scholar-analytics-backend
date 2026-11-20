@@ -15,7 +15,7 @@ const NOISE = /Download this and other FREE materials from https?:\/\/\S*?teache
 
 const LANG = {
   en: {
-    header: { endRe: /Question|Questio|Inquiry|n\(s\)/i },
+    header: { endRe: /Question|Questio|Inquiry|n\(s\)|^Outcomes$/i },
     tail: {
       competencies: /^core competenc/i,
       pcis: /^(link\s+to\s+)?pertinent and contemporary/i,
@@ -23,7 +23,7 @@ const LANG = {
       links: /^links?\s+to\s+other/i,
     },
     stop: /^(STRAND\b|Suggested Assessment|Ass\w*\s+Rubric|Indicators?\s|APPENDIX|COMMUNITY SERVICE LEARNING)/i,
-    theme: /^(?:(?:STRAND|THEME)\s*:?\s*)?(\d{1,2})(?:\.0|(?=\s*:))\s*:?\s*(?:THEME\s*:?\s*)?(\S.*)$/,
+    theme: /^(?:(?:STRAND|THEME)\s*:?\s*)?(\d{1,2})(?:\.\s?0|(?=\s*:))\s*:?\s*(?:THEME\s*:?\s*)?(\S.*)$/,
     lessons: /\(?\s*(\d+)\s*lessons?\s*\)?/i,
     strandLabel: /^STRAND/i,
   },
@@ -232,7 +232,9 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
         continue;
       }
       const m = ln.text.match(L.theme);
-      if (m && (ln.x <= 90 || (primary && ln.x <= 320)) && !/\.{4,}/.test(ln.text) && ln.text === ln.text.toUpperCase() && /[A-Z]{3}/.test(ln.text)) {
+      /* a heading is upper case; "6.0 INTERNET - Email" is too, bar its last word, when it is the next theme in order */
+      const nextInOrder = m && Number(m[1]) === (theme || 0) + 1 && /^[A-Z]{3,}\b/.test(m[2]);
+      if (m && (ln.x <= 90 || (primary && ln.x <= 420)) && !/\.{4,}/.test(ln.text) && ((ln.text === ln.text.toUpperCase() && /[A-Z]{3}/.test(ln.text)) || nextInOrder)) {
         theme = Number(m[1]);
         if (!themes[theme]) {
           let name = titleCase(cleanItem(m[2]).replace(/^THEME\s*:?\s*/i, '')).replace(/Responsibilites/, 'Responsibilities');

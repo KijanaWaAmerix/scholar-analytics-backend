@@ -389,6 +389,8 @@ const readTables = (pages) => {
         } else subLines.push(ln);
       }
 
+      const startCurrent = current;
+      const starts = [];
       for (const ln of subLines) {
         const id = ln.text.match(/^(\d{1,2})\.(\d{1,2})\.?(?=\s|$|[A-Z])/);
         /* A design can number its first sub-strand "1.0" like the strand (Grade 5 Mathematics): it is "<strand>.1" */
@@ -397,10 +399,13 @@ const readTables = (pages) => {
           current = `${id[1]}.${id[2]}`;
           if (!acc[current]) { acc[current] = emptyAcc(); order.push(current); }
           inHeader = true;
+          starts.push({ y: ln.y, key: current });
         }
         if (!current) continue;
-        const count = ln.text.match(/\(\s*(\d+)\s*l?essons?\s*\)?/i);
-        const rest = tidy(ln.text.replace(/\(\s*\d+\s*l?essons?\s*\)?/i, ''));
+        /* "(6 lessons)", or just "2 lessons" on a line of its own (Grade 4 CRE; the "s" can even drift: "2 lesson s") */
+        const bare = !/\(/.test(ln.text) && ln.text.match(/^\s*(\d+)\s*lessons?\s*s?\s*$/i);
+        const count = ln.text.match(/\(\s*(\d+)\s*l?essons?\s*\)?/i) || bare;
+        const rest = bare ? '' : tidy(ln.text.replace(/\(\s*\d+\s*l?essons?\s*\)?/i, ''));
         if (count && acc[current].lessons === undefined) acc[current].lessons = Number(count[1]);
         if (inHeader) {
           /* A bulleted line under the name is content (scope), not part of the name */
@@ -425,9 +430,15 @@ const readTables = (pages) => {
         if (strandCol[major].sub === current) lineify(cols.strand).forEach((l) => strandCol[major].lines.push(l.text));
       }
       if (current) {
-        lineify(cols.out).forEach((l) => acc[current].out.push(l));
-        lineify(cols.exp).forEach((l) => acc[current].exp.push(l));
-        lineify(cols.kiq).forEach((l) => acc[current].kiq.push(l));
+        /* Several sub-strands can begin on one page (Grade 4 CRE): each row belongs to the last one that began above it,
+           and rows above the first belong to the sub-strand carried over from the page before */
+        const keyAt = (y) => {
+          if (starts.length < 2) return current;
+          let key = startCurrent && acc[startCurrent] ? startCurrent : starts[0].key;
+          for (const st of starts) if (st.y >= y - 4) key = st.key;
+          return key;
+        };
+        for (const part of ['out', 'exp', 'kiq']) lineify(cols[part]).forEach((l) => acc[keyAt(l.y)][part].push(l));
       }
     }
 

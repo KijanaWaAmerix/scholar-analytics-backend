@@ -306,7 +306,23 @@ const readTables = (pages) => {
   let bounds = null;
   let pastAppendix = false;
 
-  pages.forEach((page) => {
+  /* A table can begin part-way down a page (Grade 4 CRE): what lies above its header is the end of the sub-strand
+     before (its last rows, its lesson count, its notes). That part is read first, with the previous table's columns. */
+  const split = [];
+  for (const page of pages) {
+    const clean = page.filter((t) => t.y >= 30 && String(t.s).trim() !== '');
+    const h = findHeader(clean);
+    const tops = h ? clean.filter((t) => t.y > h.bottom && t.y <= h.bottom + 70 && /^(Strand|Sub\s*st)/i.test(String(t.s).trim())).map((t) => t.y) : [];
+    if (!tops.length) { split.push(page); continue; }
+    const top = Math.max(...tops);
+    const above = page.filter((t) => t.y > top + 3);
+    const continues = lineify(above).some((l) => l.x <= 90 && Object.values(TAIL).some((re) => re.test(l.text)))
+      || above.some((t) => /^\s*\d{1,2}\s*l?essons?\s*s?\s*$/i.test(String(t.s)) || /\(\s*\d+\s*l?essons?/i.test(String(t.s)));
+    if (continues) split.push(above, page.filter((t) => t.y <= top + 3));
+    else split.push(page);
+  }
+
+  split.forEach((page) => {
     /* Drop the page number in the footer, but keep real text near the bottom edge */
     const isFooter = (t) => t.y < 90 && /^\s*(\d{1,3}|[ivxl]+)\s*$/i.test(t.s)
       /* "(6 lessons)" can fall at the very bottom of a page: its "6" is not a page number */

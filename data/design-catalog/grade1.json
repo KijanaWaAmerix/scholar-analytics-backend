@@ -1,0 +1,58 @@
+{
+  "grade": "grade1",
+  "label": "Grade 1",
+  "page": "https://kicd.ac.ke/cbc-materials/curriculum-designs/grade-one-designs/",
+  "note": "Grade 1 (lower primary) designs are read from a folder: run importGradeDesigns.js grade1 --from <folder>. lessonsPerWeek follows the KICD lower primary lesson allocation (Indigenous Language 2, Kiswahili 4, English 5, Mathematical Activities 5, Religious Education 3, Environmental 4, Creative 7, Pastoral Instruction 1; 31 a week). Lower primary lessons are 30 minutes.",
+  "subjects": [
+    {
+      "slug": "english",
+      "name": "English",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "kiswahili",
+      "name": "Kiswahili",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "mathematics",
+      "name": "Mathematics",
+      "lessonsPerWeek": 5,
+      "urls": []
+    },
+    {
+      "slug": "cre",
+      "name": "Christian Religious Education",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "ire",
+      "name": "Islamic Religious Education",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "hre",
+      "name": "Hindu Religious Education",
+      "lessonsPerWeek": 3,
+      "urls": []
+    },
+    {
+      "slug": "environmental-activities",
+      "name": "Environmental Activities",
+      "lessonsPerWeek": 4,
+      "urls": []
+    },
+    {
+      "slug": "creative-activities",
+      "name": "Creative Activities",
+      "lessonsPerWeek": 7,
+      "urls": []
+    }
+  ],
+  "lessonMinutes": 30,
+  "levelName": "Primary School"
+}

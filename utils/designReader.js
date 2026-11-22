@@ -493,6 +493,11 @@ const outcomesOf = (lines) => {
     if (/^\(?[a-z]\)\s*/.test(ln.text)) items.push(ln.text.replace(/^\(?[a-z]\)\s*/, ''));
     else if (items.length) items[items.length - 1] += ' ' + ln.text;
   }
+  /* Some outcomes are bulleted instead of lettered (Grade 2 English 9.4): take them from the first bullet on */
+  if (!items.length) {
+    const first = lines.findIndex((l) => l.bullet);
+    if (first >= 0) return byBullet(lines.slice(first));
+  }
   return items.map(cleanItem).filter(Boolean);
 };
 

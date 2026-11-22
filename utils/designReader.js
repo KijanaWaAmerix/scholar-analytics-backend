@@ -330,9 +330,9 @@ const readTables = (pages) => {
     /* Appendices follow the last table: pages after the first one headed "APPENDIX I" are not table pages */
     if (pastAppendix) return;
     let appendixY = null;
-    if (page.some((t) => /^APPENDIX\s+I\b/i.test(String(t.s).trim()) && t.x <= 90) && !page.some((t) => /\.{6,}/.test(String(t.s)))) {
+    if (page.some((t) => /^APPENDIX\s+(I|1)\b/i.test(String(t.s).trim()) && t.x <= 90) && !page.some((t) => /\.{6,}/.test(String(t.s)))) {
       pastAppendix = true;
-      appendixY = Math.max(...page.filter((t) => /^APPENDIX\s+I\b/i.test(String(t.s).trim()) && t.x <= 90).map((t) => t.y));
+      appendixY = Math.max(...page.filter((t) => /^APPENDIX\s+(I|1)\b/i.test(String(t.s).trim()) && t.x <= 90).map((t) => t.y));
     }
     const items = page.filter((t) => t.y >= 30 && !isFooter(t) && String(t.s).trim() !== '' && (appendixY === null || t.y > appendixY + 2));
     const header = findHeader(items);
@@ -902,8 +902,8 @@ const designFromPdf = async (buffer, { source = '', lessonsPerWeek, lessonMinute
   /* The cover page says: JUNIOR SCHOOL CURRICULUM DESIGN / <LEARNING AREA> / GRADE n */
   const { area, grade } = findCover(pages);
   const titled = (v) => String(v || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\b(And|Of)\b/g, (w) => w.toLowerCase());
-  const isLanguage = /^(english(\s+language)?|kiswahili)$/i.test(String(area).trim());
-  const opts = { source, lessonsPerWeek, lessonMinutes, learningArea: isLanguage ? titled(String(area).replace(/\s+language$/i, '')) : titled(area), grade };
+  const isLanguage = /^(english(\s+language)?(\s+activities)?|kiswahili(\s+language)?(\s+activities)?)$/i.test(String(area).trim());
+  const opts = { source, lessonsPerWeek, lessonMinutes, learningArea: isLanguage ? titled(String(area).replace(/\s+language(\s+activities)?$|\s+activities$/i, '')) : titled(area), grade };
   /* English and Kiswahili are written in themes, with one table per skill and no numbered sub-strands */
   if (isLanguage) {
     return require('./languageReader').readLanguageDesign(pages, { ...opts, language: /kiswahili/i.test(area) ? 'sw' : 'en' });

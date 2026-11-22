@@ -233,7 +233,7 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
       }
       const m = ln.text.match(L.theme);
       /* a heading is upper case; "6.0 INTERNET - Email" is too, bar its last word, when it is the next theme in order */
-      const nextInOrder = m && Number(m[1]) === (theme || 0) + 1 && /^[A-Z]{3,}\b/.test(m[2]);
+      const nextInOrder = m && Number(m[1]) === (theme || 0) + 1 && (/^[A-Z]{3,}\b/.test(m[2]) || (primary && ln.x >= 200 && /^[A-Z][a-z]/.test(m[2])));
       if (m && (ln.x <= 90 || (primary && ln.x <= 420)) && !/\.{4,}/.test(ln.text) && ((ln.text === ln.text.toUpperCase() && /[A-Z]{3}/.test(ln.text)) || nextInOrder)) {
         theme = Number(m[1]);
         if (!themes[theme]) {

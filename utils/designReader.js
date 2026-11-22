@@ -400,7 +400,10 @@ const readTables = (pages) => {
       const subLines = [];
       for (const ln of lineify(cols.sub)) {
         const prev = subLines[subLines.length - 1];
-        if (prev && /\(\s*\d+\s*$/.test(prev.text) && /^l?essons?\s*\)/i.test(ln.text)) {
+        /* "4" on one line and "Lessons" on the next (Grade 3 CRE) */
+        if (prev && /^\d{1,2}$/.test(prev.text.trim()) && /^lessons?$/i.test(ln.text.trim())) {
+          subLines[subLines.length - 1] = { ...prev, text: `${prev.text.trim()} lessons` };
+        } else if (prev && /\(\s*\d+\s*$/.test(prev.text) && /^l?essons?\s*\)/i.test(ln.text)) {
           subLines[subLines.length - 1] = { ...prev, text: `${prev.text.trim()} ${ln.text.trim()}` };
         } else subLines.push(ln);
       }

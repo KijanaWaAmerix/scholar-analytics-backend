@@ -107,7 +107,25 @@ const readSkeleton = (pages) => {
   const n = (r) => r.strands.reduce((a, st) => a + st.sub_strands.length, 0);
   const alt = readSummaryLines(pages);
   /* The column reader is used when it finds the whole table; otherwise the line reader */
-  return n(lines) >= n(alt) && n(lines) > 0 ? lines : (n(alt) > 0 ? alt : lines);
+  return renumberRepeats(n(lines) >= n(alt) && n(lines) > 0 ? lines : (n(alt) > 0 ? alt : lines));
+};
+
+/* A typo in the summary can repeat an id ("2.5 Songs", "2.5 Modelling", "2.6 Percussion"): the repeat and
+   everything after it in that strand move up one (the detail pages then say 2.6 Modelling) */
+const renumberRepeats = (r) => {
+  for (const st of r.strands || []) {
+    const seen = new Set();
+    let shift = 0;
+    for (const sub of st.sub_strands) {
+      const m = String(sub.id).match(/^(\d+)\.(\d+)$/);
+      if (!m) continue;
+      let minor = Number(m[2]) + shift;
+      if (seen.has(minor)) { shift += 1; minor += 1; }
+      seen.add(minor);
+      sub.id = `${m[1]}.${minor}`;
+    }
+  }
+  return r;
 };
 
 const readSkeletonColumns = (pages) => {
@@ -132,7 +150,13 @@ const readSkeletonColumns = (pages) => {
 
   const strandCol = rows.filter((t) => t.x < subHead.x - 6);
   const subCol = rows.filter((t) => t.x >= subHead.x - 6 && !(t.x >= lessonHead.x - 5 && /^\s*\d{1,2}\s*$/.test(t.s)));
-  const numbers = rows.filter((t) => t.x >= lessonHead.x - 5 && /^\s*\d{1,2}\s*$/.test(t.s));
+  /* "13" can arrive as "1" and "3" side by side: digits on one row are joined */
+  const numbers = [];
+  for (const t of rows.filter((t) => t.x >= lessonHead.x - 5 && /^\s*\d{1,2}\s*$/.test(t.s)).sort((a, b) => b.y - a.y || a.x - b.x)) {
+    const prev = numbers[numbers.length - 1];
+    if (prev && Math.abs(prev.y - t.y) <= 3 && t.x - prev.x < 20 && prev.s.trim().length === 1) prev.s = prev.s.trim() + t.s.trim();
+    else numbers.push({ ...t });
+  }
 
   const strands = [];
   for (const ln of lineify(strandCol)) {
@@ -859,6 +883,11 @@ const coverFrom = (cover) => {
   /* English: JUNIOR SCHOOL CURRICULUM DESIGN. Kiswahili: MTAALA WA DARAJA ... or MTAALA WA SHULE YA JUNIA */
   const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+(EDUCATION\s+)?CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI|SHULE\s+ZA\s+MSINGI)/i.test(t));
   let area = at >= 0 ? cover[at + 1] : '';
+  /* Grade 1 CRE: the area is the line ABOVE "PRIMARY SCHOOL CURRICULUM DESIGN" */
+  if (at > 0 && /^(GREDI|GRADE)\b/i.test(String(area || ''))) {
+    const above = cover[at - 1];
+    if (/^[A-Z][A-Z &,]{3,60}$/.test(String(above || '').trim()) && !/KENYA|INSTITUTE/.test(above)) area = above.trim();
+  }
   /* Grade 6 Kiswahili has no learning area line on the cover: "GREDI 6" follows straight away */
   if (/^(GREDI|GRADE)\b/i.test(String(area || ''))) area = '';
   /* Grade 6 Science & Technology: "UPPER PRIMARY SCHOOL" on one line, "SCIENCE & TECHNOLOGY CURRICULUM DESIGN" on the next */

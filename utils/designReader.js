@@ -292,7 +292,11 @@ const findHeader = (items, pats = ENGLISH_HEADER) => {
     if (Object.values(x).some((v) => v === null)) continue;
     /* The header ends at "Question(s)" (or "Inquiry"), a little below the row */
     const below = items.filter((it) => it.y < row.y && it.y > row.y - 45 && it.x >= x.kiq - 8 && pats.endRe.test(it.s));
-    const bottom = below.length ? Math.min(...below.map((it) => it.y)) : row.y - 26;
+    /* Only the header's own lines count: a first row that says "Inquiry Corner" (Grade 1 Creative Activities) is 28 below */
+    const ys = [...new Set(below.map((it) => Math.round(it.y)))].sort((a, b) => b - a);
+    let bottomY = ys[0];
+    for (let i = 1; i < ys.length && ys[i - 1] - ys[i] <= 20; i += 1) bottomY = ys[i];
+    const bottom = below.length ? bottomY : row.y - 26;
     return { x, bottom };
   }
   return null;

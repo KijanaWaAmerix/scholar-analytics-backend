@@ -314,7 +314,7 @@ const columnOf = (x, b) => {
 };
 
 const TAIL = {
-  competencies: /^core competenc/i,
+  competencies: /^(core\s+)?competenc/i,
   pcis: /^(pertinent and contemporary|pcis?\s*:?\s*$)/i,
   values: /^values?\s*:?\s*$/i,
   links: /^links?\s+to\s+other/i,

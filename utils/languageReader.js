@@ -262,7 +262,7 @@ const readLanguageDesign = (pages, { source = '', lessonsPerWeek, lessonMinutes 
       body = [];
     } else {
       const bl = lineify(body);
-      const core = bl.find((l) => (l.x <= 90 || (language === 'sw' && L.tail.competencies.test(l.text))) && Object.values(L.tail).some((re) => re.test(l.text)));
+      const core = bl.find((l) => (l.x <= 90 || (primary && l.x <= 100) || (language === 'sw' && L.tail.competencies.test(l.text))) && Object.values(L.tail).some((re) => re.test(l.text)));
       if (core) {
         tailLines = bl.filter((l) => l.y <= core.y + 1);
         body = body.filter((t) => t.y > core.y + 2);

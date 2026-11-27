@@ -340,7 +340,7 @@ const readTables = (pages) => {
     if (!tops.length) { split.push(page); continue; }
     const top = Math.max(...tops);
     const above = page.filter((t) => t.y > top + 3);
-    const continues = lineify(above).some((l) => l.x <= 90 && Object.values(TAIL).some((re) => re.test(l.text)))
+    const continues = lineify(above).some((l) => l.x <= 100 && Object.values(TAIL).some((re) => re.test(l.text)))
       || above.some((t) => /^\s*\d{1,2}\s*l?essons?\s*s?\s*$/i.test(String(t.s)) || /\(\s*\d+\s*l?essons?/i.test(String(t.s)));
     if (continues) split.push(above, page.filter((t) => t.y <= top + 3));
     else split.push(page);
@@ -383,7 +383,7 @@ const readTables = (pages) => {
     } else {
       const lines = lineify(tableItems);
       /* The notes under a table begin at the first of their headings (some sub-strands skip "Core competencies") */
-      const core = lines.find((l) => l.x <= 90 && Object.values(TAIL).some((re) => re.test(l.text)));
+      const core = lines.find((l) => l.x <= 100 && Object.values(TAIL).some((re) => re.test(l.text)));
       if (core) {
         tailLines = lines.filter((l) => l.y <= core.y + 1);
         tableItems = tableItems.filter((t) => t.y > core.y + 2);
@@ -884,7 +884,7 @@ const coverFrom = (cover) => {
   const at = cover.findIndex((t) => /(JUNIOR\s+(SECONDARY\s+)?|PRIMARY\s+|(LOWER|UPPER)\s+PRIMARY\s+)SCHOOL\s+(EDUCATION\s+)?CURRICULUM\s+DESIGN|MTAALA\s*WA\s+(DARAJA|SHULE\s+YA\s+JUNI|SHULE\s+ZA\s+MSINGI)/i.test(t));
   let area = at >= 0 ? cover[at + 1] : '';
   /* Grade 1 CRE: the area is the line ABOVE "PRIMARY SCHOOL CURRICULUM DESIGN" */
-  if (at > 0 && /^(GREDI|GRADE)\b/i.test(String(area || ''))) {
+  if (at > 0 && /CURRICULUM\s+DESIGN/i.test(cover[at]) && /^(GRADE)\b/i.test(String(area || ''))) {
     const above = cover[at - 1];
     if (/^[A-Z][A-Z &,]{3,60}$/.test(String(above || '').trim()) && !/KENYA|INSTITUTE/.test(above)) area = above.trim();
   }
